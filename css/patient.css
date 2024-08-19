@@ -1,0 +1,255 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+a{
+    text-decoration: none;
+}
+.contain {
+    max-width: 200px;
+    margin: 0 auto;
+    padding: 30px;
+    border-radius: 10px;
+    background-color: #ffffff; /* Fond blanc */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    align-items: center;
+}
+.content {
+    padding: 20px;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centre le contenu verticalement */
+}
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center; /* Centré */
+    color: hsl(158, 97%, 29%); /* Couleur du titre */
+}
+
+p {
+    margin: 10px 0;
+}
+
+h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+label {
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+/* Styles pour les champs de saisie */
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Effet de focus sur les champs */
+input:focus,
+select:focus {
+    border-color: hsl(158, 97%, 29%);
+    box-shadow: 0 0 5px rgba(38, 198, 218, 0.5); /* Ombre autour du champ */
+}
+
+/* Styles pour le groupe de boutons */
+.btn-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px; /* Espacement au-dessus du groupe de boutons */
+}
+
+/* Styles pour les boutons */
+button {
+    width: 110px;
+    height: 40px; /* Hauteur augmentée pour un meilleur aspect */
+    border-radius: 50px;
+    background: linear-gradient(to right, hsl(158, 97%, 29%), hsl(158, 97%, 29%));
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+button:hover {
+    background-color: hsl(158, 97%, 39%); /* Couleur au survol */
+    transform: translateY(-2px); /* Légère élévation du bouton */
+}
+
+/* Styles pour les étapes de progression */
+.form-step {
+    display: none; /* Masquer toutes les étapes par défaut */
+}
+
+.form-step.active {
+    display: block; /* Afficher l'étape active */
+}
+
+/* Styles pour les messages d'erreur */
+.error-message {
+    color: red;
+    margin-bottom: 15px;
+}
+
+/* Styles pour la boîte de formulaire */
+.form-box {
+    display: flex;
+    flex-direction: row;
+    margin-top: 5em;
+    border-radius: 15px;
+}
+
+/* Styles pour le logo */
+.logo {
+    font-size: 1.75em;
+    font-weight: 800;
+    color: rgb(0, 0, 0);
+    padding: 40px 48px;
+    text-align: center;
+}
+
+.logo span {
+    color: hsl(0, 0%, 100%);
+    
+}
+
+/* Styles pour la progression */
+.progress {
+    position: relative;
+    padding: 1em;
+}
+
+.progress ul.progress-steps {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5em;
+}
+
+.progress ul.progress-steps li {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 2em;
+}
+
+.progress ul.progress-steps li > span {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 4em;
+    border-radius: 50%;
+    background-color: rgb(164, 162, 160);
+    z-index: 3;
+}
+
+.progress ul.progress-steps li.active > span {
+    color: azure;
+    background-color: hsl(158, 97%, 29%);
+    border: 2px solid;
+    z-index: 5;
+}
+
+.progress ul.progress-steps li:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 30px;
+    width: 2px;
+    height: 145px;
+    background-color: hsl(158, 97%, 29%);
+}
+
+/* Styles spécifiques pour les formulaires */
+.form {
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9; /* Fond gris clair */
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    width: 380px;
+}
+
+.form h2 {
+    font-size: 24px;
+    color: hsl(158, 97%, 29%); /* Couleur du titre */
+    text-align: center; /* Centré */
+    margin-bottom: 20px;
+}
+
+label {
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: #333; /* Couleur du texte des labels */
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="password"],
+input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus {
+    border-color: hsl(158, 97%, 29%);
+    box-shadow: 0 0 5px rgba(38, 198, 218, 0.5); /* Ombre autour du champ */
+}
+
+.btn-group {
+    display: flex;
+    justify-content: center; /* Centre le bouton */
+    margin-top: 20px;
+}
+
+button {
+    width: 110px;
+    height: 40px; /* Hauteur du bouton */
+    border-radius: 50px;
+    background: linear-gradient(to right, hsl(158, 97%, 29%), hsl(158, 97%, 29%));
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+button:hover {
+    background-color: hsl(158, 97%, 39%); /* Couleur au survol */
+    transform: translateY(-2px); /* Légère élévation du bouton */
+}
+
+/* Styles pour les messages d'erreur */
+.error-message {
+    color: red;
+    margin-bottom: 15px;
+}
+
+
+input[type="email"],
+input[type="password"] {
+    padding: 10px;
+    margin-bottom: 25px;
+}
