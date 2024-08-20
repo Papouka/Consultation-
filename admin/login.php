@@ -15,13 +15,7 @@ try {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $mdp = $_POST['mdp'];
-    $role = $_POST['role']; 
-    
-    if ($role == 'patient') {
-        $sql = "SELECT * FROM patient WHERE email=?";
-    } else {
-        $sql = "SELECT * FROM docteur WHERE email=?";
-    }
+        $sql = "SELECT * FROM administrateur WHERE email=?";
     
     $stm = $pdo->prepare($sql);
     try {
@@ -37,8 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['email'] = $email;
             $_SESSION['nom'] = $row['nom'];
             $_SESSION['tof'] = $row['tof'];
-            $_SESSION['role'] = $role;
-            header("Location: pages/accueil.php");
+            header("Location: ../admin/index.php");
             exit();
         
     } else {
@@ -171,17 +164,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 
                 <input type="password" name="mdp" id="mdp" placeholder="Entre votre mot de passe" required>
                 
-
-                <select name="role" id="role" required>
-                    <option value="">Sélectionner votre rôle</option>
-                    <option value="patient">Patient</option>
-                    <option value="docteur">Docteur</option>
-                </select><br>
                 
                 <button type="submit" class="btn">Soumettre</button>
-                <div class="register-link">
-                    <p>Je n'ai pas de compte <a href="inscription.php">S'inscrire</a></p>
-                </div>
             </div>
         </form>
     </div>

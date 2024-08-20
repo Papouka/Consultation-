@@ -111,7 +111,51 @@ if ($role == "docteur") {
 
     
 } else if ($role == "patient") {
-    echo ''; // Vous pouvez ajouter du contenu pour le patient ici
+    echo '
+    <div class="card">
+        <div class="head">
+            <div>
+                <h2>' . htmlspecialchars($totalPatients) . '</h2>
+                <p>Nombres de Patients</p>
+            </div>
+            <i class="fas fa-chart-line icon"></i>
+        </div>
+        <span class="progress" data-value="30%"></span>
+        <span class="label">30%</span>
+    </div>
+    <div class="card">
+        <div class="head">
+            <div>
+                <h2>' . htmlspecialchars($totalConsultations) . '</h2>
+                <p>Nombre de consultations</p>
+            </div>
+            <i class="fas fa-chart-line icon"></i>
+        </div>
+        <span class="progress" data-value="90%"></span>
+        <span class="label">90%</span>
+    </div>
+    <div class="card">
+        <div class="head">
+            <div>
+                <h2>' . htmlspecialchars($tauxSatisfaction) . '%</h2>
+                <p>Taux de Satisfaction</p>
+            </div>
+            <i class="fas fa-chart-line icon"></i>
+        </div>
+        <span class="progress" data-value="' . htmlspecialchars($tauxSatisfaction) . '%"></span>
+        <span class="label">' . htmlspecialchars($tauxSatisfaction) . '%</span>
+    </div>
+    <div class="card">
+        <div class="head">
+            <div>
+                <h2>' . htmlspecialchars($totalDoctors) . '</h2>
+                <p>Nombre de Docteurs</p>
+            </div>
+            <i class="fas fa-chart-line icon"></i>
+        </div>
+        <span class="progress" data-value="40%"></span>
+        <span class="label">40%</span>
+    </div>'; 
 } else if ($role == "administrateur") {
     echo '
     <div class="card">

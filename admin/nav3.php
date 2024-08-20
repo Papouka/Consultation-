@@ -17,14 +17,14 @@
 <span class="divider"></span>
 <div class="profile">
 
-    <img src="../<?php echo htmlspecialchars($tof); ?>" alt="">
+    <img src="<?php echo htmlspecialchars($tof); ?>" alt="">
     hey
     <?php   echo htmlspecialchars($nom); ?>
     <ul class="profile-link">
         <li><a href="pages/profil.php"><i class="fa fa-user-circle" aria-hidden="true"></i> profile</a></li>
         <li><a href=""><i class="fa fa-gear" aria-hidden="true"></i> paramètre</a></li>
         <form action="" method="POST">
-        <li><a href="../logout.php"> <i class="fa fa-power-off" aria-hidden="true"></i> se deconnecter</a></li>
+        <li><a href="admin/logout.php"> <i class="fa fa-power-off" aria-hidden="true"></i> se deconnecter</a></li>
         </form>
     </ul>
 </div>

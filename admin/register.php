@@ -23,7 +23,7 @@ if (isset($_POST['submit'])) {
 
             // Vérification du téléchargement de la photo
             if ($_FILES['tof']['error'] == UPLOAD_ERR_OK) {
-                $tofPath = 'img/' . basename($_FILES['tof']['name']);
+                $tofPath = '../img/' . basename($_FILES['tof']['name']);
                 if (!move_uploaded_file($_FILES['tof']['tmp_name'], $tofPath)) {
                     $msgErreur = "Erreur lors du téléchargement de la photo de profil.";
                 }
@@ -32,7 +32,7 @@ if (isset($_POST['submit'])) {
             }
 
             // Vérification de l'email
-            $sql = "SELECT * FROM patient WHERE email=?";
+            $sql = "SELECT * FROM administrateur WHERE email=?";
             $stm = $pdo->prepare($sql);
             $stm->execute([$email]);
             if ($stm->rowCount() > 0) {
@@ -40,11 +40,11 @@ if (isset($_POST['submit'])) {
             } else {
                 try {
                     // Insertion dans la base de données
-                    $insert = $pdo->prepare("INSERT INTO patient (nom, prenom, tel, email, tof, mdp) VALUES (?, ?, ?, ?, ?, ?)");
+                    $insert = $pdo->prepare("INSERT INTO administrateur (nom, prenom, tel, email, tof, mdp) VALUES (?, ?, ?, ?, ?, ?)");
                     $execute = $insert->execute([$nom, $prenom, $tel, $email, $tofPath, $mdp]);
                     $_SESSION['nom'] = $nom;
                     $_SESSION['tof'] = $tofPath;
-                    header("Location: pages/accueil.php");
+                    header("Location: index.php");
                     exit();
                 } catch (PDOException $e) {
                     $msgErreur = "Erreur: " . $e->getMessage();
@@ -63,9 +63,9 @@ if (isset($_POST['submit'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, in itial-scale=1.0">
     <link rel="stylesheet" href="icons/all.min.css">
-    <script src="js/all.min.js"></script>
-    <link rel="stylesheet" href="css/patient.css">
-    <link rel="stylesheet" href="css/index.css">
+    <script src="../js/all.min.js"></script>
+    <link rel="stylesheet" href="../css/patient.css">
+    <link rel="stylesheet" href="../css/index.css">
     
     <title>Document</title>
     
@@ -73,7 +73,7 @@ if (isset($_POST['submit'])) {
 <body>
     
 <header>
-<?php include("inc/header.php"); ?>
+<?php include("../inc/header.php"); ?>
     </header>
 
     <div id="page" class="site">
@@ -124,6 +124,6 @@ if (isset($_POST['submit'])) {
         </div>
     </div>
 <footer>
-<?php include("inc/footer.php"); ?>
+<?php include("../inc/footer.php"); ?>
 </footer>
-<script src="js/accueil.js"></script>
+<script src="../js/accueil.js"></script>

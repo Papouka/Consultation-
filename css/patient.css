@@ -5,15 +5,7 @@ body {
 a{
     text-decoration: none;
 }
-.contain {
-    max-width: 200px;
-    margin: 0 auto;
-    padding: 30px;
-    border-radius: 10px;
-    background-color: #ffffff; /* Fond blanc */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    align-items: center;
-}
+
 .content {
     padding: 20px;
     width: 70%;
@@ -64,12 +56,7 @@ select:focus {
 }
 
 /* Styles pour le groupe de boutons */
-.btn-group {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px; /* Espacement au-dessus du groupe de boutons */
-}
+
 
 /* Styles pour les boutons */
 button {
@@ -221,7 +208,7 @@ input:focus {
 
 .btn-group {
     display: flex;
-    justify-content: center; /* Centre le bouton */
+    justify-content: center; 
     margin-top: 20px;
 }
 
@@ -237,7 +224,7 @@ button {
 }
 
 button:hover {
-    background-color: hsl(158, 97%, 39%); /* Couleur au survol */
+    background-color: hsl(158, 97%, 39%); 
     transform: translateY(-2px); /* Légère élévation du bouton */
 }
 
