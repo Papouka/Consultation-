@@ -37,7 +37,7 @@ if ($role == "docteur") {
                 <li><a href="">Annuler un rendez-vous</a></li>
             </ul>
           </li>
-          <li> <a href="../pages/patient/mondocteur.php"><i class="fas fa-heart icon"></i> Mon docteur </a>  </li>
+          <li> <a href="pages/patient/mondocteur.php"><i class="fas fa-heart icon"></i> Mon docteur </a>  </li>
 <?php } else if ($role == "administrateur") {?>
 <li>
             <a href=""><i class="fas fa-cogs icon"></i> Gestion des utilisateurs <i class="fa fa-chevron-right icon-right" aria-hidden="true"></i></a>

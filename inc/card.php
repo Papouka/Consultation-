@@ -7,20 +7,20 @@ try {
     $pdo = new PDO('mysql:host=localhost;dbname=hosto_bd', 'root', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Récupérer le nombre total de patients
+    
     $stmt = $pdo->query("SELECT COUNT(*) as total_patients FROM patient");
     $totalPatients = $stmt->fetchColumn();
 
-    // Récupérer le nombre total de consultations
+    
     $stmt = $pdo->query("SELECT COUNT(*) as total_consultations FROM consultation");
     $totalConsultations = $stmt->fetchColumn();
 
-    // Récupérer le nombre total de docteurs
+    
     $stmt = $pdo->query("SELECT COUNT(*) as total_doctors FROM docteur");
     $totalDoctors = $stmt->fetchColumn();
 
-    // Taux de satisfaction (exemple fictif)
-    $tauxSatisfaction = 85; // Vous pouvez le calculer à partir de vos données
+
+    $tauxSatisfaction = 85; 
 
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());

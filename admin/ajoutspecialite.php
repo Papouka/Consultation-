@@ -95,8 +95,8 @@ $nom = $_SESSION['nom'];
         <span class="close">&times;</span>
         <h2>Titre du Modal</h2>
         <form method="POST">
-                <input type="text" name="nom" placeholder="Nom de la spécialité" required>
-                <textarea name="description" placeholder="Description" required></textarea>
+                <input type="text" name="nom" placeholder="Nom de la spécialité" required><br><br>
+                <textarea name="description" placeholder="Description" required></textarea> <br><br>
                 <button type="submit" name="submit">Ajouter</button>
             </form>
     </div>

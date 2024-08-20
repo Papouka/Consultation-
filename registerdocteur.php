@@ -14,15 +14,16 @@ try {
 
 // Traitement du formulaire
 if (isset($_POST['submit'])) {
-    if (isset($_POST['nom'], $_POST['prenom'], $_POST['tel'], $_POST['email'], $_FILES['tof'], $_FILES['cni'], $_POST['specialite'], $_POST['grade'], $_FILES['diplome'], $_FILES['certificat'], $_POST['mdp'])) {
-        if ($_POST['nom'] != "" && $_POST['prenom'] != "" && $_POST['tel'] != "" && $_POST['email'] != "" && $_POST['specialite'] != "" && $_POST['grade'] != "" && $_POST['mdp'] != "") {
+    if (isset($_POST['nom'], $_POST['prenom'], $_POST['tel'], $_POST['email'], $_FILES['tof'], $_FILES['cni'], $_POST['idspecialiste'], $_POST['grade'], $_FILES['diplome'], $_FILES['certificat'], $_POST['mdp'])) {
+        if ($_POST['nom'] != "" && $_POST['prenom'] != "" && $_POST['tel'] != "" && $_POST['email'] != "" && $_POST['idspecialiste'] != "" && $_POST['grade'] != "" && $_POST['mdp'] != "") {
             $nom = $_POST["nom"];
             $prenom = $_POST["prenom"];
             $tel = $_POST["tel"];
             $email = $_POST["email"];
-            $specialite = $_POST["specialite"];
+            $idspecialiste = $_POST["idspecialiste"];
             $grade = $_POST["grade"];
-            $mdp = password_hash($_POST["mdp"], PASSWORD_DEFAULT); // Crypter le mot de passe
+            $mdp = password_hash($_POST["mdp"], PASSWORD_DEFAULT);
+            
 
             
             // Gestion des fichiers
@@ -65,13 +66,13 @@ if (isset($_POST['submit'])) {
             } else {
                 // Vérification des champs requis
                 if (!empty($nom) && !empty($prenom) && !empty($tel) && !empty($email) && 
-                    !empty($specialite) && !empty($grade) && 
+                    !empty($idspecialiste) && !empty($grade) && 
                     !empty($tofPath) && !empty($cniPath) && 
                     !empty($diplomePath) && !empty($certificatPath) ) {
                     
                     try {
-                        $insert = $pdo->prepare("INSERT INTO docteur (nom, prenom, tel, email, tof, cni, specialite, grade, diplome, certificat, mdp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                        $execute = $insert->execute([$nom, $prenom, $tel, $email, $tofPath, $cniPath, $specialite, $grade, $diplomePath, $certificatPath, $mdp]);
+                        $insert = $pdo->prepare("INSERT INTO docteur (nom, prenom, tel, email, tof, cni, idspecialiste, grade, diplome, certificat, mdp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        $execute = $insert->execute([$nom, $prenom, $tel, $email, $tofPath, $cniPath, $idspecialiste, $grade, $diplomePath, $certificatPath, $mdp]);
                         $_SESSION['nom'] = $nom;
                         $_SESSION['tof'] = $tofPath;
                         header("Location: pages/accueil.php");
@@ -88,6 +89,10 @@ if (isset($_POST['submit'])) {
         }
     }
 }
+$sql1 = "SELECT * FROM specialiste";
+$stm1 = $pdo->prepare($sql1);
+$stm1->execute();
+$specialiste = $stm1->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -154,7 +159,12 @@ if (isset($_POST['submit'])) {
                         </div><br>
                         <div>
                             <label>Spécialité</label>
-                            <input type="text" name="specialite" required>
+                            <select name="idspecialiste" id="">
+                            <option value="">sélectionnez votre specialité</option>
+                                <?php foreach ($specialiste as $specialiste): ?>
+                                    <option value="<?php echo htmlspecialchars($specialiste['idspecialiste']); ?>"><?php echo htmlspecialchars($specialiste['nom']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div><br>
                             <label>Votre grade</label>

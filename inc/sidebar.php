@@ -15,8 +15,8 @@ $role = $_SESSION['role'] ?? "administrateur";
             <li><a href="">Button</a></li>
         </ul>
     </li>
-    <li><a href="../pages/ordonnance.php"><i class="fas fa-paperclip icon"></i> Ordonnance</a></li>
-    <li><a href="../pages/profil.php"><i class="fas fa-user-astronaut icon"></i> Profil</a></li>
+    <li><a href="../pages/patient/ordonnance.php"><i class="fas fa-paperclip icon"></i> Ordonnance</a></li>
+    <li><a href="../pages/patient/profil.php"><i class="fas fa-user-astronaut icon"></i> Profil</a></li>
     
 <?php
 

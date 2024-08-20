@@ -23,11 +23,13 @@
 }
 
 .modal-content {
+    align-items: center;
     background-color: #fefefe;
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; 
+    width: 30%; 
+    height: 50%;
     border-radius: 5%;
 }
 
@@ -45,4 +47,15 @@
     cursor: pointer;
 }
 
-                    </style>
+button{
+    background-color: rgb(48, 171, 61);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            font-weight: bold;
+}
+    
+    </style>
