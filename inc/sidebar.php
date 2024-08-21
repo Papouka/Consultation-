@@ -17,6 +17,7 @@ $role = $_SESSION['role'] ?? "administrateur";
     </li>
     <li><a href="../pages/patient/ordonnance.php"><i class="fas fa-paperclip icon"></i> Ordonnance</a></li>
     <li><a href="../pages/patient/profil.php"><i class="fas fa-user-astronaut icon"></i> Profil</a></li>
+    <li> <a href=""><i class="fa fa-video-camera icon" aria-hidden="true"> </i>appel video </a></li>
     
 <?php
 

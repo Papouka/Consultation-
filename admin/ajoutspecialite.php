@@ -39,7 +39,7 @@ if (isset($_POST['submit'])) {
 
 // Lire les spécialités
 $stmt = $pdo->query("SELECT * FROM specialiste");
-$specialites = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$specialistes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Affichage des messages
 if (!empty($msgSuccess)) {
@@ -96,7 +96,7 @@ $nom = $_SESSION['nom'];
         <h2>Titre du Modal</h2>
         <form method="POST">
                 <input type="text" name="nom" placeholder="Nom de la spécialité" required><br><br>
-                <textarea name="description" placeholder="Description" required></textarea> <br><br>
+                <textarea name="description" placeholder="Description" required></textarea> <br>
                 <button type="submit" name="submit">Ajouter</button>
             </form>
     </div>
@@ -113,15 +113,15 @@ $nom = $_SESSION['nom'];
                     <th>Description</th>
                     <th>Actions</th>
                 </tr>
-                <?php if (!empty($specialites)): ?>
-                    <?php foreach ($specialites as $specialite): ?>
+                <?php if (!empty($specialistes)): ?>
+                    <?php foreach ($specialistes as $specialiste): ?>
                     <tr>
-                        <td><?= htmlspecialchars($specialite['id']) ?></td>
-                        <td><?= htmlspecialchars($specialite['nom']) ?></td>
-                        <td><?= htmlspecialchars($specialite['description']) ?></td>
+                        <td><?= htmlspecialchars($specialiste['idspecialiste']) ?></td>
+                        <td><?= htmlspecialchars($specialiste['nom']) ?></td>
+                        <td><?= htmlspecialchars($specialiste['description']) ?></td>
                         <td>
-                            <a href="../admin/modifier.php?id=<?= htmlspecialchars($specialite['id']) ?>"> <i class="fa fa-pencil" aria-hidden="true"></i> </a>
-                            <a href="../admin/supprimer.php?id=<?= htmlspecialchars($specialite['id']) ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette spécialité ?');"> <i class="fa fa-trash alert-red" aria-hidden="true" ></i>
+                            <a href="../admin/modifier.php?id=<?= htmlspecialchars($specialiste['idspecialiste']) ?>"> <i class="fa fa-pencil" aria-hidden="true"></i> </a>
+                            <a href="../admin/supprimer.php?id=<?= htmlspecialchars($specialiste['idspecialiste']) ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette spécialité ?');"> <i class="fa fa-trash alert-red" aria-hidden="true" ></i>
                             </a>
                         </td>
                     </tr>

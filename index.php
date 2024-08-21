@@ -1,7 +1,21 @@
 <?php
-session_start();
-if (isset($_SESSION['nom']) && isset($_SESSION['tof']))
+// Configuration de la base de données
+try {
+    $pdo = new PDO('mysql:host=localhost;dbname=hosto_bd', 'root', '');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
+}
+
+
+// Maintenant, vous pouvez utiliser $pdo pour préparer vos requêtes
+$stmt = $pdo->prepare("SELECT * FROM specialiste");
+$stmt->execute();
+$specialiste = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

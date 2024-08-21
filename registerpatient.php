@@ -44,7 +44,7 @@ if (isset($_POST['submit'])) {
                     $execute = $insert->execute([$nom, $prenom, $tel, $email, $tofPath, $mdp]);
                     $_SESSION['nom'] = $nom;
                     $_SESSION['tof'] = $tofPath;
-                    header("Location: pages/accueil.php");
+                    header("Location: pages/symptome.php");
                     exit();
                 } catch (PDOException $e) {
                     $msgErreur = "Erreur: " . $e->getMessage();
@@ -55,7 +55,13 @@ if (isset($_POST['submit'])) {
         }
     }
 }
+
+$stmt = $pdo->prepare("SELECT * FROM specialiste");
+$stmt->execute();
+$specialiste = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -113,7 +119,7 @@ if (isset($_POST['submit'])) {
 
                     <div class="btn-group">
                         
-                        <button type="submit" name="submit" class="btn-submit" >ENVOYER</button>
+                       <a href="pages/symptome.php"> <button type="submit" name="submit" class="btn-submit" >ENVOYER</button> </a>
                     </div>
                 </form>
                 
