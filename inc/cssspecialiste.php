@@ -6,26 +6,49 @@
             padding: 20px;
         }
         h2 {
+            margin-top: -5pc;
             color: #333;
+            margin-left: 9pc;
+            font-size: large;
+        }
+        
+        p{
+            font-size: small;
+            color: blue;
+            margin-left: 9pc;
         }
         ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            width: 60pc;
-            height: 8pc;
-           text-align: start;
-            background: #fff;
-            margin: 10px 0;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: background 0.3s;
-        }
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap; /* Si vous voulez que les éléments passent à la ligne suivante si l'espace manque */
+    justify-content: center; /* Centrer les éléments dans la largeur du conteneur */
+}
+
+li {
+    margin: 10px; /* Espacement entre les éléments */
+    flex: 1 1 calc(25% - 20px); /* Pour avoir 4 éléments par ligne, ajustez selon vos besoins */
+    box-sizing: border-box;
+    
+}
+
+.card {
+    width: 100%; /* Assure que chaque carte utilise toute la largeur disponible dans le <li> */
+    max-width: 300px; /* Limite la taille maximale de la carte */
+}
+
         li:hover {
             background: #eaeaea;
         }
+        
+        img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 2px solid #4CAF50;
+    margin-left: 2pc;
+    margin-top: 2pc;
+}
         p {
             color: #666;
         }
@@ -37,18 +60,20 @@
             text-decoration: underline;
         }
         .buttons {
+            margin-top: 4pc;
             display: flex;
-            gap: 10px;
+            gap: 16px;
         }
         .button {
-            align-items: end;
-            padding: 10px 15px;
+          
+            padding: 8px 15px;
             background-color: hsl(158, 97%, 29%);
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             text-align: center;
+            width: 12pc;
         }
         .button:hover {
             background-color: #0056b3;

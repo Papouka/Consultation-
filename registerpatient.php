@@ -104,7 +104,6 @@ $specialiste = $stmt->fetchAll(PDO::FETCH_ASSOC);
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 20px hsl(158, 97%, 29%);
-            
             text-align: center;
 }
 

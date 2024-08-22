@@ -29,7 +29,7 @@
     padding: 20px;
     border: 1px solid #888;
     width: 30%; 
-    height: 50%;
+    height: 80%;
     border-radius: 5%;
 }
 

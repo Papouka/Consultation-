@@ -4,7 +4,7 @@
         <?php foreach ($specialiste as $specialiste): ?>
             <li>
             <a href="pages/specialiste.php?idspecialiste=<?php echo htmlspecialchars($specialiste['idspecialiste']); ?>">
-                <?php echo htmlspecialchars($specialiste['nom']); ?>
+                <?php echo htmlspecialchars($specialiste['nomspecialiste']); ?>
             </a>
             </li>
              
@@ -26,7 +26,7 @@
             <a href="" class="user">  </a>
            
             <?php
-           
+            
 
 if (!isset($_SESSION['email'])) {
     echo '<a href="login.php"><i class="fa-solid fa-user-nurse"></i> espace médecin</a>';

@@ -26,14 +26,23 @@ $nom = $_SESSION['nom'];
 <body>
  <style>
   
-
+.form{
+    font-family: Arial, sans-serif;
+          margin: 20px;
+          padding: 20px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          background-color: #f9f9f9;
+}
 
 
 main {
     padding: 20px;
 }
 
-
+.form-group {
+          margin-bottom: 15px;
+      }
 
 h2 {
     margin-bottom: 20px;
@@ -45,8 +54,9 @@ label {
 }
 
 input {
-    width: 60%;
-    padding: 10px;
+    width: 100%;
+          padding: 8px;
+          margin-top: 5px;
     margin-bottom: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -75,28 +85,30 @@ button {
             <?php include("../../inc/nav4.php"); ?>
         </nav>
 <main>
-<main>
+
     <section class="appointment-form">
+        
+        <form action="#" method="POST" class="form">
         <h2>Formulaire de Prise de Rendez-vous</h2>
-        <form action="traitement_rendezvous.php" method="POST">
-            <label for="nom">Nom :</label>
+
+            <div class="form-group"><label for="nom">Nom:</label>
             <input type="text" id="nom" name="nom" required>
-
-            <label for="prenom">Prénom :</label>
+            </div>
+            <div class="form-group"><label for="prenom">Prénom:</label>
             <input type="text" id="prenom" name="prenom" required>
-
-            <label for="email">Email :</label>
+            </div>
+            <div class="form-group"> <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
-
-            <label for="telephone">Téléphone :</label>
+            </div>
+            <div class="form-group"> <label for="telephone">Téléphone:</label>
             <input type="tel" id="telephone" name="telephone" required>
-
-            <label for="date">Date de Rendez-vous :</label>
+            </div>
+            <div class="form-group"> <label for="date">Date de Rendez-vous:</label>
             <input type="date" id="date" name="date" required>
-
-            <label for="heure">Heure de Rendez-vous :</label>
+            </div>
+            <div class="form-group"> <label for="heure">Heure de Rendez-vous:</label>
             <input type="time" id="heure" name="heure" required><br><br>
-
+            </div>
             <button type="submit">Programmer le Rendez-vous</button>
         </form>
     </section>

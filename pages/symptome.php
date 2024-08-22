@@ -16,11 +16,8 @@
 
 
 <div class="container">
-    <form action="traitement_symptomes.php" method="POST">
-        <div>
-            <label for="nom">Nom du Patient :</label>
-            <input type="text" id="nom" name="nom" placeholder="Votre nom" required>
-        </div>
+    <form action="#"  id="symptomForm" method="POST">
+        
         
         <div>
             <label for="symptomes">Description des Symptômes :</label>
@@ -47,7 +44,13 @@
     </form>
 </div>
 
-
+<script>
+    document.getElementById('symptomForm').onsubmit = function(event) {
+        event.preventDefault();
+        // Code pour traiter les symptômes si nécessaire
+        window.location.href = 'pages/choix.php'; // Redirection vers la page de choix du docteur
+    };
+</script>
 
 </body>
 </html>

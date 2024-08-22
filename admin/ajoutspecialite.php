@@ -14,16 +14,16 @@ $msgErreur = '';
 // Traitement du formulaire
 if (isset($_POST['submit'])) {
     if (isset($_POST['nom'], $_POST['description'])) {
-        if (!empty($_POST['nom']) && !empty($_POST['description'])) {
-            $nom = $_POST['nom'];
+        if (!empty($_POST['nomspecialiste']) && !empty($_POST['description'])) {
+            $nom = $_POST['nomspecialiste'];
             $description = $_POST['description'];
 
             try {
-                $insert = $pdo->prepare("INSERT INTO specialiste (nom, description) VALUES (?, ?)");
-                $execute = $insert->execute([$nom, $description]);
+                $insert = $pdo->prepare("INSERT INTO specialiste (nomspecialiste, description) VALUES (?, ?)");
+                $execute = $insert->execute([$nomspecialiste, $description]);
                 
                 if ($execute) {
-                    $_SESSION['nom'] = $nom;
+                    $_SESSION['nomspecialiste'] = $nomspecialiste;
                     $msgSuccess = "Informations enregistrées.";
                 } else {
                     $msgErreur = "Échec de l'enregistrement.";
@@ -95,7 +95,7 @@ $nom = $_SESSION['nom'];
         <span class="close">&times;</span>
         <h2>Titre du Modal</h2>
         <form method="POST">
-                <input type="text" name="nom" placeholder="Nom de la spécialité" required><br><br>
+                <input type="text" name="nomspecialiste" placeholder="Nom de la spécialité" required><br><br>
                 <textarea name="description" placeholder="Description" required></textarea> <br>
                 <button type="submit" name="submit">Ajouter</button>
             </form>
@@ -117,7 +117,7 @@ $nom = $_SESSION['nom'];
                     <?php foreach ($specialistes as $specialiste): ?>
                     <tr>
                         <td><?= htmlspecialchars($specialiste['idspecialiste']) ?></td>
-                        <td><?= htmlspecialchars($specialiste['nom']) ?></td>
+                        <td><?= htmlspecialchars($specialiste['nomspecialiste']) ?></td>
                         <td><?= htmlspecialchars($specialiste['description']) ?></td>
                         <td>
                             <a href="../admin/modifier.php?id=<?= htmlspecialchars($specialiste['idspecialiste']) ?>"> <i class="fa fa-pencil" aria-hidden="true"></i> </a>
