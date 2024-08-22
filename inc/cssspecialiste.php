@@ -13,7 +13,7 @@
             padding: 0;
         }
         li {
-            width: 50pc;
+            width: 60pc;
             height: 8pc;
            text-align: start;
             background: #fff;
@@ -35,5 +35,22 @@
         }
         a:hover {
             text-decoration: underline;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .button {
+            align-items: end;
+            padding: 10px 15px;
+            background-color: hsl(158, 97%, 29%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .button:hover {
+            background-color: #0056b3;
         }
     </style>

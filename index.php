@@ -39,7 +39,18 @@ $specialiste = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="hero"><br><br><br><br>
         <h2>Consultez un médecin en ligne</h2>
         <p>Accédez à des consultations médicales depuis le confort de votre maison.</p><br>
-        <a href="registerpatient.php" class="lien" >Consultez-vous maintenant</a><br><br>
+        <?php
+if (isset($_SESSION['email'])) {
+   
+    echo '<a href="pages/symptome.php" class="lien">Consultez-vous maintenant</a><br><br>';
+} else {
+   
+    echo '<a href="registerpatient.php" class="lien">Consultez-vous maintenant</a><br><br>';
+}
+?>
+
+
+        
     </div>
 </div>
 <h1>Nos services</h1>

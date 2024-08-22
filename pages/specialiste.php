@@ -30,20 +30,41 @@ if (isset($_GET['idspecialiste'])) {
 <head>
     <meta charset="UTF-8">
     <title>Liste des Docteurs</title>
+    <link rel="stylesheet" href="../icons/all.min.css">
+    <script src="../js/all.min.js"></script>
+    <link rel="stylesheet" href="../css/patient.css">
+    <link rel="stylesheet" href="../css/index.css">
     <?php include("../inc/cssspecialiste.php"); ?>
 </head>
 <body>
-
+<header>
+<?php include("../inc/header.php"); ?>
+    </header>
 <h2>Liste des docteurs spécialisés</h2>
 <?php if (!empty($docteur)): ?>
     <ul>
         <?php foreach ($docteur as $doc): ?>
-            
-            <li>DR. <?php echo htmlspecialchars($doc['nom']); ?></li>
+            <li>
+            <div class="card">
+                <img src="../<?php echo htmlspecialchars($doc['tof']); ?>" alt="<?php echo htmlspecialchars($doc['nom']); ?>">
+                <div>
+                    <h2>DR. <?php echo htmlspecialchars($doc['nom']); ?></h2>
+                </div>
+                <div class="buttons">
+                    <a href=""><button class="button">Détails</button></a>
+                    <a href=""><button class="button">Prendre Rendez-vous</button></a>
+                </div>
+            </div>
+            </li>
         <?php endforeach; ?>
     </ul>
 <?php else: ?>
     <p>Aucun docteur trouvé pour cette spécialité.</p>
 <?php endif; ?>
+
+<footer>
+<?php include("../inc/footer.php"); ?>
+</footer>
+<script src="../js/accueil.js"></script>
 </body>
 </html>
