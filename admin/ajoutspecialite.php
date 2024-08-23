@@ -13,9 +13,9 @@ $msgErreur = '';
 
 // Traitement du formulaire
 if (isset($_POST['submit'])) {
-    if (isset($_POST['nom'], $_POST['description'])) {
+    if (isset($_POST['nomspecialiste'], $_POST['description'])) {
         if (!empty($_POST['nomspecialiste']) && !empty($_POST['description'])) {
-            $nom = $_POST['nomspecialiste'];
+            $nomspecialiste = $_POST['nomspecialiste'];
             $description = $_POST['description'];
 
             try {

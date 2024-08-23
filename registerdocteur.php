@@ -250,7 +250,7 @@ $specialistes = $stm1->fetchAll(PDO::FETCH_ASSOC);
                 <input type="file" id="cni" name="cni" required>
                 
                 <label for="tof">Photo de profil:</label>
-                <input type="file" id="tof" name="tof" required>
+                <input type="file"  id="tof" name="tof" required>
                 
                 <label for="idspecialiste">Spécialité:</label>
                 <select id="idspecialiste" name="idspecialiste" required>
@@ -266,10 +266,10 @@ $specialistes = $stm1->fetchAll(PDO::FETCH_ASSOC);
                 <input type="text" id="grade" name="grade" required>
                 
                 <label for="diplome">Diplome:</label>
-                <input type="file" id="diplome" name="diplome" required>
+                <input type="file" accept=".pdf,.doc,.docx" id="diplome" name="diplome" required>
                 
                 <label for="certificat">Certificat:</label>
-                <input type="file" id="certificat" name="certificat" required>
+                <input type="file" accept=".pdf,.doc,.docx" id="certificat" name="certificat" required>
                 
                 <label for="experience">Année d'expérience:</label>
                 <input type="number" id="experience" name="experience"  required>

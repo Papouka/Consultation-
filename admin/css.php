@@ -26,10 +26,10 @@
     align-items: center;
     background-color: #fefefe;
     margin: 15% auto;
-    padding: 20px;
+    padding: 15px;
     border: 1px solid #888;
     width: 30%; 
-    height: 80%;
+    height: 60%;
     border-radius: 5%;
 }
 
@@ -46,6 +46,10 @@
     text-decoration: none;
     cursor: pointer;
 }
+.lor{
+margin-left: -8pc;
+}
+
 
 button{
     background-color: rgb(48, 171, 61);

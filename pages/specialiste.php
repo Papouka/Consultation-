@@ -99,16 +99,19 @@ if (isset($_GET['idspecialiste'])) {
                         <span class="close" data-index="<?php echo $index; ?>">&times;</span>
                         <form method="POST">
                             <h3>Mes informations</h3>
-                            <p><label for="">Diplôme: </label><img src="../<?php echo htmlspecialchars($doc['diplome']); ?>"></p>
-                            <p><label for=""> Grade: </label><?php echo htmlspecialchars($doc['grade']); ?></p>
-                            <p><label for="">CNI: </label><img src="../<?php echo htmlspecialchars($doc['cni']); ?>"></p>
-                            <p><label for="">Certificat: </label><img src="../<?php echo htmlspecialchars($doc['certificat']); ?>"></p>
+                            <p><label for="" class="lor">Diplôme: </label><?php echo htmlspecialchars($doc['diplome']); ?></p>
+                            <p><label for="" class="lor"> Grade: </label><?php echo htmlspecialchars($doc['grade']); ?></p>
+                            <p><label for="" class="lor"> Année d'expérience: </label><?php echo htmlspecialchars($doc['experience']); ?> ans</p>
                         </form>
                     </div>
                 </div>
                 <div class="buttons">
                     <button class="button openModal" data-index="<?php echo $index; ?>">Détails</button>
-                    <a href="../pages/patient/rendezvous.php"><button class="button">Prendre Rendez-vous</button></a>
+                    <a href="../pages/patient/rendezvous.php?iddocteur=<?php echo htmlspecialchars($doc['iddocteur']); ?>&nom=<?php echo htmlspecialchars($doc['nom']); ?>&prenom=<?php echo htmlspecialchars($doc['prenom']); ?>&email=<?php echo htmlspecialchars($doc['email']); ?>&tel=<?php echo htmlspecialchars($doc['tel']); ?>">
+                        <button class="button">Prendre Rendez-vous</button>
+                    </a>
+
+
                 </div>
             </li>
         <?php endforeach; ?>

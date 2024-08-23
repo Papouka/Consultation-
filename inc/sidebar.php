@@ -23,7 +23,7 @@ $role = $_SESSION['role'] ?? "administrateur";
 
 if ($role == "docteur") {
 ?>
-    <li><a href=""><i class="fa fa-table icon" aria-hidden="true"></i> Prise de rendez-vous</a></li>
+    <li><a href="../pages/patient/rendezvous.php"><i class="fa fa-table icon" aria-hidden="true"></i> Prise de rendez-vous</a></li>
     <li>
             <a href="../pages/docteur/mespatients.php"><i class="fas fa-notes-medical icon"></i> Mes patients <i class="fa fa-chevron-right icon-right" aria-hidden="true"></i></a>
             

@@ -20,9 +20,10 @@
         ul {
     list-style-type: none;
     padding: 0;
-    display: flex;
-    flex-wrap: wrap; /* Si vous voulez que les éléments passent à la ligne suivante si l'espace manque */
-    justify-content: center; /* Centrer les éléments dans la largeur du conteneur */
+    display: grid;
+    grid: 12px;
+    grid-template-columns: repeat(3, 1fr);
+    
 }
 
 li {
@@ -33,8 +34,9 @@ li {
 }
 
 .card {
-    width: 100%; /* Assure que chaque carte utilise toute la largeur disponible dans le <li> */
-    max-width: 300px; /* Limite la taille maximale de la carte */
+    width: 100%; 
+            max-width: 300px; 
+            
 }
 
         li:hover {

@@ -29,9 +29,9 @@ try {
         ul {
             list-style-type: none;
             padding: 0;
-            display: flex;
-            flex-wrap: wrap; 
-            justify-content: center;
+            display: grid;
+            gap: 7px;
+            grid-template-columns: repeat(3, 1fr);
         }
 
         li {
@@ -68,6 +68,7 @@ try {
             background-color: #007BFF;
             color: white;
             border: none;
+            width: 10pc;
             border-radius: 5px;
             cursor: pointer;
         }
@@ -96,14 +97,13 @@ try {
                     <p><strong>Email:</strong> <?php echo htmlspecialchars($doc['email']); ?></p>
                     <p><strong>Téléphone:</strong> <?php echo htmlspecialchars($doc['tel']); ?></p>
                     <div class="buttons">
-                        <input type="radio" name="id_docteur" value="<?php echo htmlspecialchars($doc['iddocteur']); ?>" id="doc<?php echo htmlspecialchars($doc['iddocteur']); ?>" required>
-                        <label for="doc<?php echo htmlspecialchars($doc['iddocteur']); ?>">Sélectionner</label>
+                    <a href="easydoctor/pages/patient/rendezvous.php"><button type="submit" class="button">Prendre Rendez-vous</button></a>
                     </div>
                 </div>
             </li>
         <?php endforeach; ?>
     </ul>
-    <a href="../pages/patient/rendezvous.php"><button type="submit" class="button">Prendre Rendez-vous</button></a>
+    
 </form>
 
 <footer>

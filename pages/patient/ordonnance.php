@@ -33,8 +33,8 @@ if (isset($_POST['submit'])) {
 
             try {
                 // Insertion dans la base de données
-                $insert = $pdo->prepare("INSERT INTO ordonnance (patient, dob, medicament, dosage, posologi, docteur) VALUES (?, ?, ?, ?, ?, ?)");
-                $execute = $insert->execute([$patient, $dob, $medicament, $dosage, $posologi, $docteur]);
+                $insert = $pdo->prepare("INSERT INTO ordonnance (patient, dob, medicament, dosage, posologie, docteur) VALUES (?, ?, ?, ?, ?, ?)");
+                $execute = $insert->execute([$patient, $dob, $medicament, $dosage, $posologie, $docteur]);
 
                 if ($execute) {
                     $msgSuccess = "L'ordonnance a été créée avec succès.";
@@ -43,12 +43,14 @@ if (isset($_POST['submit'])) {
                         'dob' => $dob,
                         'medicament' => $medicament,
                         'dosage' => $dosage,
-                        'posologi' => $posologi,
+                        'posologie' => $posologie,
                         'docteur' => $docteur,
                         'date' => date('Y-m-d')
                     ];
                 } else {
                     $msgErreur = "Échec de l'insertion de l'ordonnance.";
+                    $errorInfo = $insert->errorInfo();
+                    echo "Erreur SQL: " . $errorInfo[2]; // Afficher l'erreur SQL
                 }
             } catch (PDOException $e) {
                 $msgErreur = "Erreur: " . $e->getMessage();
@@ -58,6 +60,7 @@ if (isset($_POST['submit'])) {
         }
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -134,7 +137,7 @@ if (isset($_POST['submit'])) {
             </div>
             <div class="form-group">
                 <label for="posologie">Posologie</label>
-                <input type="text" name="posologi" id="posologie" required>
+                <input type="text" name="posologie" id="posologie" required>
             </div>
             <div class="form-group">
                 <label for="doctorName">Nom du Médecin</label>
@@ -151,7 +154,7 @@ if (isset($_POST['submit'])) {
                 <p><strong>Date de Naissance :</strong> <?php echo $ordonnanceDetails['dob']; ?></p>
                 <p><strong>Médicament :</strong> <?php echo $ordonnanceDetails['medicament']; ?></p>
                 <p><strong>Dosage :</strong> <?php echo $ordonnanceDetails['dosage']; ?></p>
-                <p><strong>Posologie :</strong> <?php echo $ordonnanceDetails['posologi']; ?></p>
+                <p><strong>Posologie :</strong> <?php echo $ordonnanceDetails['posologie']; ?></p>
                 <p><strong>Nom du Médecin :</strong> <?php echo $ordonnanceDetails['docteur']; ?></p>
                 <p><strong>Date de l'ordonnance :</strong> <?php echo $ordonnanceDetails['date']; ?></p>
             </div>

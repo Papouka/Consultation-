@@ -204,7 +204,5 @@ $specialiste = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
-<footer>
-<?php include("inc/footer.php"); ?>
-</footer>
+
 <script src="js/accueil.js"></script>

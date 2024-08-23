@@ -48,7 +48,7 @@
     document.getElementById('symptomForm').onsubmit = function(event) {
         event.preventDefault();
         // Code pour traiter les symptômes si nécessaire
-        window.location.href = 'pages/choix.php'; // Redirection vers la page de choix du docteur
+        window.location.href = '../pages/choix.php'; // Redirection vers la page de choix du docteur
     };
 </script>
 
