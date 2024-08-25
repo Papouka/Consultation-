@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : dim. 25 août 2024 à 18:50
+-- Généré le : dim. 25 août 2024 à 20:58
 -- Version du serveur : 10.4.27-MariaDB
 -- Version de PHP : 8.0.25
 
@@ -95,7 +95,8 @@ CREATE TABLE `creneaux` (
 INSERT INTO `creneaux` (`idcreneau`, `iddocteur`, `date`, `heure_debut`, `heure_fin`, `disponible`, `bloque`) VALUES
 (1, NULL, '2024-07-12', '08:30:00', '16:00:00', 0, 0),
 (2, 18, '2024-11-25', '09:00:00', '13:30:00', 0, 0),
-(3, 18, '2024-09-17', '12:30:00', '18:00:00', 0, 0);
+(3, 18, '2024-09-17', '12:30:00', '18:00:00', 0, 0),
+(5, 16, '2024-05-12', '12:00:00', '18:40:00', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -129,6 +130,24 @@ INSERT INTO `docteur` (`iddocteur`, `nom`, `prenom`, `tel`, `email`, `cni`, `tof
 (18, 'PAPOUKA', 'lory', 653861183, 'papouka@gmail.com', 'img/17.jpg', 'img/16.jpg', 4, 'Docteur', 'img/12.jpg', 'img/14.jpg', 0, '$2y$10$eqz2r'),
 (19, 'PAPOUKA', 'lory', 653861183, 'papouk@gmail.com', 'img/17.jpg', 'img/16.jpg', 4, 'Aide soignante ', 'img/12.jpg', 'img/14.jpg', 6, '$2y$10$Q0Ujr'),
 (20, 'PAPOUKA', 'lory', 653861183, 'pouka@gmail.com', 'img/12.jpg', 'img/13.jpg', 6, 'infirmier ', 'img/17.jpg', 'img/12.jpg', 19, '$2y$10$0DRIG');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `dossiermedical`
+--
+
+CREATE TABLE `dossiermedical` (
+  `iddossier` int(11) NOT NULL,
+  `idpatient` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `dossiermedical`
+--
+
+INSERT INTO `dossiermedical` (`iddossier`, `idpatient`) VALUES
+(1, 28);
 
 -- --------------------------------------------------------
 
@@ -183,7 +202,8 @@ CREATE TABLE `patient` (
 
 INSERT INTO `patient` (`idpatient`, `nom`, `prenom`, `tel`, `email`, `mdp`, `tof`, `idspecialiste`) VALUES
 (26, 'ANDON', 'Rachella', 653861183, 'rachella@gmail.com', '$2y$10$rhdVx', 'img/Capture d\'écran 2024-08-11 215444.png', NULL),
-(27, 'EBAKISSE', 'aimee', 653861183, 'aimee@gmail.com', '$2y$10$oOyxZ', 'img/Capture d\'écran 2024-08-05 110219.png', NULL);
+(27, 'EBAKISSE', 'aimee', 653861183, 'aimee@gmail.com', '$2y$10$oOyxZ', 'img/Capture d\'écran 2024-08-05 110219.png', NULL),
+(28, 'YAHOO', 'sylvia', 653861183, 'sylvia@gmail.com', '$2y$10$ZJAb3', 'img/Capture d\'écran 2024-08-11 215444.png', NULL);
 
 -- --------------------------------------------------------
 
@@ -263,6 +283,13 @@ ALTER TABLE `docteur`
   ADD KEY `idspecialiste` (`idspecialiste`);
 
 --
+-- Index pour la table `dossiermedical`
+--
+ALTER TABLE `dossiermedical`
+  ADD PRIMARY KEY (`iddossier`),
+  ADD KEY `idpatient` (`idpatient`);
+
+--
 -- Index pour la table `ordonnance`
 --
 ALTER TABLE `ordonnance`
@@ -310,13 +337,19 @@ ALTER TABLE `consultation`
 -- AUTO_INCREMENT pour la table `creneaux`
 --
 ALTER TABLE `creneaux`
-  MODIFY `idcreneau` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `idcreneau` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `docteur`
 --
 ALTER TABLE `docteur`
   MODIFY `iddocteur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT pour la table `dossiermedical`
+--
+ALTER TABLE `dossiermedical`
+  MODIFY `iddossier` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `ordonnance`
@@ -328,7 +361,7 @@ ALTER TABLE `ordonnance`
 -- AUTO_INCREMENT pour la table `patient`
 --
 ALTER TABLE `patient`
-  MODIFY `idpatient` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `idpatient` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT pour la table `rendezvous`
@@ -364,6 +397,12 @@ ALTER TABLE `creneaux`
 --
 ALTER TABLE `docteur`
   ADD CONSTRAINT `docteur_ibfk_1` FOREIGN KEY (`idspecialiste`) REFERENCES `specialiste` (`idspecialiste`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `dossiermedical`
+--
+ALTER TABLE `dossiermedical`
+  ADD CONSTRAINT `dossiermedical_ibfk_1` FOREIGN KEY (`idpatient`) REFERENCES `patient` (`idpatient`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `patient`

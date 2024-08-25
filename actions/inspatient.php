@@ -37,6 +37,14 @@ if (isset($_POST['submit'])) {
                     // Insertion dans la base de données
                     $insert = $pdo->prepare("INSERT INTO patient (nom, prenom, tel, email, tof, mdp) VALUES (?, ?, ?, ?, ?, ?)");
                     $execute = $insert->execute([$nom, $prenom, $tel, $email, $tofPath, $mdp]);
+                    
+                    // Récupérer l'ID du patient nouvellement inséré
+                    $idpatient = $pdo->lastInsertId();
+
+                    // Créer le dossier médical pour le patient
+                    $insertDossier = $pdo->prepare("INSERT INTO dossiermedical (idpatient) VALUES (?)");
+                    $insertDossier->execute([$idpatient]);
+
                     $_SESSION['nom'] = $nom;
                     $_SESSION['tof'] = $tofPath;
                     header("Location: pages/symptome.php");
