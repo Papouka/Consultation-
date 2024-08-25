@@ -2,7 +2,7 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-            margin: 0;
+            margin: -0;
             padding: 20px;
         }
         h2 {
@@ -21,6 +21,7 @@
     list-style-type: none;
     padding: 0;
     display: grid;
+    margin: 0;
     grid: 12px;
     grid-template-columns: repeat(3, 1fr);
     
@@ -30,6 +31,7 @@ li {
     margin: 10px; /* Espacement entre les éléments */
     flex: 1 1 calc(25% - 20px); /* Pour avoir 4 éléments par ligne, ajustez selon vos besoins */
     box-sizing: border-box;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
     
 }
 

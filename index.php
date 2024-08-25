@@ -1,12 +1,7 @@
 <?php
 session_start();
-try {
-    $pdo = new PDO('mysql:host=localhost;dbname=hosto_bd', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
 
+require_once("inc/connexion.php");
 
 // Maintenant, vous pouvez utiliser $pdo pour préparer vos requêtes
 $stmt = $pdo->prepare("SELECT * FROM specialiste");

@@ -1,34 +1,30 @@
+
 <?php
 session_start();
-
 if (!isset($_SESSION['email'])) {
     header("Location: login.php");
-    exit(); 
+    exit();
 }
-
 $email = $_SESSION['email'];
-$tof = $_SESSION['tof']; 
+$tof = $_SESSION['tof'];
 $nom = $_SESSION['nom'];
 
 // Connexion à la base de données
-try {
-    $pdo = new PDO('mysql:host=localhost;dbname=hosto_bd', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
+require_once("../../inc/connexion.php");
 
 // Préparer et exécuter la requête pour obtenir les informations du médecin
-$stmt = $pdo->prepare("
-    SELECT * FROM docteur
-");
+$stmt = $pdo->prepare("SELECT * FROM docteur");
 $stmt->execute(); // Exécution sans paramètres
 $docteur = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$docteur) {
     die("Aucun médecin trouvé.");
 }
+
+// Afficher les informations du médecin
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">

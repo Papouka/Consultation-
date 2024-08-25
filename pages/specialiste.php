@@ -1,5 +1,13 @@
 <?php
 session_start();
+
+
+if (!isset($_SESSION['email'])) {
+    
+    header("Location: ../login.php");
+    exit(); 
+}
+
 try {
     $pdo = new PDO('mysql:host=localhost;dbname=hosto_bd', 'root', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -107,11 +115,10 @@ if (isset($_GET['idspecialiste'])) {
                 </div>
                 <div class="buttons">
                     <button class="button openModal" data-index="<?php echo $index; ?>">Détails</button>
-                    <a href="../pages/patient/rendezvous.php?iddocteur=<?php echo htmlspecialchars($doc['iddocteur']); ?>&nom=<?php echo htmlspecialchars($doc['nom']); ?>&prenom=<?php echo htmlspecialchars($doc['prenom']); ?>&email=<?php echo htmlspecialchars($doc['email']); ?>&tel=<?php echo htmlspecialchars($doc['tel']); ?>">
+                    <a href="../pages/patient/rendezvous.php?iddocteur=<?php echo htmlspecialchars($doc['iddocteur']); ?>">
+    
                         <button class="button">Prendre Rendez-vous</button>
                     </a>
-
-
                 </div>
             </li>
         <?php endforeach; ?>

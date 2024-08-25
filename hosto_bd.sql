@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : ven. 23 août 2024 à 19:20
+-- Généré le : dim. 25 août 2024 à 18:50
 -- Version du serveur : 10.4.27-MariaDB
 -- Version de PHP : 8.0.25
 
@@ -52,9 +52,50 @@ INSERT INTO `administrateur` (`idadmin`, `nom`, `prenom`, `tel`, `email`, `tof`,
 
 CREATE TABLE `consultation` (
   `idconsultation` int(255) NOT NULL,
-  `iddocteur` int(11) NOT NULL,
-  `idpatient` int(11) NOT NULL
+  `iddocteur` int(11) DEFAULT NULL,
+  `idpatient` int(11) DEFAULT NULL,
+  `description` text NOT NULL,
+  `duree` time NOT NULL,
+  `heure` time NOT NULL,
+  `dateconsultation` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `diagnostic` varchar(255) NOT NULL,
+  `traitement` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `consultation`
+--
+
+INSERT INTO `consultation` (`idconsultation`, `iddocteur`, `idpatient`, `description`, `duree`, `heure`, `dateconsultation`, `diagnostic`, `traitement`) VALUES
+(1, NULL, NULL, 'J\'ai mal au ventre ', '12:00:00', '00:00:00', '2024-08-24 11:24:34', '', ''),
+(2, NULL, NULL, 'J\'ai mal au ventre', '12:00:00', '00:00:00', '2024-08-24 11:24:34', '', ''),
+(3, NULL, NULL, '', '00:00:00', '12:00:00', '2024-09-11 23:00:00', 'maux de tete', 'paracetamol '),
+(4, NULL, NULL, 'J\'ai mal à la tête ', '01:05:00', '00:00:00', '2024-08-24 17:06:51', '', '');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `creneaux`
+--
+
+CREATE TABLE `creneaux` (
+  `idcreneau` int(11) NOT NULL,
+  `iddocteur` int(11) DEFAULT NULL,
+  `date` date NOT NULL,
+  `heure_debut` time NOT NULL,
+  `heure_fin` time NOT NULL,
+  `disponible` tinyint(1) NOT NULL,
+  `bloque` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `creneaux`
+--
+
+INSERT INTO `creneaux` (`idcreneau`, `iddocteur`, `date`, `heure_debut`, `heure_fin`, `disponible`, `bloque`) VALUES
+(1, NULL, '2024-07-12', '08:30:00', '16:00:00', 0, 0),
+(2, 18, '2024-11-25', '09:00:00', '13:30:00', 0, 0),
+(3, 18, '2024-09-17', '12:30:00', '18:00:00', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -132,16 +173,17 @@ CREATE TABLE `patient` (
   `tel` int(15) NOT NULL,
   `email` varchar(255) NOT NULL,
   `mdp` varchar(12) NOT NULL,
-  `tof` varchar(255) NOT NULL
+  `tof` varchar(255) NOT NULL,
+  `idspecialiste` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `patient`
 --
 
-INSERT INTO `patient` (`idpatient`, `nom`, `prenom`, `tel`, `email`, `mdp`, `tof`) VALUES
-(26, 'ANDON', 'Rachella', 653861183, 'rachella@gmail.com', '$2y$10$rhdVx', 'img/Capture d\'écran 2024-08-11 215444.png'),
-(27, 'EBAKISSE', 'aimee', 653861183, 'aimee@gmail.com', '$2y$10$oOyxZ', 'img/Capture d\'écran 2024-08-05 110219.png');
+INSERT INTO `patient` (`idpatient`, `nom`, `prenom`, `tel`, `email`, `mdp`, `tof`, `idspecialiste`) VALUES
+(26, 'ANDON', 'Rachella', 653861183, 'rachella@gmail.com', '$2y$10$rhdVx', 'img/Capture d\'écran 2024-08-11 215444.png', NULL),
+(27, 'EBAKISSE', 'aimee', 653861183, 'aimee@gmail.com', '$2y$10$oOyxZ', 'img/Capture d\'écran 2024-08-05 110219.png', NULL);
 
 -- --------------------------------------------------------
 
@@ -151,30 +193,18 @@ INSERT INTO `patient` (`idpatient`, `nom`, `prenom`, `tel`, `email`, `mdp`, `tof
 
 CREATE TABLE `rendezvous` (
   `idrendezvous` int(25) NOT NULL,
-  `nompat` varchar(255) NOT NULL,
-  `prenompat` varchar(255) NOT NULL,
-  `emailpat` varchar(255) NOT NULL,
-  `telpat` int(11) NOT NULL,
-  `date` date NOT NULL,
-  `heure` time NOT NULL,
-  `iddocteur` int(12) DEFAULT NULL
+  `iddocteur` int(12) DEFAULT NULL,
+  `idcreneau` int(11) DEFAULT NULL,
+  `idpatient` int(11) DEFAULT NULL,
+  `motif` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `rendezvous`
 --
 
-INSERT INTO `rendezvous` (`idrendezvous`, `nompat`, `prenompat`, `emailpat`, `telpat`, `date`, `heure`, `iddocteur`) VALUES
-(1, 'PAPOUKA', 'lory', 'papouka@gmail.com', 653861183, '2024-09-12', '13:00:00', 17),
-(2, 'PAPOUKA', 'lory', 'papouka@gmail.com', 653861183, '2024-01-12', '15:00:00', 16),
-(3, 'PAPOUKA', 'lory', 'papouka@gmail.com', 653861183, '2000-09-12', '12:00:00', 19),
-(4, 'PAPOUKA', 'lory', 'papouka@gmail.com', 653861183, '2000-03-12', '12:00:00', 20),
-(5, 'PAPOUKA', 'lory', 'papouka@gmail.com', 653861183, '2000-03-12', '12:00:00', 20),
-(6, 'PAPOUKA', 'lory', 'papouka@gmail.com', 653861183, '2000-03-12', '12:00:00', 20),
-(7, 'PAPOUKA', 'lory', 'papouka@gmail.com', 653861183, '2024-06-12', '12:00:00', 18),
-(8, 'ANDON', 'Rachella', 'rachella@gmail.com', 653861183, '2006-09-12', '15:00:00', 19),
-(10, 'bitom', 'brice', 'joel@gmail.com', 653861183, '2009-04-12', '12:00:00', NULL),
-(11, 'PAPOUKA', 'lory', 'papouka@gmail.com', 653861183, '2002-09-12', '12:00:00', NULL);
+INSERT INTO `rendezvous` (`idrendezvous`, `iddocteur`, `idcreneau`, `idpatient`, `motif`) VALUES
+(13, 18, 2, 26, 'ujkqzdnhmoqs');
 
 -- --------------------------------------------------------
 
@@ -214,8 +244,16 @@ ALTER TABLE `administrateur`
 -- Index pour la table `consultation`
 --
 ALTER TABLE `consultation`
+  ADD PRIMARY KEY (`idconsultation`),
   ADD KEY `iddocteur` (`iddocteur`),
   ADD KEY `idpatient` (`idpatient`);
+
+--
+-- Index pour la table `creneaux`
+--
+ALTER TABLE `creneaux`
+  ADD PRIMARY KEY (`idcreneau`),
+  ADD KEY `iddocteur` (`iddocteur`);
 
 --
 -- Index pour la table `docteur`
@@ -234,14 +272,17 @@ ALTER TABLE `ordonnance`
 -- Index pour la table `patient`
 --
 ALTER TABLE `patient`
-  ADD PRIMARY KEY (`idpatient`);
+  ADD PRIMARY KEY (`idpatient`),
+  ADD KEY `idspecialiste` (`idspecialiste`);
 
 --
 -- Index pour la table `rendezvous`
 --
 ALTER TABLE `rendezvous`
   ADD PRIMARY KEY (`idrendezvous`),
-  ADD KEY `iddocteur` (`iddocteur`);
+  ADD KEY `iddocteur` (`iddocteur`),
+  ADD KEY `idpatient` (`idpatient`),
+  ADD KEY `idcreneau` (`idcreneau`);
 
 --
 -- Index pour la table `specialiste`
@@ -258,6 +299,18 @@ ALTER TABLE `specialiste`
 --
 ALTER TABLE `administrateur`
   MODIFY `idadmin` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `consultation`
+--
+ALTER TABLE `consultation`
+  MODIFY `idconsultation` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT pour la table `creneaux`
+--
+ALTER TABLE `creneaux`
+  MODIFY `idcreneau` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `docteur`
@@ -281,7 +334,7 @@ ALTER TABLE `patient`
 -- AUTO_INCREMENT pour la table `rendezvous`
 --
 ALTER TABLE `rendezvous`
-  MODIFY `idrendezvous` int(25) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `idrendezvous` int(25) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT pour la table `specialiste`
@@ -301,16 +354,30 @@ ALTER TABLE `consultation`
   ADD CONSTRAINT `consultation_ibfk_2` FOREIGN KEY (`idpatient`) REFERENCES `patient` (`idpatient`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Contraintes pour la table `creneaux`
+--
+ALTER TABLE `creneaux`
+  ADD CONSTRAINT `creneaux_ibfk_1` FOREIGN KEY (`iddocteur`) REFERENCES `docteur` (`iddocteur`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Contraintes pour la table `docteur`
 --
 ALTER TABLE `docteur`
   ADD CONSTRAINT `docteur_ibfk_1` FOREIGN KEY (`idspecialiste`) REFERENCES `specialiste` (`idspecialiste`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Contraintes pour la table `patient`
+--
+ALTER TABLE `patient`
+  ADD CONSTRAINT `patient_ibfk_1` FOREIGN KEY (`idspecialiste`) REFERENCES `specialiste` (`idspecialiste`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Contraintes pour la table `rendezvous`
 --
 ALTER TABLE `rendezvous`
-  ADD CONSTRAINT `rendezvous_ibfk_1` FOREIGN KEY (`iddocteur`) REFERENCES `docteur` (`iddocteur`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `rendezvous_ibfk_1` FOREIGN KEY (`iddocteur`) REFERENCES `docteur` (`iddocteur`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `rendezvous_ibfk_2` FOREIGN KEY (`idpatient`) REFERENCES `patient` (`idpatient`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `rendezvous_ibfk_3` FOREIGN KEY (`idcreneau`) REFERENCES `creneaux` (`idcreneau`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

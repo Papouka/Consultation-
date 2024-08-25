@@ -17,6 +17,13 @@ try {
     echo "Erreur lors de la récupération des docteurs : " . $e->getMessage();
     exit();
 }
+
+// Traitement du formulaire
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['doctor_id'])) {
+    $_SESSION['doctor_id'] = $_POST['doctor_id'];
+    header("Location: ../pages/patient/rendezvous.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -35,9 +42,10 @@ try {
         }
 
         li {
-            margin: 10px; 
+            margin: 38px; 
             flex: 1 1 calc(25% - 20px); 
             box-sizing: border-box;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
         }
 
         .card {
@@ -68,7 +76,7 @@ try {
             background-color: #007BFF;
             color: white;
             border: none;
-            width: 10pc;
+            width: 100%;
             border-radius: 5px;
             cursor: pointer;
         }
@@ -97,7 +105,8 @@ try {
                     <p><strong>Email:</strong> <?php echo htmlspecialchars($doc['email']); ?></p>
                     <p><strong>Téléphone:</strong> <?php echo htmlspecialchars($doc['tel']); ?></p>
                     <div class="buttons">
-                    <a href="easydoctor/pages/patient/rendezvous.php"><button type="submit" class="button">Prendre Rendez-vous</button></a>
+                        <input type="hidden" name="doctor_id" value="<?php echo htmlspecialchars($doc['idspecialiste']); ?>">
+                        <button type="submit" class="button">Prendre Rendez-vous</button>
                     </div>
                 </div>
             </li>
