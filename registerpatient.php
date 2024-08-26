@@ -42,8 +42,8 @@ if (isset($_POST['submit'])) {
                     $idpatient = $pdo->lastInsertId();
 
                     // Créer le dossier médical pour le patient
-                    $insertDossier = $pdo->prepare("INSERT INTO dossiermedical (idpatient,iddocteur,historique) VALUES (?,?,?)");
-                    $insertDossier->execute([$idpatient, $_SESSION['iddocteur'],"historique initiale"]);//si je veux pas verifier le resultat de l'execution
+                    $insertDossier = $pdo->prepare("INSERT INTO dossiermedical (idpatient,historique) VALUES (?,?)");
+                    $insertDossier->execute([$idpatient,"historique initiale"]);//si je veux pas verifier le resultat de l'execution
 
                     $_SESSION['nom'] = $nom;
                     $_SESSION['tof'] = $tofPath;

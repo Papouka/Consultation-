@@ -20,6 +20,7 @@ if ($role == "docteur") {
        
     </li>
     <li><a href="../pages/docteur/listepatient.php"><i class="fas fa-paperclip icon"></i>Dossiers medicaux</a></li>
+    <li><a href="../pages/docteur/resultat.php"><i class="fas fa-paperclip icon"></i>Envoies des resultats</a></li>
     <li><a href="../pages/patient/ordonnance.php"><i class="fas fa-paperclip icon"></i> Ordonnance</a></li>
     <li><a href="../pages/docteur/creneaux.php"><i class="fas fa-paperclip icon"></i> Mes creneaux horaires</a></li>
     <li><a href=""><i class="fa fa-table icon" aria-hidden="true"></i> Prise de rendez-vous</a></li>

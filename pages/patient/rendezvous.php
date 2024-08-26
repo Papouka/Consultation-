@@ -24,6 +24,10 @@ require_once("../../actions/rdvAction.php");
             padding: 20px;
         }
 
+        .form-group {
+            margin-bottom: 15px;
+        }
+
         h2 {
             margin-bottom: 20px;
         }
@@ -33,7 +37,7 @@ require_once("../../actions/rdvAction.php");
             margin: 10px 0 5px;
         }
 
-        input,
+        select,
         textarea {
             width: 100%;
             padding: 8px;
@@ -53,12 +57,10 @@ require_once("../../actions/rdvAction.php");
             width: 20%;
         }
         .radio-button {
-        width: 10px; 
-        height: 10px; 
-        display: flexbox;
-        margin-right: 10px; 
-       
-       
+        width: 10px; /* Largeur du bouton radio */
+        height: 10px; /* Hauteur du bouton radio */
+        transform: scale(1.5); /* Agrandir le bouton radio */
+        margin-right: 10px; /* Espace entre le bouton et le texte */
     }
 
 
@@ -66,6 +68,7 @@ require_once("../../actions/rdvAction.php");
             margin-top: 20px;
             padding: 10px;
             border-radius: 5px;
+            text-underline-position: top;
         }
 
         .success-message {
@@ -92,14 +95,22 @@ require_once("../../actions/rdvAction.php");
             <form action="#" method="POST" class="form">
                 <h2>Premier rendez-vous avec le Dr. <?php echo htmlspecialchars($docta); ?></h2>
 
+                <div class="form-group">
+                    <label for="">Docteur:</label>
+                    <input type="text" name="iddocteur" value="<?php echo htmlspecialchars($docta); ?>" readonly>
+                </div>
                 
+                <div class="form-group">
+                    <label for="">Patient:</label>
+                    <input type="text" name="idpatient" value="<?php echo htmlspecialchars($pat); ?>" readonly>
+                </div>
 
                 <div class="form-group">
                     <label for="">Motif:</label>
                     <textarea name="motif" required></textarea>
                 </div>
                 
-                <div class="">
+                <div >
     <label for="heure">Heure de Rendez-vous:</label>
     <?php foreach ($creneaux as $creneau): ?>
         <input type="radio" class="radio-button" name="idcreneau" value="<?php echo htmlspecialchars($creneau['idcreneau']); ?>" required>
