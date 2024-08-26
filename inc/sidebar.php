@@ -19,6 +19,7 @@ if ($role == "docteur") {
         <a href="../pages/docteur/priserendezvous.php"><i class="fa fa-inbox icon" aria-hidden="true"></i> Consultations<i class="fa fa-chevron-right icon-right" aria-hidden="true"></i></a>
        
     </li>
+    <li><a href="../pages/docteur/listepatient.php"><i class="fas fa-paperclip icon"></i>Dossiers medicaux</a></li>
     <li><a href="../pages/patient/ordonnance.php"><i class="fas fa-paperclip icon"></i> Ordonnance</a></li>
     <li><a href="../pages/docteur/creneaux.php"><i class="fas fa-paperclip icon"></i> Mes creneaux horaires</a></li>
     <li><a href=""><i class="fa fa-table icon" aria-hidden="true"></i> Prise de rendez-vous</a></li>
