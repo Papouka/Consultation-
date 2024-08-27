@@ -3,6 +3,8 @@ $role = $_SESSION['role'] ?? "administrateur";
 ?>
 
 <a href="" class="brand"><i class="fas fa-smile icon"></i> LORY</a>
+<a href="../index.php icon"> <i class="fab fa-backpack icon"></i> </a>
+
 <ul class="side-menu">
     <li><a href="" class="active"><i class="fa fa-dashboard icon" aria-hidden="true"></i> <label for="">Dashboard</label></a></li>
     <li class="divider" data-text="main">Main</li>
@@ -45,6 +47,7 @@ if ($role == "docteur") {
             </ul>
           </li>
           <li> <a href="../pages/patient/mondocteur.php"><i class="fas fa-heart icon"></i> Mon docteur </a>  </li>
+          <li> <a href="../pages/patient/dossier.php"><i class="fas fa-heart icon"></i> Mon dossier medical </a>  </li>
           
 <?php } else if ($role == "administrateur") {?>
     <li>

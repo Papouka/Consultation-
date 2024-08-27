@@ -11,6 +11,10 @@ if (isset($_GET['idpatient']) && !empty($_GET['idpatient'])) {
     $patientQuery->execute([$idpatient]);
     $patient = $patientQuery->fetch();
 
+    $docteurQuery = $pdo->prepare("SELECT * FROM docteur WHERE idpatient = ?");
+    $docteurQuery->execute([$idpatient]);
+    $docteur = $docteurQuery->fetch();
+
     // Récupérer les informations du dossier médical
     $dossierQuery = $pdo->prepare("SELECT * FROM dossiermedical WHERE idpatient = ?");
     $dossierQuery->execute([$idpatient]);

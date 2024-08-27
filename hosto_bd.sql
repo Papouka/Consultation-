@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : dim. 25 août 2024 à 20:58
+-- Généré le : mar. 27 août 2024 à 11:24
 -- Version du serveur : 10.4.27-MariaDB
 -- Version de PHP : 8.0.25
 
@@ -67,10 +67,10 @@ CREATE TABLE `consultation` (
 --
 
 INSERT INTO `consultation` (`idconsultation`, `iddocteur`, `idpatient`, `description`, `duree`, `heure`, `dateconsultation`, `diagnostic`, `traitement`) VALUES
-(1, NULL, NULL, 'J\'ai mal au ventre ', '12:00:00', '00:00:00', '2024-08-24 11:24:34', '', ''),
-(2, NULL, NULL, 'J\'ai mal au ventre', '12:00:00', '00:00:00', '2024-08-24 11:24:34', '', ''),
-(3, NULL, NULL, '', '00:00:00', '12:00:00', '2024-09-11 23:00:00', 'maux de tete', 'paracetamol '),
-(4, NULL, NULL, 'J\'ai mal à la tête ', '01:05:00', '00:00:00', '2024-08-24 17:06:51', '', '');
+(1, 0, 0, 'J\'ai mal au ventre ', '12:00:00', '00:00:00', '2024-08-24 11:24:34', '', ''),
+(2, 0, 0, 'J\'ai mal au ventre', '12:00:00', '00:00:00', '2024-08-24 11:24:34', '', ''),
+(3, 0, 0, '', '00:00:00', '12:00:00', '2024-09-11 23:00:00', 'maux de tete', 'paracetamol '),
+(4, 0, 0, 'J\'ai mal à la tête ', '01:05:00', '00:00:00', '2024-08-24 17:06:51', '', '');
 
 -- --------------------------------------------------------
 
@@ -96,7 +96,8 @@ INSERT INTO `creneaux` (`idcreneau`, `iddocteur`, `date`, `heure_debut`, `heure_
 (1, NULL, '2024-07-12', '08:30:00', '16:00:00', 0, 0),
 (2, 18, '2024-11-25', '09:00:00', '13:30:00', 0, 0),
 (3, 18, '2024-09-17', '12:30:00', '18:00:00', 0, 0),
-(5, 16, '2024-05-12', '12:00:00', '18:40:00', 0, 0);
+(5, 16, '2024-05-12', '12:00:00', '18:40:00', 0, 0),
+(6, 20, '2024-05-30', '12:00:00', '20:00:00', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -139,15 +140,25 @@ INSERT INTO `docteur` (`iddocteur`, `nom`, `prenom`, `tel`, `email`, `cni`, `tof
 
 CREATE TABLE `dossiermedical` (
   `iddossier` int(11) NOT NULL,
-  `idpatient` int(11) NOT NULL
+  `idpatient` int(11) NOT NULL,
+  `iddocteur` int(11) NOT NULL,
+  `datecreation` datetime NOT NULL,
+  `historique` text NOT NULL,
+  `diagnostic` text NOT NULL,
+  `traitement` text NOT NULL,
+  `datedernieremiseajour` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `dossiermedical`
 --
 
-INSERT INTO `dossiermedical` (`iddossier`, `idpatient`) VALUES
-(1, 28);
+INSERT INTO `dossiermedical` (`iddossier`, `idpatient`, `iddocteur`, `datecreation`, `historique`, `diagnostic`, `traitement`, `datedernieremiseajour`) VALUES
+(1, 28, 0, '0000-00-00 00:00:00', '', '', '', '0000-00-00 00:00:00'),
+(2, 32, 0, '0000-00-00 00:00:00', '', '', '', '0000-00-00 00:00:00'),
+(3, 26, 0, '0000-00-00 00:00:00', '', 'mal de ventre', 'metro', '2024-08-26 11:31:22'),
+(4, 28, 0, '0000-00-00 00:00:00', '', 'hjkl', 'jlnk', '2024-08-26 15:58:56'),
+(5, 33, 0, '0000-00-00 00:00:00', '', 'Mal de ventre', 'metro', '2024-08-26 16:02:18');
 
 -- --------------------------------------------------------
 
@@ -203,7 +214,10 @@ CREATE TABLE `patient` (
 INSERT INTO `patient` (`idpatient`, `nom`, `prenom`, `tel`, `email`, `mdp`, `tof`, `idspecialiste`) VALUES
 (26, 'ANDON', 'Rachella', 653861183, 'rachella@gmail.com', '$2y$10$rhdVx', 'img/Capture d\'écran 2024-08-11 215444.png', NULL),
 (27, 'EBAKISSE', 'aimee', 653861183, 'aimee@gmail.com', '$2y$10$oOyxZ', 'img/Capture d\'écran 2024-08-05 110219.png', NULL),
-(28, 'YAHOO', 'sylvia', 653861183, 'sylvia@gmail.com', '$2y$10$ZJAb3', 'img/Capture d\'écran 2024-08-11 215444.png', NULL);
+(28, 'YAHOO', 'sylvia', 653861183, 'sylvia@gmail.com', '$2y$10$ZJAb3', 'img/Capture d\'écran 2024-08-11 215444.png', NULL),
+(29, 'YAHOO', 'sylvia', 653861183, 'sylvi@gmail.com', '$2y$10$BTGOB', 'img/Capture d\'écran 2024-08-05 110219.png', NULL),
+(32, 'YAHOO', 'sylvia', 653861183, 'lory@gmail.com', '$2y$10$9kESm', 'img/Capture d\'écran 2024-08-05 110219.png', NULL),
+(33, 'PAPOUKA', 'lory', 653861183, 'papoukalory@gmail.com', '$2y$10$14o/s', 'img/Capture d\'écran 2024-08-02 100052.png', NULL);
 
 -- --------------------------------------------------------
 
@@ -213,7 +227,7 @@ INSERT INTO `patient` (`idpatient`, `nom`, `prenom`, `tel`, `email`, `mdp`, `tof
 
 CREATE TABLE `rendezvous` (
   `idrendezvous` int(25) NOT NULL,
-  `iddocteur` int(12) DEFAULT NULL,
+  `iddocteur` int(11) DEFAULT NULL,
   `idcreneau` int(11) DEFAULT NULL,
   `idpatient` int(11) DEFAULT NULL,
   `motif` text NOT NULL
@@ -224,7 +238,33 @@ CREATE TABLE `rendezvous` (
 --
 
 INSERT INTO `rendezvous` (`idrendezvous`, `iddocteur`, `idcreneau`, `idpatient`, `motif`) VALUES
-(13, 18, 2, 26, 'ujkqzdnhmoqs');
+(13, 18, 2, 26, 'ujkqzdnhmoqs'),
+(14, 18, 2, 26, 'TDFCYKHFVOL');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `resultat`
+--
+
+CREATE TABLE `resultat` (
+  `idresultat` int(11) NOT NULL,
+  `idpatient` int(11) NOT NULL,
+  `typeexamen` varchar(255) NOT NULL,
+  `resultat` varchar(255) NOT NULL,
+  `dateexamen` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `resultat`
+--
+
+INSERT INTO `resultat` (`idresultat`, `idpatient`, `typeexamen`, `resultat`, `dateexamen`) VALUES
+(1, 26, 'sang', 'tout vas bien', '2024-08-26'),
+(2, 33, 'sang', 'tout va bien', '2024-08-26'),
+(3, 26, 'sang', 'TOUT VA BIEN', '2024-08-26'),
+(4, 26, 'sang', 'TOUT VA BIEN', '2024-08-26'),
+(5, 33, 'sang', 'ça va\r\n', '2024-08-26');
 
 -- --------------------------------------------------------
 
@@ -235,20 +275,21 @@ INSERT INTO `rendezvous` (`idrendezvous`, `iddocteur`, `idcreneau`, `idpatient`,
 CREATE TABLE `specialiste` (
   `idspecialiste` int(255) NOT NULL,
   `nomspecialiste` varchar(255) NOT NULL,
-  `description` text NOT NULL
+  `description` text NOT NULL,
+  `iddocteur` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `specialiste`
 --
 
-INSERT INTO `specialiste` (`idspecialiste`, `nomspecialiste`, `description`) VALUES
-(1, 'ophtalmologie ', 'celui qui soigne la maladie '),
-(4, 'Pédiatrie ', 'tout ceux qui concerne\r\nla peau de l\'humain'),
-(6, 'Cardiologie ', 'tout ce qui concerne le cœur '),
-(7, 'Genicologie ', 'toujours autre maladies'),
-(9, 'Naturopath ', 'nature'),
-(10, 'Généraliste', 'palu');
+INSERT INTO `specialiste` (`idspecialiste`, `nomspecialiste`, `description`, `iddocteur`) VALUES
+(1, 'ophtalmologie ', 'celui qui soigne la maladie ', 0),
+(4, 'Pédiatrie ', 'tout ceux qui concerne\r\nla peau de l\'humain', 0),
+(6, 'Cardiologie ', 'tout ce qui concerne le cœur ', 0),
+(7, 'Genicologie ', 'toujours autre maladies', 0),
+(9, 'Naturopath ', 'nature', 0),
+(10, 'Généraliste', 'palu', 0);
 
 --
 -- Index pour les tables déchargées
@@ -312,6 +353,13 @@ ALTER TABLE `rendezvous`
   ADD KEY `idcreneau` (`idcreneau`);
 
 --
+-- Index pour la table `resultat`
+--
+ALTER TABLE `resultat`
+  ADD PRIMARY KEY (`idresultat`),
+  ADD KEY `idpatient` (`idpatient`);
+
+--
 -- Index pour la table `specialiste`
 --
 ALTER TABLE `specialiste`
@@ -337,7 +385,7 @@ ALTER TABLE `consultation`
 -- AUTO_INCREMENT pour la table `creneaux`
 --
 ALTER TABLE `creneaux`
-  MODIFY `idcreneau` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `idcreneau` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `docteur`
@@ -349,7 +397,7 @@ ALTER TABLE `docteur`
 -- AUTO_INCREMENT pour la table `dossiermedical`
 --
 ALTER TABLE `dossiermedical`
-  MODIFY `iddossier` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `iddossier` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `ordonnance`
@@ -361,13 +409,19 @@ ALTER TABLE `ordonnance`
 -- AUTO_INCREMENT pour la table `patient`
 --
 ALTER TABLE `patient`
-  MODIFY `idpatient` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `idpatient` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT pour la table `rendezvous`
 --
 ALTER TABLE `rendezvous`
-  MODIFY `idrendezvous` int(25) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `idrendezvous` int(25) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT pour la table `resultat`
+--
+ALTER TABLE `resultat`
+  MODIFY `idresultat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `specialiste`
@@ -417,6 +471,12 @@ ALTER TABLE `rendezvous`
   ADD CONSTRAINT `rendezvous_ibfk_1` FOREIGN KEY (`iddocteur`) REFERENCES `docteur` (`iddocteur`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `rendezvous_ibfk_2` FOREIGN KEY (`idpatient`) REFERENCES `patient` (`idpatient`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `rendezvous_ibfk_3` FOREIGN KEY (`idcreneau`) REFERENCES `creneaux` (`idcreneau`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `resultat`
+--
+ALTER TABLE `resultat`
+  ADD CONSTRAINT `resultat_ibfk_1` FOREIGN KEY (`idpatient`) REFERENCES `patient` (`idpatient`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

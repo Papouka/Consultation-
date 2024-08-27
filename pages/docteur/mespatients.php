@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-
 if (!isset($_SESSION['email'])) {
    header("Location: login.php");
     exit(); 
@@ -10,10 +9,9 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 $tof = $_SESSION['tof']; 
 $nom = $_SESSION['nom'];
-
+$iddocteur = $_SESSION['iddocteur'];
 
 ?>
-
 
 <!DOCTYPE html>
 <html lang="fr"> 
@@ -63,9 +61,13 @@ $nom = $_SESSION['nom'];
                 $pdo = new PDO('mysql:host=localhost;dbname=hosto_bd', 'root', '');
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-                $sql = "SELECT idpatient, nom, prenom, tel, tof, email FROM patient";
+                $sql = "SELECT patient.idpatient, patient.nom, patient.prenom, patient.tel, patient.tof, patient.email 
+                        FROM patient 
+                        INNER JOIN dossiermedical ON patient.idpatient = dossiermedical.idpatient 
+                        WHERE dossiermedical.iddocteur = :iddocteur";
+                
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute();
+                $stmt->execute(['iddocteur' => $iddocteur]);
                 $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 if ($patients) {

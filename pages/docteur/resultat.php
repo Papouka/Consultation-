@@ -53,8 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <h1>Enregistrer les Résultats d'Examen</h1>
     <form method="POST" action="">
-        <label for="idpatient">ID Patient :</label>
-        <input type="text" id="idpatient" name="idpatient" required>
+        <label for="idpatient">Nom du Patient :</label>
+        <input type="text" id="idpatient" name="nom" required>
 
         <label for="type_examen">Type d'Examen :</label>
         <input type="text" id="type_examen" name="typeexamen" required>

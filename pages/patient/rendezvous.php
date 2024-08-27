@@ -54,7 +54,7 @@ require_once("../../actions/rdvAction.php");
             padding: 10px;
             border-radius: 5px;
             cursor: pointer;
-            width: 20%;
+            width: 25%;
         }
         .radio-button {
         width: 10px; /* Largeur du bouton radio */
