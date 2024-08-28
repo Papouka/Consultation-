@@ -1,5 +1,11 @@
 <?php
 session_start();
+
+if (!isset($_SESSION['email'])) {
+    header("Location: ../login.php");
+    exit(); 
+}
+
 try {
     $pdo = new PDO('mysql:host=localhost;dbname=hosto_bd', 'root', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -7,117 +13,155 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-// Requête SQL pour récupérer les docteurs
-try {
-    $query = "SELECT * FROM docteur";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute();
-    $docteurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo "Erreur lors de la récupération des docteurs : " . $e->getMessage();
-    exit();
+$docteur = [];
+$idspecialiste = isset($_GET['idspecialiste']) ? $_GET['idspecialiste'] : '';
+
+if ($idspecialiste) {
+    // Récupérer les valeurs de filtrage
+    $experience = isset($_GET['experience']) ? $_GET['experience'] : '';
+    $patients = isset($_GET['patients']) ? $_GET['patients'] : '';
+
+    // Préparer la requête pour récupérer les docteurs
+    try {
+        $query = "SELECT * FROM docteur WHERE idspecialiste = :idspecialiste";
+        
+        // Ajouter des conditions pour le filtrage
+        if (!empty($experience)) {
+            $query .= " AND experience >= :experience";
+        }
+        if (!empty($patients)) {
+            $query .= " AND nombre_patients >= :patients"; // Assurez-vous que la colonne nombre_patients existe
+        }
+
+        // Préparer la requête
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':idspecialiste', $idspecialiste, PDO::PARAM_INT);
+        
+        // Lier les paramètres de filtrage
+        if (!empty($experience)) {
+            $stmt->bindParam(':experience', $experience, PDO::PARAM_INT);
+        }
+        if (!empty($patients)) {
+            $stmt->bindParam(':patients', $patients, PDO::PARAM_INT);
+        }
+
+        // Exécuter la requête
+        $stmt->execute();
+        $docteur = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo "Erreur lors de la récupération des docteurs : " . $e->getMessage();
+        exit();
+    }
+}
+if(isset($_POST['modification'])){
+$idconsultation=$_GET['idconsultation'];
+$iddocteur = $_POST['iddocteur'];
+$stml =$pdo->prepare("UPDATE consultation SET iddocteur= :iddocteur WHERE idconsultation= :idconsultation");
+$stml->bindParam(':iddocteur',$iddocteur);
+$stml->bindParam(':idconsultation',$idconsultation);
+$stml->execute();
+header("Location: ../pages/patient/rendezvous.php?iddocteur=$iddocteur");
 }
 
-// Traitement du formulaire
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['doctor_id'])) {
-    $_SESSION['doctor_id'] = $_POST['doctor_id'];
-    header("Location: ../pages/patient/rendezvous.php");
-    exit();
-}
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Choisir un Docteur</title>
+    <title>Liste des Docteurs</title>
+    <link rel="stylesheet" href="../icons/all.min.css">
+    <script src="../js/all.min.js"></script>
     <link rel="stylesheet" href="../css/patient.css">
-    <style>
-        ul {
-            list-style-type: none;
-            padding: 0;
-            display: grid;
-            gap: 7px;
-            grid-template-columns: repeat(3, 1fr);
-        }
-
-        li {
-            margin: 38px; 
-            flex: 1 1 calc(25% - 20px); 
-            box-sizing: border-box;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
-        }
-
-        .card {
-            width: 100%; 
-            max-width: 300px; 
-            padding: 20px;
-            background-color: #f4f4f4;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .card img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 15px;
-        }
-
-        .buttons {
-            margin-top: 10px;
-        }
-
-        .button {
-            padding: 10px 15px;
-            margin: 5px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            width: 100%;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/index.css">
+    <?php include("../inc/cssspecialiste.php"); ?>
+    <?php include("../admin/css.php"); ?>
 </head>
 <body>
-
 <header>
-    <!-- Inclure ici votre code de header -->
+    <?php include("../inc/header.php"); ?>
 </header>
 
-<h1>Choisissez votre Docteur</h1>
+<h1>Liste des docteurs spécialisés</h1>
 
-<form method="POST" action="#">
+<!-- Formulaire de filtrage -->
+<form method="GET" action="">
+    <div>
+        <label for="experience">Années d'expérience :</label>
+        <input type="number" name="experience" id="experience" min="0">
+    </div>
+    <div>
+        <label for="patients">Nombre de patients :</label>
+        <input type="number" name="patients" id="patients" min="0">
+    </div>
+    <button type="submit">Filtrer</button>
+    <input type="hidden" name="idspecialiste" value="<?php echo htmlspecialchars($idspecialiste); ?>">
+</form>
+
+<?php if (!empty($docteur)): ?>
     <ul>
-        <?php foreach ($docteurs as $doc): ?>
+        <?php foreach ($docteur as $index => $doc): ?>
             <li>
                 <div class="card">
                     <img src="../<?php echo htmlspecialchars($doc['tof']); ?>" alt="<?php echo htmlspecialchars($doc['nom']); ?>">
                     <h2>DR. <?php echo htmlspecialchars($doc['nom']); ?></h2>
-                    <p><strong>Prénom:</strong> <?php echo htmlspecialchars($doc['prenom']); ?></p>
-                    <p><strong>Email:</strong> <?php echo htmlspecialchars($doc['email']); ?></p>
-                    <p><strong>Téléphone:</strong> <?php echo htmlspecialchars($doc['tel']); ?></p>
-                    <div class="buttons">
-                        <input type="hidden" name="doctor_id" value="<?php echo htmlspecialchars($doc['idspecialiste']); ?>">
-                        <button type="submit" class="button">Prendre Rendez-vous</button>
+                    <p><label for=""> Prénom: </label><?php echo htmlspecialchars($doc['prenom']); ?></p>
+                    <p><label for=""> Email: </label><?php echo htmlspecialchars($doc['email']); ?></p>
+                    <p><label for=""> Numéro de téléphone: </label><?php echo htmlspecialchars($doc['tel']); ?></p>
+                    <p><label for="">ID Docteur: </label><?php echo htmlspecialchars($doc['iddocteur']); ?></p>
+
+                </div>
+                <div id="myModal<?php echo $index; ?>" class="modal">
+                    <div class="modal-content">
+                        <span class="close" data-index="<?php echo $index; ?>">&times;</span>
+                        <h3>Mes informations</h3>
+                        <p><label class="lor">Diplôme: </label><?php echo htmlspecialchars($doc['diplome']); ?></p>
+                        <p><label class="lor">Grade: </label><?php echo htmlspecialchars($doc['grade']); ?></p>
+                        <p><label class="lor">Année d'expérience: </label><?php echo htmlspecialchars($doc['experience']); ?> ans</p>
                     </div>
+                </div>
+                <div class="buttons">
+                    <button class="button openModal" data-index="<?php echo $index; ?>">Détails</button>
+                    <form action="" method="POST">
+                        <input type="text" name="iddocteur" value="<?php echo ($doc['iddocteur']); ?>" hidden>
+                     
+                        <button type="submit" name="modification" class="button">Prende rendez-vous</button>
+                    </form>
+                    
                 </div>
             </li>
         <?php endforeach; ?>
     </ul>
-    
-</form>
+<?php else: ?>
+    <p>Aucun docteur trouvé pour cette spécialité.</p>
+<?php endif; ?>
 
 <footer>
-    <!-- Inclure ici votre code de footer -->
+    <?php include("../inc/footer.php"); ?>
 </footer>
+<script>
+    // Gestion de l'ouverture et de la fermeture des modales
+    document.querySelectorAll('.openModal').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = this.getAttribute('data-index');
+            document.getElementById('myModal' + index).style.display = 'block';
+        });
+    });
 
+    document.querySelectorAll('.close').forEach(span => {
+        span.addEventListener('click', function() {
+            const index = this.getAttribute('data-index');
+            document.getElementById('myModal' + index).style.display = 'none';
+        });
+    });
+
+    window.addEventListener('click', function(event) {
+        document.querySelectorAll('.modal').forEach(modal => {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+</script>
 </body>
 </html>

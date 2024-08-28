@@ -57,10 +57,10 @@ require_once("../../actions/rdvAction.php");
             width: 25%;
         }
         .radio-button {
-        width: 10px; /* Largeur du bouton radio */
-        height: 10px; /* Hauteur du bouton radio */
-        transform: scale(1.5); /* Agrandir le bouton radio */
-        margin-right: 10px; /* Espace entre le bouton et le texte */
+        width: 10px; 
+        height: 10px; 
+        transform: scale(1.5); 
+        margin-right: 10px; 
     }
 
 
@@ -96,8 +96,8 @@ require_once("../../actions/rdvAction.php");
                 <h2>Premier rendez-vous avec le Dr. <?php echo htmlspecialchars($docta); ?></h2>
 
                 <div class="form-group">
-                    <label for="">Docteur:</label>
-                    <input type="text" name="iddocteur" value="<?php echo htmlspecialchars($docta); ?>" readonly>
+                    
+                    <input type="text" name="iddocteur" value="<?php echo htmlspecialchars($iddoc); ?>" hidden>
                 </div>
                 
                 <div class="form-group">

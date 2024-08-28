@@ -61,13 +61,12 @@ $iddocteur = $_SESSION['iddocteur'];
                 $pdo = new PDO('mysql:host=localhost;dbname=hosto_bd', 'root', '');
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-                $sql = "SELECT patient.idpatient, patient.nom, patient.prenom, patient.tel, patient.tof, patient.email 
+                $sql = "SELECT *
                         FROM patient 
-                        INNER JOIN dossiermedical ON patient.idpatient = dossiermedical.idpatient 
-                        WHERE dossiermedical.iddocteur = :iddocteur";
+                         JOIN rendezvous ON patient.idpatient = rendezvous.idpatient 
+                        ";
                 
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute(['iddocteur' => $iddocteur]);
                 $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 if ($patients) {

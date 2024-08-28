@@ -62,6 +62,8 @@ th {
             <tbody>
                 <?php foreach ($consultations as $consultation): ?>
                     <tr>
+                        <td><input type="hidden" name="idpatient" value="<?php echo htmlspecialchars($idpatient); ?>"></td>
+                    <td><input type="hidden" name="idpatient" value="<?php echo ($iddocteur); ?>"></td>
                         <td><?php echo htmlspecialchars($consultation['dateconsultation']); ?></td> <!-- Assurez-vous que 'date' est le bon nom -->
                         <td>Dr. <?php echo htmlspecialchars($consultation['prenom'] . ' ' . $consultation['nom']); ?></td>
                       

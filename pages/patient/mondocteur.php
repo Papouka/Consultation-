@@ -11,24 +11,22 @@ $nom = $_SESSION['nom'];
 // Connexion à la base de données
 require_once("../../inc/connexion.php");
 
-// Préparer et exécuter la requête pour obtenir les informations du médecin et du patient via la jointure
-$stmt = $pdo->prepare("
-    SELECT docteur.nom AS nom_docteur, docteur.prenom AS prenom_docteur, docteur.tel AS tel_docteur, 
-    docteur.email AS email_docteur, docteur.grade AS grade_docteur, docteur.diplome AS diplome_docteur,
-     docteur.certificat AS certificat_docteur, specialiste.nomspecialiste AS specialite_docteur, 
-     patient.nom AS nom_patient, patient.prenom AS prenom_patient FROM docteur 
-     JOIN specialiste ON docteur.idspecialiste = specialiste.idspecialiste JOIN 
-     dossiermedical ON docteur.iddocteur = dossiermedical.iddocteur 
-     JOIN patient ON dossiermedical.idpatient = patient.idpatient LIMIT 1;
+// Préparer et exécuter la requête pour obtenir les informations du docteur associé au patient
+$stmt = $pdo->prepare(" 
+    SELECT docteur.* 
+    FROM docteur, patient, dossiermedical 
+    WHERE docteur.iddocteur = dossiermedical.iddocteur 
+    AND patient.idpatient = dossiermedical.idpatient 
+    AND patient.idpatient = :idpatient 
 ");
+$stmt->bindParam(':idpatient', $_SESSION['idpatient']);
+$stmt->execute();
 
-$docteur = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$docteur) {
-    echo "<p>Aucun médecin trouvé pour ce patient.</p>";
-} else {
+// Vérifier si la requête a retourné des résultats
+if ($stmt->rowCount() > 0) {
+    $docteur = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Afficher les informations du docteur
     ?>
-
     <!DOCTYPE html>
     <html lang="fr">
     <head>
@@ -57,32 +55,32 @@ if (!$docteur) {
         </style>
     </head>
     <body>
-
-    <section id="sidebar">
-        <?php include("../../inc/sidebar4.php"); ?>
-    </section>
-    <section id="content">
-        <nav>
-            <?php include("../../inc/nav4.php"); ?>
-        </nav>
-        <main>
-            <section class="doctor-info">
-                <h2>Informations sur mon médecin</h2>
-                <p><strong>Nom :</strong> <?php echo htmlspecialchars($docteur['nom_docteur']) . " " . htmlspecialchars($docteur['prenom_docteur']); ?></p>
-                <p><strong>Spécialité :</strong> <?php echo htmlspecialchars($docteur['specialite_docteur']); ?></p>
-                <p><strong>Téléphone :</strong> <?php echo htmlspecialchars($docteur['tel_docteur']); ?></p>
-                <p><strong>Email :</strong> <?php echo htmlspecialchars($docteur['email_docteur']); ?></p>
-                <p><strong>Grade :</strong> <?php echo htmlspecialchars($docteur['grade_docteur']); ?></p>
-                <p><strong>Diplôme :</strong> <?php echo htmlspecialchars($docteur['diplome_docteur']); ?></p>
-                <p><strong>Certificat :</strong> <?php echo htmlspecialchars($docteur['certificat_docteur']); ?></p>
-            </section>
-        </main>
-
-        <script src="../../js/all.min.js"></script>
-        <script src="../../js/script.js"></script>
-    </body> 
+        <section id="sidebar">
+            <?php include("../../inc/sidebar4.php"); ?>
+        </section>
+        <section id="content">
+            <nav>
+                <?php include("../../inc/nav4.php"); ?>
+            </nav>
+            <main>
+                <section class="doctor-info">
+                    <h2>Informations sur mon docteur</h2>
+                    <p><strong>Nom :</strong> <?php echo htmlspecialchars($docteur['nom']) . " " . htmlspecialchars($docteur['prenom']); ?></p>
+                    <p><strong>Spécialité :</strong> <?php echo htmlspecialchars($docteur['idspecialiste']); ?></p>
+                    <p><strong>Téléphone :</strong> <?php echo htmlspecialchars($docteur['tel']); ?></p>
+                    <p><strong>Email :</strong> <?php echo htmlspecialchars($docteur['email']); ?></p>
+                    <p><strong>Grade :</strong> <?php echo htmlspecialchars($docteur['grade']); ?></p>
+                    <p><strong>Diplôme :</strong> <?php echo htmlspecialchars($docteur['diplome']); ?></p>
+                    <p><strong>Certificat :</strong> <?php echo htmlspecialchars($docteur['certificat']); ?></p>
+                </section>
+            </main>
+            <script src="../../js/all.min.js"></script>
+            <script src="../../js/script.js"></script>
+        </body>
     </html>
-
     <?php
+} else {
+    echo "Aucun docteur trouvé pour ce patient.";
 }
 ?>
+

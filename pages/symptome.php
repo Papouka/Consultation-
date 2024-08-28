@@ -10,22 +10,43 @@ try {
 $msgSuccess = '';
 $msgErreur = '';
 
+// Récupérer les spécialités depuis la base de données
+$specialistes = [];
+try {
+    $stmt = $pdo->query("SELECT idspecialiste, nomspecialiste FROM specialiste");
+    $specialistes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $msgErreur = "Erreur lors de la récupération des spécialités: " . $e->getMessage();
+}
+
+// Vérifiez que l'email est défini dans la session
+if (isset($_SESSION['email'])) {
+    $stmt = $pdo->prepare("SELECT idpatient FROM patient WHERE email = :email");
+    $stmt->bindParam(':email', $_SESSION['email']);
+    $stmt->execute();
+    $patient_id = $stmt->fetchColumn();
+} else {
+    $msgErreur = "Erreur: L'email du patient n'est pas défini dans la session.";
+}
+
 if (isset($_POST['submit'])) {
-    if (isset($_POST['description'], $_POST['duree'])) {
-        if (!empty($_POST['description']) && !empty($_POST['duree'])) {
+    if (isset($_POST['description'], $_POST['duree'], $_POST['idspecialiste'])) {
+        if (!empty($_POST['description']) && !empty($_POST['duree']) && !empty($_POST['idspecialiste']) && !empty($patient_id)) {
             $description = $_POST["description"];
             $duree = $_POST["duree"];
+            $idspecialiste = $_POST["idspecialiste"];
             
             try {
                 // Insertion dans la base de données
-                $insert = $pdo->prepare("INSERT INTO consultation (description, duree) VALUES (?, ?)");
-                $execute = $insert->execute([$description, $duree]);
+                $insert = $pdo->prepare("INSERT INTO consultation (description, duree, idspecialiste, idpatient) VALUES (?, ?, ?, ?)");
+                $execute = $insert->execute([$description, $duree, $idspecialiste, $patient_id]);
+                $idconsultation=$pdo->lastInsertId();
 
                 // Si l'insertion est réussie
                 if ($execute) {
                     $msgSuccess = "Rendez-vous programmé avec succès.";
-                    header("Location: ../pages/choix.php"); // Redirection après succès
-                    exit(); // Arrête le script après la redirection
+                    header("Location: choix.php?idspecialiste=" . urlencode($idspecialiste)."&idconsultation=" . urlencode($idconsultation));
+                    exit(); 
                 }
             } catch (PDOException $e) {
                 $msgErreur = "Erreur: " . $e->getMessage();
@@ -35,6 +56,7 @@ if (isset($_POST['submit'])) {
         }
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -60,9 +82,19 @@ if (isset($_POST['submit'])) {
             
             <div>
                 <label for="duree">Durée des Symptômes :</label>
-                <input type="time" id="duree" name="duree" placeholder="Ex. : 3 jours" required>
+                <input type="text" id="duree" name="duree" placeholder="Ex. : 3 jours" required>
             </div>
-            
+            <div>
+                <label for="idspecialiste">Spécialité:</label>
+                <select id="idspecialiste" name="idspecialiste" required>
+                    <option value="">Sélectionnez votre spécialité</option>
+                    <?php foreach ($specialistes as $specialiste): ?>
+                        <option value="<?php echo htmlspecialchars($specialiste['idspecialiste']); ?>">
+                            <?php echo htmlspecialchars($specialiste['nomspecialiste']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
             <div>
                 <button type="submit" name="submit">Soumettre</button>
             </div>

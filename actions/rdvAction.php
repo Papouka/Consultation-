@@ -26,7 +26,7 @@ if (isset($_POST['submit'])) {
 
             // Vérifiez si idcreneau existe dans la table creneaux
             $checkCreneau = $pdo->prepare("SELECT * FROM creneaux WHERE idcreneau = :idcreneau");
-            $checkCreneau->bindParam(":idcreneau", $idcreneau);// lier la valeur de la variable
+            $checkCreneau->bindParam(":idcreneau", $idcreneau);// lier la variable à la valeur
             $checkCreneau->execute();
 
             if ($checkCreneau->rowCount() > 0) {

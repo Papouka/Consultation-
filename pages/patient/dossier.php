@@ -27,15 +27,17 @@ if (!$patient) {
 $idpatient = $patient['idpatient'];
 $nomPatient = $patient['nom'];
 
-// Récupérer les dossiermedicals du patient
-$stmt = $pdo->prepare("SELECT * FROM dossiermedical WHERE idpatient = :idpatient ");
-$stmt->execute(['idpatient' => $idpatient]);
-$dossiermedicals = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Récupérer les dossiermedicals et résultats du patient avec jointures
+$stmt = $pdo->prepare(" 
+    SELECT * 
+    FROM dossiermedical 
+    JOIN resultat ON dossiermedical.idpatient = resultat.idpatient 
+    WHERE dossiermedical.idpatient = :idpatient 
+");
+$stmt->bindParam(':idpatient', $idpatient);
+$stmt->execute();
+$dossiers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
-$stmt = $pdo->prepare("SELECT * FROM resultat WHERE idpatient = :idpatient ");
-$stmt->execute(['idpatient' => $idpatient]);
-$resultats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -79,33 +81,17 @@ $resultats = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h1>Dossier Médical de <?php echo htmlspecialchars($nomPatient); ?></h1>
     </header>
     <main>
-        <?php if (count($dossiermedicals) > 0): ?>
-            <?php foreach ($dossiermedicals as $dossiermedical): ?>
+        <?php if (count($dossiers) > 0): ?>
+            <?php foreach ($dossiers as $dossier): ?>
                 <div class="dossiermedical">
-                    
-                   
-                    <p><strong>Diagnostic :</strong> <?php echo htmlspecialchars($dossiermedical['diagnostic']); ?></p>
-                    <p><strong>Traitement :</strong> <?php echo htmlspecialchars($dossiermedical['traitement']); ?></p>
-                    
+                    <p><strong>Diagnostic :</strong> <?php echo htmlspecialchars($dossier['diagnostic']); ?></p>
+                    <p><strong>Traitement :</strong> <?php echo htmlspecialchars($dossier['traitement']); ?></p>
+                    <p><strong>Type d'examen :</strong> <?php echo htmlspecialchars($dossier['typeexamen']); ?></p>
+                    <p><strong>Résultat :</strong> <?php echo nl2br(htmlspecialchars($dossier['resultat'])); ?></p>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
-            <p>Aucune dossiermedical trouvée.</p>
-        <?php endif; ?>
-
-
-        <?php if (count($resultats) > 0): ?>
-            <?php foreach ($resultats as $resultat): ?>
-                <div class="dossiermedical">
-                    
-                    <p><strong>Type d'examen :</strong> <?php echo htmlspecialchars($resultat['typeexamen']); ?></p>
-                    <p><strong>Résultat :</strong> <?php echo nl2br(htmlspecialchars($resultat['resultat'])); ?></p>
-                    
-                    
-                </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p>Aucun dossiermedical trouvée.</p>
+            <p>Aucune dossier médical ou résultat trouvé.</p>
         <?php endif; ?>
     </main>
 </body>

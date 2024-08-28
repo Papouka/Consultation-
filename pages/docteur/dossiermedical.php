@@ -1,21 +1,37 @@
+
+    
+
 <?php
+session_start();
 // Connexion à la base de données
 require_once("../../inc/connexion.php");
 
 // Vérifier si un patient est sélectionné
-if (isset($_GET['idpatient']) && !empty($_GET['idpatient'])) {
+if (isset($_GET['idpatient'])) {
     $idpatient = $_GET['idpatient'];
+    $iddocteur = $_SESSION['iddocteur'];
     
-    // Récupérer les informations du patient
     $patientQuery = $pdo->prepare("SELECT * FROM patient WHERE idpatient = ?");
     $patientQuery->execute([$idpatient]);
     $patient = $patientQuery->fetch();
 
-    $docteurQuery = $pdo->prepare("SELECT * FROM docteur WHERE idpatient = ?");
-    $docteurQuery->execute([$idpatient]);
-    $docteur = $docteurQuery->fetch();
+    if (!$patient) {
+        echo "Patient non trouvé.";
+        exit();
+    }
+    if (isset($_SESSION['iddocteur'] )) {
+        $iddocteur = $_SESSION['iddocteur'];
 
-    // Récupérer les informations du dossier médical
+
+        $docteurQuery = $pdo->prepare("SELECT * FROM docteur WHERE iddocteur = ?");
+        $docteurQuery->execute([$iddocteur]);
+        $docteur = $docteurQuery->fetch();
+
+        if (!$docteur) {
+        
+        echo "docteur non trouvé";
+        exit();
+    }
     $dossierQuery = $pdo->prepare("SELECT * FROM dossiermedical WHERE idpatient = ?");
     $dossierQuery->execute([$idpatient]);
     $dossier = $dossierQuery->fetchAll();
@@ -23,22 +39,24 @@ if (isset($_GET['idpatient']) && !empty($_GET['idpatient'])) {
     echo "Aucun patient sélectionné.";
     exit();
 }
+    
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupérer les données du formulaire
-    $idpatient = $_POST['idpatient'];
     $diagnostic = $_POST['diagnostic'];
     $traitement = $_POST['traitement'];
 
     // Préparer et exécuter la requête d'insertion
-    $stmt = $pdo->prepare("INSERT INTO dossiermedical (idpatient, diagnostic, traitement, datedernieremiseajour) VALUES (?, ?, ?, NOW())");
-    $stmt->execute([$idpatient, $diagnostic, $traitement]);
+    $stmt = $pdo->prepare("INSERT INTO dossiermedical (idpatient, iddocteur, diagnostic, traitement, datedernieremiseajour) VALUES (?, ?, ?, ?, NOW())");
+    $stmt->execute([$idpatient, $iddocteur, $diagnostic, $traitement]);
 
     // Redirection vers le dossier médical du patient après la mise à jour
     header("Location: dossiermedical.php?idpatient=" . $idpatient);
     exit();
 }
+ }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -48,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <h2>Dossier Médical de <?php echo htmlspecialchars($patient['nom'] . ' ' . $patient['prenom']); ?></h2>
+    
 
     <!-- Affichage des informations personnelles -->
     <h3>Informations Personnelles</h3>
@@ -72,7 +91,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Formulaire pour ajouter des notes -->
     <h3>Ajouter une Note</h3>
     <form method="POST" action="">
-        <input type="hidden" name="idpatient" value="<?php echo htmlspecialchars($idpatient); ?>">
+    <input type="hidden" name="idpatient" value="<?php echo htmlspecialchars($idpatient); ?>">
+    <input type="hidden" name="idpatient" value="<?php echo ($iddocteur); ?>">
         
         <label for="diagnostic">Diagnostic :</label>
         <textarea name="diagnostic" required></textarea>
