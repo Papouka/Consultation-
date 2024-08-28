@@ -55,12 +55,12 @@ if (isset($_SESSION['email'])) {
     
             <img src="img/11.jpg" alt="Questionnaire Médical"> 
             <h2>1. Consultaion video</h2>
-            <p>Après avoir précisé la nature de vos symptômes lors d’un questionnaire précédant le diagnostic, Feeli vous oriente immédiatement vers un spécialiste de santé. Sans RDV et en quelques minutes, la téléconsultation débute via une messagerie instantanée, le tout offrant une</p>
+            <p>Après avoir précisé la nature de vos symptômes lors d’un questionnaire précédant le diagnostic, Easydoctor vous oriente immédiatement vers un spécialiste de santé. Sans RDV et en quelques minutes, la téléconsultation débute via une messagerie instantanée, le tout offrant une</p>
             </div>
         <div class="step">
             <img src="img/14.jpg" alt="Consultation et diagnostic"> 
             <h2>2. Conseils médicaux</h2>
-            <p>À l’aide des réponses au questionnaire, le médecin peut débuter la téléconsultation par messagerie instantanée. Si nécessaire un traitement pourra vous être proposé. Le montant de la téléconsultation est supporté entièrement par le patient.</p>
+            <p> le médecin peut débuter la téléconsultation par messagerie instantanée. Si nécessaire un traitement pourra vous être proposé. Le montant de la téléconsultation est supporté entièrement par le patient.</p>
             
         </div>
         <div class="step">
@@ -72,7 +72,7 @@ if (isset($_SESSION['email'])) {
         <div class="step">
             <img src="img/17.jpg" alt="Délivrance de votre remède"> 
             <h2>4. Suivi de santé personnalisé</h2>
-            <p>En fonction du diagnostic et si un remède est nécessaire, le médecin pourra établir un document médical valable en pharmacie, directement accessible depuis votre espace personnel. Si besoin, le médecin pourra compléter votre document médical par des examens</p>
+            <p> En tenant compte de facteurs tels que l'historique médical, le mode de vie et les préférences personnelles, cette méthode permet de fournir des recommandations sur mesure. </p>
             
         </div>
         </div>

@@ -34,7 +34,7 @@ th, td {
     text-align: left;
 }
 th {
-    background-color: #007BFF;
+    background-color: green;
     color: white;
 }
 </style>
@@ -54,20 +54,21 @@ th {
         <table>
             <thead>
                 <tr>
-                    <th>Date</th>
+                    <th>Date et Heure</th>
                     <th>Docteur</th>
+                    <th>Specialiste</th>
                     
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($consultations as $consultation): ?>
                     <tr>
-                        <td><input type="hidden" name="idpatient" value="<?php echo htmlspecialchars($idpatient); ?>"></td>
-                    <td><input type="hidden" name="idpatient" value="<?php echo ($iddocteur); ?>"></td>
-                        <td><?php echo htmlspecialchars($consultation['dateconsultation']); ?></td> <!-- Assurez-vous que 'date' est le bon nom -->
-                        <td>Dr. <?php echo htmlspecialchars($consultation['prenom'] . ' ' . $consultation['nom']); ?></td>
-                      
+                    <td><?php echo htmlspecialchars($consultation['dateconsultation']); ?></td> <!-- Assurez-vous que 'date' est le bon nom -->
+                    <td>Dr. <?php echo htmlspecialchars($consultation['nom'] . ' ' . $consultation['prenom']); ?></td>
+                    <td> <?php echo htmlspecialchars( $consultation['idspecialiste']); ?></td>
                     </tr>
+                    <input type="hidden" name="idpatient" value="<?php echo htmlspecialchars($idpatient); ?>">
+                    <input type="hidden" name="idpatient" value="<?php echo ($iddocteur); ?>">
                 <?php endforeach; ?>
             </tbody>
         </table>

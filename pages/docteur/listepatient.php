@@ -9,12 +9,20 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 $tof = $_SESSION['tof']; 
 $nom = $_SESSION['nom'];
+$iddocteur = $_SESSION['iddocteur'];
 // Connexion à la base de données
 require_once("../../inc/connexion.php");
 
 // Récupérer tous les patients
-$patientsQuery = $pdo->query("SELECT * FROM patient");
-$patients = $patientsQuery->fetchAll();
+$sql = "SELECT patient.* 
+                        FROM patient 
+                        JOIN consultation ON patient.idpatient = consultation.idpatient 
+                        WHERE consultation.iddocteur = :iddocteur";
+                
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':iddocteur', $iddocteur);
+                $stmt->execute();
+                $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>

@@ -15,8 +15,8 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-// Récupérer l'id du patient à partir de l'email
-$stmt = $pdo->prepare("SELECT idpatient, nom FROM patient WHERE email = :email");
+// Récupérer l'id et les informations du patient à partir de l'email
+$stmt = $pdo->prepare("SELECT idpatient, nom, prenom, tel, email FROM patient WHERE email = :email");
 $stmt->execute(['email' => $email]);
 $patient = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -26,19 +26,14 @@ if (!$patient) {
 
 $idpatient = $patient['idpatient'];
 $nomPatient = $patient['nom'];
+$prenomPatient = $patient['prenom'];
+$telephonePatient = $patient['tel'];
+$emailPatient = $patient['email'];
 
-// Récupérer les dossiermedicals et résultats du patient avec jointures
-$stmt = $pdo->prepare(" 
-    SELECT * 
-    FROM dossiermedical 
-    JOIN resultat ON dossiermedical.idpatient = resultat.idpatient 
-    WHERE dossiermedical.idpatient = :idpatient 
-");
-$stmt->bindParam(':idpatient', $idpatient);
-$stmt->execute();
+// Récupérer les dossiers médicaux à partir de la table consultation
+$stmt = $pdo->prepare("SELECT diagnostic, traitement, typeexamen FROM consultation WHERE idpatient = :idpatient");
+$stmt->execute(['idpatient' => $idpatient]);
 $dossiers = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
 ?>
 
 <!DOCTYPE html>
@@ -46,7 +41,7 @@ $dossiers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dossier Médical de <?php echo htmlspecialchars($nomPatient); ?></title>
+    <title>Dossier Médical de <?php echo htmlspecialchars($nomPatient . ' ' . $prenomPatient); ?></title>
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
@@ -78,20 +73,27 @@ $dossiers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
     <header>
-        <h1>Dossier Médical de <?php echo htmlspecialchars($nomPatient); ?></h1>
+        <h1>Dossier Médical de <?php echo htmlspecialchars($nomPatient . ' ' . $prenomPatient); ?></h1>
     </header>
     <main>
+        <h3>Informations Personnelles</h3>
+        <p><strong>Nom :</strong> <?php echo htmlspecialchars($nomPatient); ?></p>
+        <p><strong>Prénom :</strong> <?php echo htmlspecialchars($prenomPatient); ?></p>
+        <p><strong>Téléphone :</strong> <?php echo htmlspecialchars($telephonePatient); ?></p>
+        <p><strong>Email :</strong> <?php echo htmlspecialchars($emailPatient); ?></p>
+
+        <h3>Historique des Consultations</h3>
         <?php if (count($dossiers) > 0): ?>
             <?php foreach ($dossiers as $dossier): ?>
                 <div class="dossiermedical">
+                <p><strong>Type d'examen :</strong> <?php echo htmlspecialchars($dossier['typeexamen']); ?></p>
                     <p><strong>Diagnostic :</strong> <?php echo htmlspecialchars($dossier['diagnostic']); ?></p>
                     <p><strong>Traitement :</strong> <?php echo htmlspecialchars($dossier['traitement']); ?></p>
-                    <p><strong>Type d'examen :</strong> <?php echo htmlspecialchars($dossier['typeexamen']); ?></p>
-                    <p><strong>Résultat :</strong> <?php echo nl2br(htmlspecialchars($dossier['resultat'])); ?></p>
+                   
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
-            <p>Aucune dossier médical ou résultat trouvé.</p>
+            <p>Aucun dossier médical ou résultat trouvé.</p>
         <?php endif; ?>
     </main>
 </body>

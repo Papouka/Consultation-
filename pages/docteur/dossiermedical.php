@@ -32,7 +32,7 @@ if (isset($_GET['idpatient'])) {
         }
 
         // Récupération de l'ID du spécialiste associé au docteur
-        $idspecialiste = $docteur['idspecialiste']; // Assurez-vous que cette colonne existe dans la table docteur
+        $idspecialiste = $docteur['idspecialiste'];
 
         // Récupération des consultations
         $consultationQuery = $pdo->prepare("SELECT * FROM consultation WHERE idpatient = ?");
@@ -42,16 +42,22 @@ if (isset($_GET['idpatient'])) {
         // Traitement du formulaire d'ajout de consultation
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter'])) {
             // Récupérer les données du formulaire
-            $diagnostic = $_POST['diagnostic'];
-            $traitement = $_POST['traitement'];
+            $diagnostic = $_POST['diagnostic'] ?? '';
+            $traitement = $_POST['traitement'] ?? '';
+            $typeexamen = $_POST['typeexamen'] ?? '';
 
-            // Préparer et exécuter la requête d'insertion
-            $stmt = $pdo->prepare("INSERT INTO consultation (idpatient, iddocteur, idspecialiste, diagnostic, traitement, datedernieremiseajour) VALUES (?, ?, ?, ?, ?, NOW())");
-            $stmt->execute([$idpatient, $iddocteur, $idspecialiste, $diagnostic, $traitement]);
+            // Vérifier que les champs requis sont remplis
+            if (empty($diagnostic)) {
+                echo "Le diagnostic est requis.";
+            } else {
+                // Préparer et exécuter la requête d'insertion
+                $stmt = $pdo->prepare("INSERT INTO consultation (idpatient, iddocteur, idspecialiste, diagnostic, traitement, typeexamen, datedernieremiseajour) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+                $stmt->execute([$idpatient, $iddocteur, $idspecialiste, $diagnostic, $traitement, $typeexamen]);
 
-            // Redirection vers la page des consultations après la mise à jour
-            header("Location: dossiermedical.php?idpatient=" . $idpatient);
-            exit();
+                // Redirection vers la page des consultations après la mise à jour
+                header("Location: dossiermedical.php?idpatient=" . $idpatient);
+                exit();
+            }
         }
 
         // Traitement de la modification de consultation
@@ -98,6 +104,7 @@ if (isset($_GET['idpatient'])) {
                 <li>
                     <strong>Diagnostic :</strong> <?php echo htmlspecialchars($entry['diagnostic']); ?><br>
                     <strong>Traitements :</strong> <?php echo htmlspecialchars($entry['traitement']); ?><br>
+                    <strong>Type d'examen :</strong> <?php echo htmlspecialchars($entry['typeexamen']); ?><br>
                     <strong>Date :</strong> <?php echo htmlspecialchars($entry['datedernieremiseajour']); ?>
                 </li>
             <?php endforeach; ?>
@@ -111,8 +118,6 @@ if (isset($_GET['idpatient'])) {
     <form method="POST" action="">
         <input type="hidden" name="idpatient" value="<?php echo htmlspecialchars($idpatient); ?>">
         <input type="hidden" name="iddocteur" value="<?php echo htmlspecialchars($iddocteur); ?>">
-        
-        <label for="idspecialiste">ID Spécialiste :</label>
         <input type="hidden" name="idspecialiste" value="<?php echo htmlspecialchars($idspecialiste); ?>" readonly>
         
         <label for="diagnostic">Diagnostic :</label>
@@ -120,6 +125,9 @@ if (isset($_GET['idpatient'])) {
         
         <label for="traitement">Traitements :</label>
         <textarea name="traitement"></textarea>
+        
+        <label for="typeexamen">Type examen :</label>
+        <textarea name="typeexamen"></textarea>
         
         <button type="submit" name="ajouter">Sauvegarder</button>
     </form>

@@ -11,28 +11,27 @@ $nom = $_SESSION['nom'];
 // Connexion à la base de données
 require_once("../../inc/connexion.php");
 
-// Préparer et exécuter la requête pour obtenir les informations du docteur associé au patient
+// Préparer et exécuter la requête pour obtenir les informations des docteurs associés au patient
 $stmt = $pdo->prepare(" 
-    SELECT docteur.* 
-    FROM docteur, patient, dossiermedical 
-    WHERE docteur.iddocteur = dossiermedical.iddocteur 
-    AND patient.idpatient = dossiermedical.idpatient 
-    AND patient.idpatient = :idpatient 
+    SELECT docteur.*
+    FROM docteur
+    JOIN consultation ON docteur.iddocteur = consultation.iddocteur 
+    JOIN patient ON patient.idpatient = consultation.idpatient 
+    WHERE patient.idpatient = :idpatient 
 ");
 $stmt->bindParam(':idpatient', $_SESSION['idpatient']);
 $stmt->execute();
 
 // Vérifier si la requête a retourné des résultats
 if ($stmt->rowCount() > 0) {
-    $docteur = $stmt->fetch(PDO::FETCH_ASSOC);
-    // Afficher les informations du docteur
+    $docteurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     ?>
     <!DOCTYPE html>
     <html lang="fr">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Mon Docteur</title>
+        <title>Mes Docteurs</title>
         <link rel="stylesheet" href="../../css/dashboard.css">
         <link rel="stylesheet" href="../../icons/all.min.css">
         <style>
@@ -64,14 +63,21 @@ if ($stmt->rowCount() > 0) {
             </nav>
             <main>
                 <section class="doctor-info">
-                    <h2>Informations sur mon docteur</h2>
-                    <p><strong>Nom :</strong> <?php echo htmlspecialchars($docteur['nom']) . " " . htmlspecialchars($docteur['prenom']); ?></p>
-                    <p><strong>Spécialité :</strong> <?php echo htmlspecialchars($docteur['idspecialiste']); ?></p>
-                    <p><strong>Téléphone :</strong> <?php echo htmlspecialchars($docteur['tel']); ?></p>
-                    <p><strong>Email :</strong> <?php echo htmlspecialchars($docteur['email']); ?></p>
-                    <p><strong>Grade :</strong> <?php echo htmlspecialchars($docteur['grade']); ?></p>
-                    <p><strong>Diplôme :</strong> <?php echo htmlspecialchars($docteur['diplome']); ?></p>
-                    <p><strong>Certificat :</strong> <?php echo htmlspecialchars($docteur['certificat']); ?></p>
+                    
+                    
+                    <h2>Informations sur mes docteurs</h2>
+                    <?php foreach ($docteurs as $docteur): ?>
+                        <div>
+                            <p><strong>Nom :</strong> <?php echo htmlspecialchars($docteur['nom']) . " " . htmlspecialchars($docteur['prenom']); ?></p>
+                            <p><strong>Spécialité :</strong> <?php echo htmlspecialchars($docteur['idspecialiste']); ?></p>
+                            <p><strong>Téléphone :</strong> <?php echo htmlspecialchars($docteur['tel']); ?></p>
+                            <p><strong>Email :</strong> <?php echo htmlspecialchars($docteur['email']); ?></p>
+                            <p><strong>Grade :</strong> <?php echo htmlspecialchars($docteur['grade']); ?></p>
+                            <p><strong>Diplôme :</strong> <?php echo htmlspecialchars($docteur['diplome']); ?></p>
+                            <p><strong>Certificat :</strong> <?php echo htmlspecialchars($docteur['certificat']); ?></p>
+                            <hr>
+                        </div>
+                    <?php endforeach; ?>
                 </section>
             </main>
             <script src="../../js/all.min.js"></script>
@@ -83,4 +89,3 @@ if ($stmt->rowCount() > 0) {
     echo "Aucun docteur trouvé pour ce patient.";
 }
 ?>
-

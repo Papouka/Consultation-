@@ -5,7 +5,8 @@
             <li>
             <a href="pages/specialiste.php?idspecialiste=<?php echo htmlspecialchars($specialiste['idspecialiste']); ?>">
                 <?php echo htmlspecialchars($specialiste['nomspecialiste']); ?>
-            </a>
+            
+</a>
             </li>
              
         <?php endforeach; ?>

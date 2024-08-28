@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['email'])) {
-   header("Location: login.php");
+    header("Location: login.php");
     exit(); 
 }
 
@@ -61,12 +61,15 @@ $iddocteur = $_SESSION['iddocteur'];
                 $pdo = new PDO('mysql:host=localhost;dbname=hosto_bd', 'root', '');
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-                $sql = "SELECT *
+                
+                $sql = "SELECT patient.* 
                         FROM patient 
-                         JOIN rendezvous ON patient.idpatient = rendezvous.idpatient 
-                        ";
+                        JOIN consultation ON patient.idpatient = consultation.idpatient 
+                        WHERE consultation.iddocteur = :iddocteur";
                 
                 $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':iddocteur', $iddocteur);
+                $stmt->execute();
                 $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 if ($patients) {
@@ -81,7 +84,7 @@ $iddocteur = $_SESSION['iddocteur'];
                         echo "</tr>";
                     }
                 } else {
-                    echo "<tr><td colspan='6'>Aucun patient trouvé</td></tr>";
+                    echo "<tr><td colspan='6'>Aucun patient trouvé pour ce docteur</td></tr>";
                 }
             } catch (PDOException $e) {
                 die("Connection failed: " . $e->getMessage());
@@ -100,27 +103,27 @@ $iddocteur = $_SESSION['iddocteur'];
     <script src="../../js/chart.js"></script>
     <script src="../../js/script.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('#userTable').DataTable({
-            "language": {
-                "lengthMenu": "Afficher _MENU_ patients par page",
-                "zeroRecords": "Aucun patient trouvé",
-                "info": "Affichage de la page _PAGE_ sur _PAGES_",
-                "infoEmpty": "Aucun patient disponible",
-                "infoFiltered": "(filtré de _MAX_ patients)",
-                "search": "Rechercher:",
-                "paginate": {
-                    "first": "Premier",
-                    "last": "Dernier",
-                    "next": "Suivant",
-                    "previous": "Précédent"
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#userTable').DataTable({
+                "language": {
+                    "lengthMenu": "Afficher _MENU_ patients par page",
+                    "zeroRecords": "Aucun patient trouvé",
+                    "info": "Affichage de la page _PAGE_ sur _PAGES_",
+                    "infoEmpty": "Aucun patient disponible",
+                    "infoFiltered": "(filtré de _MAX_ patients)",
+                    "search": "Rechercher:",
+                    "paginate": {
+                        "first": "Premier",
+                        "last": "Dernier",
+                        "next": "Suivant",
+                        "previous": "Précédent"
+                    }
                 }
-            }
+            });
         });
-    });
-</script>
+    </script>
 
 </body>
 </html>

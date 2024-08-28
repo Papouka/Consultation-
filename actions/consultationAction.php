@@ -18,7 +18,8 @@ if (isset($_GET['iddocteur'])) {
 // Récupérer les consultations du patient
 try {
     
-    $stmt = $pdo->prepare("SELECT * FROM consultation,docteur WHERE consultation.iddocteur = docteur.iddocteur");
+    $stmt = $pdo->prepare("SELECT * FROM consultation   JOIN docteur  ON consultation.iddocteur = docteur.iddocteur  JOIN specialiste 
+     ON docteur.idspecialiste = specialiste.idspecialiste ");
     $stmt->execute();
     $consultations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {

@@ -159,7 +159,7 @@ $specialistes = $stm1->fetchAll(PDO::FETCH_ASSOC);
         }
 
         button {
-            background-color: #007bff;
+            background-color: hsl(158, 97%, 29%);
             color: white;
             border: none;
             padding: 10px 15px;
@@ -169,7 +169,7 @@ $specialistes = $stm1->fetchAll(PDO::FETCH_ASSOC);
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: green;
             transform: translateY(-2px);
         }
 
