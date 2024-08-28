@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 27 août 2024 à 11:24
+-- Généré le : mer. 28 août 2024 à 05:29
 -- Version du serveur : 10.4.27-MariaDB
 -- Version de PHP : 8.0.25
 
@@ -55,22 +55,45 @@ CREATE TABLE `consultation` (
   `iddocteur` int(11) DEFAULT NULL,
   `idpatient` int(11) DEFAULT NULL,
   `description` text NOT NULL,
-  `duree` time NOT NULL,
+  `duree` varchar(255) NOT NULL,
   `heure` time NOT NULL,
   `dateconsultation` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `diagnostic` varchar(255) NOT NULL,
-  `traitement` varchar(255) NOT NULL
+  `traitement` varchar(255) NOT NULL,
+  `idspecialiste` int(11) NOT NULL,
+  `datedernieremiseajour` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `consultation`
 --
 
-INSERT INTO `consultation` (`idconsultation`, `iddocteur`, `idpatient`, `description`, `duree`, `heure`, `dateconsultation`, `diagnostic`, `traitement`) VALUES
-(1, 0, 0, 'J\'ai mal au ventre ', '12:00:00', '00:00:00', '2024-08-24 11:24:34', '', ''),
-(2, 0, 0, 'J\'ai mal au ventre', '12:00:00', '00:00:00', '2024-08-24 11:24:34', '', ''),
-(3, 0, 0, '', '00:00:00', '12:00:00', '2024-09-11 23:00:00', 'maux de tete', 'paracetamol '),
-(4, 0, 0, 'J\'ai mal à la tête ', '01:05:00', '00:00:00', '2024-08-24 17:06:51', '', '');
+INSERT INTO `consultation` (`idconsultation`, `iddocteur`, `idpatient`, `description`, `duree`, `heure`, `dateconsultation`, `diagnostic`, `traitement`, `idspecialiste`, `datedernieremiseajour`) VALUES
+(7, 0, NULL, 'mal de dos', '00:00:02', '00:00:00', '2024-08-27 20:00:42', '', '', 10, '0000-00-00 00:00:00'),
+(8, 0, NULL, 'mal de dos', '00:00:02', '00:00:00', '2024-08-27 20:02:14', '', '', 10, '0000-00-00 00:00:00'),
+(9, 0, NULL, 'mal de dos', '00:00:02', '00:00:00', '2024-08-27 20:02:25', '', '', 4, '0000-00-00 00:00:00'),
+(10, 0, NULL, 'mal de dos', '00:00:02', '00:00:00', '2024-08-27 20:02:37', '', '', 4, '0000-00-00 00:00:00'),
+(11, 0, NULL, 'mal de dos', '00:00:02', '00:00:00', '2024-08-27 20:07:21', '', '', 4, '0000-00-00 00:00:00'),
+(12, 0, NULL, 'MAL de dos', '00:00:02', '00:00:00', '2024-08-27 20:07:52', '', '', 4, '0000-00-00 00:00:00'),
+(13, 0, NULL, 'MAL de dos', '00:00:02', '00:00:00', '2024-08-27 20:09:51', '', '', 4, '0000-00-00 00:00:00'),
+(14, 0, NULL, 'kl', '00:00:02', '00:00:00', '2024-08-27 20:17:08', '', '', 4, '0000-00-00 00:00:00'),
+(15, 0, NULL, '3R', '00:00:02', '00:00:00', '2024-08-27 20:19:42', '', '', 1, '0000-00-00 00:00:00'),
+(16, 0, NULL, '3R', '00:00:02', '00:00:00', '2024-08-27 20:19:54', '', '', 1, '0000-00-00 00:00:00'),
+(17, 0, NULL, '3ZAD', '00:00:02', '00:00:00', '2024-08-27 20:20:46', '', '', 4, '0000-00-00 00:00:00'),
+(18, 0, NULL, 'kù', '00:00:02', '00:00:00', '2024-08-27 20:28:34', '', '', 4, '0000-00-00 00:00:00'),
+(19, 0, NULL, 'kù', '00:00:02', '00:00:00', '2024-08-27 20:29:11', '', '', 4, '0000-00-00 00:00:00'),
+(20, 0, NULL, 'kù', '00:00:02', '00:00:00', '2024-08-27 20:29:21', '', '', 1, '0000-00-00 00:00:00'),
+(21, 0, NULL, 'kù', '00:00:02', '00:00:00', '2024-08-27 20:29:26', '', '', 1, '0000-00-00 00:00:00'),
+(22, 0, NULL, 'mal  des yeux', '1jour', '00:00:00', '2024-08-27 23:40:54', '', '', 1, '0000-00-00 00:00:00'),
+(23, NULL, 26, 'mal des yeux ', '2jours', '00:00:00', '2024-08-28 00:11:26', '', '', 1, '0000-00-00 00:00:00'),
+(24, NULL, 26, 'lm', '1jour', '00:00:00', '2024-08-28 00:31:36', '', '', 1, '0000-00-00 00:00:00'),
+(25, NULL, 26, 'yeux ', '2jours', '00:00:00', '2024-08-28 01:10:38', '', '', 1, '0000-00-00 00:00:00'),
+(26, NULL, 26, 'yeux ', '2jours', '00:00:00', '2024-08-28 01:12:03', '', '', 1, '0000-00-00 00:00:00'),
+(27, NULL, 26, 'mal de ventre', '1jour', '00:00:00', '2024-08-28 01:42:44', '', '', 4, '0000-00-00 00:00:00'),
+(28, NULL, 26, 'mal de ventre', '1jour', '00:00:00', '2024-08-28 01:45:28', '', '', 4, '0000-00-00 00:00:00'),
+(29, 18, 26, 'mal de ventre', '1jour', '00:00:00', '2024-08-28 03:19:57', '', '', 4, '0000-00-00 00:00:00'),
+(33, 16, 26, '', '', '00:00:00', '2024-08-28 02:51:53', 'vhkln :k', 'nkl', 4, '2024-08-28 03:51:53'),
+(34, 16, 27, '', '', '00:00:00', '2024-08-28 03:16:14', 'zadrfa', 'rfaz', 4, '2024-08-28 04:16:14');
 
 -- --------------------------------------------------------
 
@@ -130,7 +153,8 @@ INSERT INTO `docteur` (`iddocteur`, `nom`, `prenom`, `tel`, `email`, `cni`, `tof
 (17, 'EBAMI', 'manou', 2147483647, 'mane@gmail.com', 'img/16.jpg', 'img/15.jpg', 1, 'Infirmier', 'img/18.jpg', 'img/17.jpg', 0, '$2y$10$lg4ZW'),
 (18, 'PAPOUKA', 'lory', 653861183, 'papouka@gmail.com', 'img/17.jpg', 'img/16.jpg', 4, 'Docteur', 'img/12.jpg', 'img/14.jpg', 0, '$2y$10$eqz2r'),
 (19, 'PAPOUKA', 'lory', 653861183, 'papouk@gmail.com', 'img/17.jpg', 'img/16.jpg', 4, 'Aide soignante ', 'img/12.jpg', 'img/14.jpg', 6, '$2y$10$Q0Ujr'),
-(20, 'PAPOUKA', 'lory', 653861183, 'pouka@gmail.com', 'img/12.jpg', 'img/13.jpg', 6, 'infirmier ', 'img/17.jpg', 'img/12.jpg', 19, '$2y$10$0DRIG');
+(20, 'PAPOUKA', 'lory', 653861183, 'pouka@gmail.com', 'img/12.jpg', 'img/13.jpg', 6, 'infirmier ', 'img/17.jpg', 'img/12.jpg', 19, '$2y$10$0DRIG'),
+(21, 'ANDON', 'Rachella', 653861183, 'rachella@gmail.com', 'img/Capture d\'écran 2024-08-05 110219.png', 'img/Capture d\'écran 2024-08-02 100052.png', 1, 'docteur', 'img/papouka.pdf', 'img/cahiers de charge.pdf', 5, '$2y$10$vpzPu');
 
 -- --------------------------------------------------------
 
@@ -146,19 +170,20 @@ CREATE TABLE `dossiermedical` (
   `historique` text NOT NULL,
   `diagnostic` text NOT NULL,
   `traitement` text NOT NULL,
-  `datedernieremiseajour` datetime NOT NULL
+  `datedernieremiseajour` datetime NOT NULL,
+  `idresultat` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `dossiermedical`
 --
 
-INSERT INTO `dossiermedical` (`iddossier`, `idpatient`, `iddocteur`, `datecreation`, `historique`, `diagnostic`, `traitement`, `datedernieremiseajour`) VALUES
-(1, 28, 0, '0000-00-00 00:00:00', '', '', '', '0000-00-00 00:00:00'),
-(2, 32, 0, '0000-00-00 00:00:00', '', '', '', '0000-00-00 00:00:00'),
-(3, 26, 0, '0000-00-00 00:00:00', '', 'mal de ventre', 'metro', '2024-08-26 11:31:22'),
-(4, 28, 0, '0000-00-00 00:00:00', '', 'hjkl', 'jlnk', '2024-08-26 15:58:56'),
-(5, 33, 0, '0000-00-00 00:00:00', '', 'Mal de ventre', 'metro', '2024-08-26 16:02:18');
+INSERT INTO `dossiermedical` (`iddossier`, `idpatient`, `iddocteur`, `datecreation`, `historique`, `diagnostic`, `traitement`, `datedernieremiseajour`, `idresultat`) VALUES
+(12, 26, 16, '0000-00-00 00:00:00', '', 'palu', 'paracetamol', '2024-08-27 17:16:29', NULL),
+(13, 27, 16, '0000-00-00 00:00:00', '', 'Cholera', 'remède', '2024-08-27 17:20:51', NULL),
+(14, 33, 16, '0000-00-00 00:00:00', '', 'Palu', 'paracétamol ', '2024-08-27 17:25:10', NULL),
+(15, 26, 16, '0000-00-00 00:00:00', '', 'palu', 'paracétamol ', '2024-08-28 03:13:34', NULL),
+(16, 26, 16, '0000-00-00 00:00:00', '', 'cholera', 'remède', '2024-08-28 03:29:13', NULL);
 
 -- --------------------------------------------------------
 
@@ -239,7 +264,10 @@ CREATE TABLE `rendezvous` (
 
 INSERT INTO `rendezvous` (`idrendezvous`, `iddocteur`, `idcreneau`, `idpatient`, `motif`) VALUES
 (13, 18, 2, 26, 'ujkqzdnhmoqs'),
-(14, 18, 2, 26, 'TDFCYKHFVOL');
+(14, 18, 2, 26, 'TDFCYKHFVOL'),
+(31, 20, 6, 26, ';;;;;;;:chb'),
+(32, 18, 3, 28, 'NJK?'),
+(33, 20, 6, 26, 'yhki');
 
 -- --------------------------------------------------------
 
@@ -264,7 +292,10 @@ INSERT INTO `resultat` (`idresultat`, `idpatient`, `typeexamen`, `resultat`, `da
 (2, 33, 'sang', 'tout va bien', '2024-08-26'),
 (3, 26, 'sang', 'TOUT VA BIEN', '2024-08-26'),
 (4, 26, 'sang', 'TOUT VA BIEN', '2024-08-26'),
-(5, 33, 'sang', 'ça va\r\n', '2024-08-26');
+(5, 33, 'sang', 'ça va\r\n', '2024-08-26'),
+(6, 33, 'sang', 'TOUT VA BIEN', '2024-08-27'),
+(7, 33, 'sang', 'TOUT VA BIEN', '2024-08-27'),
+(8, 33, 'sang', 'TOUT VA BIEN', '2024-08-27');
 
 -- --------------------------------------------------------
 
@@ -307,7 +338,8 @@ ALTER TABLE `administrateur`
 ALTER TABLE `consultation`
   ADD PRIMARY KEY (`idconsultation`),
   ADD KEY `iddocteur` (`iddocteur`),
-  ADD KEY `idpatient` (`idpatient`);
+  ADD KEY `idpatient` (`idpatient`),
+  ADD KEY `idspecialiste` (`idspecialiste`);
 
 --
 -- Index pour la table `creneaux`
@@ -328,7 +360,9 @@ ALTER TABLE `docteur`
 --
 ALTER TABLE `dossiermedical`
   ADD PRIMARY KEY (`iddossier`),
-  ADD KEY `idpatient` (`idpatient`);
+  ADD KEY `idpatient` (`idpatient`),
+  ADD KEY `iddocteur` (`iddocteur`),
+  ADD KEY `idresultat` (`idresultat`);
 
 --
 -- Index pour la table `ordonnance`
@@ -379,7 +413,7 @@ ALTER TABLE `administrateur`
 -- AUTO_INCREMENT pour la table `consultation`
 --
 ALTER TABLE `consultation`
-  MODIFY `idconsultation` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idconsultation` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT pour la table `creneaux`
@@ -391,13 +425,13 @@ ALTER TABLE `creneaux`
 -- AUTO_INCREMENT pour la table `docteur`
 --
 ALTER TABLE `docteur`
-  MODIFY `iddocteur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `iddocteur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT pour la table `dossiermedical`
 --
 ALTER TABLE `dossiermedical`
-  MODIFY `iddossier` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `iddossier` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT pour la table `ordonnance`
@@ -415,13 +449,13 @@ ALTER TABLE `patient`
 -- AUTO_INCREMENT pour la table `rendezvous`
 --
 ALTER TABLE `rendezvous`
-  MODIFY `idrendezvous` int(25) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `idrendezvous` int(25) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT pour la table `resultat`
 --
 ALTER TABLE `resultat`
-  MODIFY `idresultat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `idresultat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT pour la table `specialiste`
@@ -438,7 +472,8 @@ ALTER TABLE `specialiste`
 --
 ALTER TABLE `consultation`
   ADD CONSTRAINT `consultation_ibfk_1` FOREIGN KEY (`iddocteur`) REFERENCES `docteur` (`iddocteur`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `consultation_ibfk_2` FOREIGN KEY (`idpatient`) REFERENCES `patient` (`idpatient`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `consultation_ibfk_2` FOREIGN KEY (`idpatient`) REFERENCES `patient` (`idpatient`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `consultation_ibfk_3` FOREIGN KEY (`idspecialiste`) REFERENCES `specialiste` (`idspecialiste`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `creneaux`
@@ -456,7 +491,9 @@ ALTER TABLE `docteur`
 -- Contraintes pour la table `dossiermedical`
 --
 ALTER TABLE `dossiermedical`
-  ADD CONSTRAINT `dossiermedical_ibfk_1` FOREIGN KEY (`idpatient`) REFERENCES `patient` (`idpatient`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `dossiermedical_ibfk_1` FOREIGN KEY (`idpatient`) REFERENCES `patient` (`idpatient`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `dossiermedical_ibfk_2` FOREIGN KEY (`iddocteur`) REFERENCES `docteur` (`iddocteur`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `dossiermedical_ibfk_3` FOREIGN KEY (`idresultat`) REFERENCES `resultat` (`idresultat`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `patient`

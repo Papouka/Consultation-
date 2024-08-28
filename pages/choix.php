@@ -108,7 +108,7 @@ header("Location: ../pages/patient/rendezvous.php?iddocteur=$iddocteur");
                     <p><label for=""> Prénom: </label><?php echo htmlspecialchars($doc['prenom']); ?></p>
                     <p><label for=""> Email: </label><?php echo htmlspecialchars($doc['email']); ?></p>
                     <p><label for=""> Numéro de téléphone: </label><?php echo htmlspecialchars($doc['tel']); ?></p>
-                    <p><label for="">ID Docteur: </label><?php echo htmlspecialchars($doc['iddocteur']); ?></p>
+                   
 
                 </div>
                 <div id="myModal<?php echo $index; ?>" class="modal">
