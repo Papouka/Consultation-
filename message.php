@@ -1,6 +1,6 @@
 
 <?php
-
+session_start();
 $_SESSION['iddocteur'] = 16;
 $_SESSION['idpatient'] = 26; 
 
@@ -12,7 +12,8 @@ try {
 }
 
 if (!isset($_SESSION['iddocteur']) || !isset($_SESSION['idpatient'])) {
-   
+    header("Location: page_d_erreur.php"); // Redirigez vers une page d'erreur si les variables de session ne sont pas définies
+    exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -35,13 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':iddocteur', $iddocteur);
         $stmt->bindParam(':message', $message);
         $stmt->execute();
-        
+        header("Location: message.php");
         exit();
     } catch (PDOException $e) {
         echo "Erreur lors de l'envoi du message : " . $e->getMessage();
     }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -53,36 +53,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <div class="chat-box">
     <p class="day"><span>Aujourd'hui</span></p>
-    <?php
-       try {
-        $stmt = $pdo->prepare("SELECT * FROM message WHERE idpatient = :idpatient AND iddocteur = :iddocteur ORDER BY dateenvoie DESC");
-        $stmt->bindParam(':idpatient', $_SESSION['idpatient']);
-        $stmt->bindParam(':iddocteur', $_SESSION['iddocteur']);
-        $stmt->execute();
-        $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if ($messages) {
-            foreach ($messages as $msg) {
-                echo "<div><strong>Vous :</strong> " . htmlspecialchars($msg['message']) . " <em>(" . htmlspecialchars($msg['dateenvoie']) . ")</em></div>";
-            }
-        } else {
-            echo "<p>Aucun message échangé pour le moment.</p>";
-        }
-    } catch (PDOException $e) {
-        echo "Erreur lors de la récupération des messages : " . $e->getMessage();
-    }
-        
-        ?>
+    
     <div id="messages"></div>
 
-    <form id="chat-form" action="accueil.php" method="POST">
+    <form id="chat-form" action="message.php" method="POST">
         <div class="form-group">
             <input type="text" name="message" id="message" placeholder="Tapez votre message..." required>
             <button type="submit" class="btn-send"><i class="bx bxs-send"></i></button>
         </div>
     </form>
 
-       
-       
+        <h2>Messages</h2>
+        <?php
+        // Affichage des messages
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM message WHERE idpatient = :idpatient AND iddocteur = :iddocteur ORDER BY dateenvoie DESC");
+            $stmt->bindParam(':idpatient', $_SESSION['idpatient']);
+            $stmt->bindParam(':iddocteur', $_SESSION['iddocteur']);
+            $stmt->execute();
+            $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($messages) {
+                foreach ($messages as $msg) {
+                    echo "<div><strong>Vous :</strong> " . htmlspecialchars($msg['message']) . " <em>(" . htmlspecialchars($msg['dateenvoie']) . ")</em></div>";
+                }
+            } else {
+                echo "<p>Aucun message échangé pour le moment.</p>";
+            }
+        } catch (PDOException $e) {
+            echo "Erreur lors de la récupération des messages : " . $e->getMessage();
+        }
+        ?>
     </div>
 </body>
 </html>

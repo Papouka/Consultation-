@@ -7,20 +7,19 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 $tof = $_SESSION['tof'];
 $nom = $_SESSION['nom'];
-
+$idpatient = $_SESSION['idpatient'];
 // Connexion à la base de données
 require_once("../../inc/connexion.php");
 
 // Préparer et exécuter la requête pour obtenir les informations des docteurs associés au patient
-$stmt = $pdo->prepare(" 
-    SELECT docteur.*
-    FROM docteur
-    JOIN consultation ON docteur.iddocteur = consultation.iddocteur 
-    JOIN patient ON patient.idpatient = consultation.idpatient 
-    WHERE patient.idpatient = :idpatient 
-");
-$stmt->bindParam(':idpatient', $_SESSION['idpatient']);
-$stmt->execute();
+$stmt = $pdo->prepare("SELECT DISTINCT docteur.* 
+                        FROM docteur, consultation,patient 
+                        WHERE docteur.iddocteur = consultation.iddocteur 
+                        AND consultation.idpatient= patient.idpatient 
+                        AND consultation.idpatient= :idpatient"
+    );
+    $stmt->bindParam(':idpatient', $idpatient);
+    $stmt->execute();
 
 // Vérifier si la requête a retourné des résultats
 if ($stmt->rowCount() > 0) {

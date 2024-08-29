@@ -46,7 +46,7 @@ if ($role == "docteur") {
                 <li><a href="">Annuler un rendez-vous</a></li>
             </ul>
           </li>
-          <li> <a href="../pages/patient/mondocteur.php"><i class="fas fa-heart icon"></i> Mon docteur </a>  </li>
+          <li> <a href="../pages/patient/mondocteur.php?idpatient=<?php echo $_SESSION['idpatient']; ?>"><i class="fas fa-heart icon"></i> Mon docteur </a>  </li>
           <li> <a href="../pages/patient/dossier.php"><i class="fas fa-heart icon"></i> Mon dossier medical </a>  </li>
           
 <?php } else if ($role == "administrateur") {?>
