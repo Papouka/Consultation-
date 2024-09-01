@@ -1,13 +1,12 @@
 <?php
 session_start();
-
 if (!isset($_SESSION['email'])) {
     header("Location: login.php");
-    exit(); 
+    exit();
 }
 
 $email = $_SESSION['email'];
-$tof = $_SESSION['tof']; 
+$tof = $_SESSION['tof'];
 $nom = $_SESSION['nom'];
 
 require_once("../../inc/connexion.php");
@@ -42,13 +41,23 @@ if (isset($_POST['submit'])) {
                         'docteur' => $docteur,
                         'date' => date('Y-m-d')
                     ];
+
+                    // Générer le PDF
+                    require_once("../../inc/dompdf/autoload.inc.php");
+ // Assurez-vous que le chemin est correct
+                    $dompdf = new Dompdf\Dompdf();
+                    $dompdf->loadHtml(viewOrdonnance($ordonnanceDetails));
+                    $dompdf->setPaper('A4', 'portrait'); // Optionnel : définir le format de papier
+                    $dompdf->render();
+                    $dompdf->stream("ordonnance.pdf", ["Attachment" => false]); // Affiche le PDF dans le navigateur
+
                 } else {
                     $msgErreur = "Échec de l'insertion de l'ordonnance.";
                     $errorInfo = $insert->errorInfo();
-                    echo "Erreur SQL: " . $errorInfo[2]; // Afficher l'erreur SQL
+                    echo "Erreur SQL: " . htmlspecialchars($errorInfo[2]); // Afficher l'erreur SQL
                 }
             } catch (PDOException $e) {
-                $msgErreur = "Erreur: " . $e->getMessage();
+                $msgErreur = "Erreur: " . htmlspecialchars($e->getMessage());
             }
         } else {
             $msgErreur = "Tous les champs sont requis.";
@@ -56,4 +65,24 @@ if (isset($_POST['submit'])) {
     }
 }
 
+// Fonction pour générer le contenu HTML de l'ordonnance
+function viewOrdonnance($ordonnanceDetails) {
+    $html = '<h1>Ordonnance médicale</h1>';
+    $html .= '<p>Nom du patient : ' . htmlspecialchars($ordonnanceDetails['patient']) . '</p>';
+    $html .= '<p>Date de naissance : ' . htmlspecialchars($ordonnanceDetails['dob']) . '</p>';
+    $html .= '<p>Médicament : ' . htmlspecialchars($ordonnanceDetails['medicament']) . '</p>';
+    $html .= '<p>Dosage : ' . htmlspecialchars($ordonnanceDetails['dosage']) . '</p>';
+    $html .= '<p>Posologie : ' . htmlspecialchars($ordonnanceDetails['posologie']) . '</p>';
+    $html .= '<p>Docteur : ' . htmlspecialchars($ordonnanceDetails['docteur']) . '</p>';
+    $html .= '<p>Date : ' . htmlspecialchars($ordonnanceDetails['date']) . '</p>';
+    return $html;
+}
+
+// Affichage des messages
+if (!empty($msgSuccess)) {
+    echo "<div class='success'>$msgSuccess</div>";
+}
+if (!empty($msgErreur)) {
+    echo "<div class='error'>$msgErreur</div>";
+}
 ?>

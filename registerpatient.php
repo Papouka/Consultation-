@@ -64,106 +64,102 @@ $stmt->execute();
 $specialiste = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, in itial-scale=1.0">
-    <link rel="stylesheet" href="icons/all.min.css">
-    <script src="js/all.min.js"></script>
-    <link rel="stylesheet" href="css/patient.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire d'Inscription</title>
+    <link rel="stylesheet" href="../icons/all.min.css">
     <link rel="stylesheet" href="css/index.css">
-    
-    <title>Document</title>
-    
-</head>
-<style>
-   
-.site {
-  font-family: Arial, sans-serif;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),url(img/30.jpg);
+    <script src="../js/all.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e9ecef;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .site {
+            max-width: 800px;
+            height: auto;
+            margin: auto;
+            margin-top: 5vh;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            font-family: Arial, sans-serif;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),url(img/30.jpg);
             background-size: cover;
             background-position: center;
 }
+        h2 {
+            color: #343a40;
+        }
 
-.contain {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 20px;
- 
-}
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #495057;
+        }
 
-.form-box {
-    margin-top: 10%;
-  width: 100%;
-  padding: 20px;
-}
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
 
-.form {
-    width: 40pc;
-    background: white; 
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px hsl(158, 97%, 29%);
-            text-align: center;
-}
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
 
-.form > div {
-  margin-bottom: 20px;
-}
+        button {
+            background-color: hsl(158, 97%, 29%);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
 
-.form input[type="text"],
-.form input[type="tel"],
-.form input[type="email"],
-.form input[type="password"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #fff;
-}
+        button:hover {
+            background-color: green;
+            transform: translateY(-2px);
+        }
 
-.form label {
-  margin-bottom: 10px;
-  color: white;
-}
-
-.btn-group {
-  text-align: center;
-}
-
-.btn-submit {
-  background-color: #4CAF50;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.btn-submit:hover {
-  background-color: #3e8e41;
-}
-
-.error-message {
-  color: red;
-  margin-bottom: 20px;
-}
-
-
-</style>
+        .error-message {
+            color: #f44336;
+            background-color: #f8d7da;
+            padding: 10px;
+            border: 1px solid #f44336;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
 <body>
-    
-<header>
-<?php include("inc/header.php"); ?>
+    <header>
+        <?php include("inc/header.php"); ?>
     </header>
-
-    <div id="page" class="site">
-        <div class="contain">
-            <div class="form-box">
-                
-                <form action="" method="POST" enctype="multipart/form-data">
+    <div class="container">
+        
+<form class="site" action="" method="POST" enctype="multipart/form-data">
                     <div class="form one form-step active">
                         <h2>Entrer vos informations personnelles</h2>
                         <div>
@@ -199,12 +195,12 @@ $specialiste = $stmt->fetchAll(PDO::FETCH_ASSOC);
                        <a href="pages/symptome.php"> <button type="submit" name="submit" class="btn-submit" >ENVOYER</button> </a>
                     </div>
                 </form>
-                
-                <?php if ($msgErreur): ?>
-                    <div class="error-message"><?php echo $msgErreur; ?></div>
-                <?php endif; ?>
-            </div>
-        </div>
     </div>
+    
 
+    <footer>
+    <?php include("inc/footer.php"); ?>
+</footer>
 <script src="js/accueil.js"></script>
+</body>
+</html>

@@ -62,10 +62,10 @@ $iddocteur = $_SESSION['iddocteur'];
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         
-                $stmt = $pdo->prepare("SELECT DISTINCT patient.* FROM patient, consultation,docteur 
-                WHERE patient.idpatient = consultation.idpatient 
-                AND consultation.iddocteur= docteur.iddocteur
-                        AND consultation.iddocteur= :iddocteur");
+                $stmt = $pdo->prepare("SELECT patient.* 
+                        FROM patient 
+                        JOIN consultation ON patient.idpatient = consultation.idpatient 
+                        WHERE consultation.iddocteur = :iddocteur");
                 $stmt->bindParam(':iddocteur', $iddocteur);
                 $stmt->execute();
                 $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);

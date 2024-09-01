@@ -241,7 +241,8 @@ $specialistes = $stm1->fetchAll(PDO::FETCH_ASSOC);
         </form>
     </div>
     <footer>
-        <?php include("inc/footer.php"); ?>
-    </footer>
+    <?php include("inc/footer.php"); ?>
+</footer>
+<script src="js/accueil.js"></script>
 </body>
 </html>

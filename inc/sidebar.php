@@ -22,10 +22,10 @@ if ($role == "docteur") {
        
     </li>
     
-    <li><a href="../pages/docteur/resultat.php"><i class="fas fa-paperclip icon"></i>Envoies des resultats</a></li>
+    <li><a href="../pages/docteur/resultat.php"><i class="fas fa-paperclip icon"></i>Envoies des examens</a></li>
     <li><a href="../pages/patient/ordonnance.php"><i class="fas fa-paperclip icon"></i> Ordonnance</a></li>
     <li><a href="../pages/docteur/creneaux.php"><i class="fas fa-paperclip icon"></i> Mes creneaux horaires</a></li>
-    <li><a href=""><i class="fa fa-table icon" aria-hidden="true"></i> Prise de rendez-vous</a></li>
+    <li><a href="../pages/docteur/priserendezvous.php"><i class="fa fa-table icon" aria-hidden="true"></i> Mes rendez-vous</a></li>
     <li>
             <a href="../pages/docteur/mespatients.php"><i class="fas fa-notes-medical icon"></i> Mes patients <i class="fa fa-chevron-right icon-right" aria-hidden="true"></i></a>
             
@@ -37,15 +37,8 @@ if ($role == "docteur") {
         <a href="../pages/patient/consultation.php"><i class="fa fa-inbox icon" aria-hidden="true"></i>Voir mes consultations<i class="fa fa-chevron-right icon-right" aria-hidden="true"></i></a>
        
     </li>
-    <li><a href="../pages/patient/rendezvous.php"><i class="fa fa-table icon" aria-hidden="true"></i> Prise de rendez-vous</a></li>
- <li>
-    
-            <a href=""><i class="fas fa-heart icon"></i> Mes Rendez-vous <i class="fa fa-chevron-right icon-right" aria-hidden="true"></i></a>
-            <ul class="side-dropdown">
-                <li><a href="">Voir mes rendez-vous</a></li>
-                <li><a href="">Annuler un rendez-vous</a></li>
-            </ul>
-          </li>
+    <li><a href="../pages/patient/rendezvous.php"><i class="fa fa-table icon" aria-hidden="true"></i> Demande de rendez-vous</a></li>
+ 
           <li> <a href="../pages/patient/mondocteur.php?idpatient=<?php echo $_SESSION['idpatient']; ?>"><i class="fas fa-heart icon"></i> Mon docteur </a>  </li>
           <li> <a href="../pages/patient/dossier.php"><i class="fas fa-heart icon"></i> Mon dossier medical </a>  </li>
           

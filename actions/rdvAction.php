@@ -18,15 +18,13 @@ $msgErreur = '';
 
 if (isset($_POST['submit'])) {
     if (isset($_POST['iddocteur'], $_POST['idcreneau'], $_POST['motif'])) {
-        if (!empty($_POST['iddocteur']) && !empty($_POST['idcreneau']) && !empty($_POST['motif'])) {
-            
-            $iddocteur = $_POST["iddocteur"];
-            $idcreneau = $_POST["idcreneau"];
-            $motif = $_POST["motif"];
+        $iddocteur = $_POST["iddocteur"];
+        $idcreneau = $_POST["idcreneau"];
+        $motif = $_POST["motif"];
 
-            // Vérifiez si idcreneau existe dans la table creneaux
+        if (!empty($iddocteur) && !empty($idcreneau) && !empty($motif)) {
             $checkCreneau = $pdo->prepare("SELECT * FROM creneaux WHERE idcreneau = :idcreneau");
-            $checkCreneau->bindParam(":idcreneau", $idcreneau);// lier la variable à la valeur
+            $checkCreneau->bindParam(":idcreneau", $idcreneau);
             $checkCreneau->execute();
 
             if ($checkCreneau->rowCount() > 0) {
@@ -54,21 +52,26 @@ if (isset($_POST['submit'])) {
     }
 }
 
-$iddoc = $_GET['iddocteur'];
-$sql1 = "SELECT nom FROM docteur WHERE iddocteur = :iddoc";
-$stm1 = $pdo->prepare($sql1);
-$stm1->bindParam(":iddoc", $iddoc);
-$stm1->execute();
-$docteur = $stm1->fetch(PDO::FETCH_ASSOC);
-$docta = $docteur['nom'];
+// Récupération des informations du docteur
+$iddoc = $_GET['iddocteur'] ?? null;
+if ($iddoc) {
+    $sql1 = "SELECT nom FROM docteur WHERE iddocteur = :iddoc";
+    $stm1 = $pdo->prepare($sql1);
+    $stm1->bindParam(":iddoc", $iddoc);
+    $stm1->execute();
+    $docteur = $stm1->fetch(PDO::FETCH_ASSOC);
+    $docta = $docteur['nom'] ;
+}
 
+// Récupération des informations du patient
 $sql2 = "SELECT nom FROM patient WHERE idpatient = :idpat";
 $stm2 = $pdo->prepare($sql2);
 $stm2->bindParam(":idpat", $idpatient);
 $stm2->execute();
 $patient = $stm2->fetch(PDO::FETCH_ASSOC);
-$pat = $patient['nom'];
+$pat = $patient['nom'] ;
 
+// Récupération des créneaux
 $stmt = $pdo->prepare("SELECT idcreneau, date, heure_debut, heure_fin FROM creneaux WHERE iddocteur = :iddocteur");
 $stmt->execute([':iddocteur' => $iddoc]);
 $creneaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
