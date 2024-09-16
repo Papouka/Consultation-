@@ -1,0 +1,31 @@
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 110vh;
+    background-image:linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),url(../img/29.jpg) ;
+    background-size: cover;
+    background-position: center;
+    margin: 0;
+}
+
+.button {
+    padding: 15px 30px;
+    margin: 10px;
+    font-size: 24px;
+    color: white;
+    background-color: hsl(158, 97%, 29%);
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+.button:hover {
+    background-color: #00b324a7;
+    transform: translateY(-2px);
+}
+.button:active {
+    transform: translateY(1px);
+}
