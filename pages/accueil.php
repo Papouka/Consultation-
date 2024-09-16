@@ -46,7 +46,7 @@ $nom = $_SESSION['nom'];
             </div>
             <div class="data">
                 <?php include("../inc/chart.php"); ?>
-                 <!-- <?php include("../pages/chat/chat.php"); ?>  -->
+                 <?php include("../pages/chat/chat.php"); ?> 
             </div>   
         </main>
     </section>

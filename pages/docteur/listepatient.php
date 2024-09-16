@@ -14,7 +14,7 @@ $iddocteur = $_SESSION['iddocteur'];
 require_once("../../inc/connexion.php");
 
 // Récupérer tous les patients
-$sql = "SELECT patient.* 
+$sql = "SELECT DISTINCT patient.* 
                         FROM patient 
                         JOIN consultation ON patient.idpatient = consultation.idpatient 
                         WHERE consultation.iddocteur = :iddocteur";

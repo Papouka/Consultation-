@@ -1,0 +1,12 @@
+{
+    "name": "tchuisseu/projet",
+    "authors": [
+        {
+            "name": "dolceamor",
+            "email": "blanchetchuisseu@gmail.com"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.9"
+    }
+}

@@ -14,8 +14,11 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
-// Récupérer l'ID du médecin à partir de la session
-$iddoct = $_SESSION['iddocteur']; // Assurez-vous que l'ID du médecin est stocké dans la session
+
+$email = $_SESSION['email'];
+$tof = $_SESSION['tof']; 
+$nom = $_SESSION['nom'];
+$iddoct = $_SESSION['iddocteur']; 
 
 // Récupérer la liste des rendez-vous pour le médecin
 $stmt = $pdo->prepare("SELECT * FROM consultation   JOIN patient  ON consultation.idpatient = patient.idpatient   
@@ -30,6 +33,8 @@ $rendezvous = $stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des Rendez-vous</title>
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../icons/all.min.css">
     <link rel="stylesheet" href="styles.css"> <!-- Lien vers votre fichier CSS -->
 </head>
 <style>
@@ -60,6 +65,13 @@ th {
 }
 </style>
 <body>
+<section id="sidebar">
+        <?php include("../../inc/sidebar2.php"); ?>
+    </section>
+    <section id="content">
+        <nav>
+            <?php include("../../inc/nav2.php"); ?>
+        </nav>
     <h1>Liste de vos Rendez-vous</h1>
     <table>
         <thead>
@@ -88,5 +100,8 @@ th {
             <?php endif; ?>
         </tbody>
     </table>
+    <script src="../../js/all.min.js"></script>
+    <script src="../../js/chart.js"></script>
+    <script src="../../js/script.js"></script>
 </body>
 </html>

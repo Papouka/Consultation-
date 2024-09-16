@@ -116,7 +116,7 @@ header("Location: ../pages/patient/rendezvous.php?iddocteur=$iddocteur");
                         <span class="close" data-index="<?php echo $index; ?>">&times;</span>
                         <h3>Mes informations</h3>
                         <p><label class="lor">Diplôme: </label><?php echo htmlspecialchars($doc['diplome']); ?></p>
-                        <p><label class="lor">Grade: </label><?php echo htmlspecialchars($doc['grade']); ?></p>
+                        <p><label class="lor">Ville: </label><?php echo htmlspecialchars($doc['ville']); ?></p>
                         <p><label class="lor">Année d'expérience: </label><?php echo htmlspecialchars($doc['experience']); ?> ans</p>
                     </div>
                 </div>

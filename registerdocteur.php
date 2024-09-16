@@ -16,13 +16,13 @@ try {
 if (isset($_POST['submit'])) {
     if (isset($_POST['nom'], $_POST['prenom'], $_POST['tel'], $_POST['email'], 
               $_FILES['tof'], $_FILES['cni'], $_POST['idspecialiste'], 
-              $_POST['grade'], $_FILES['diplome'], $_FILES['certificat'], 
+              $_POST['ville'], $_FILES['diplome'], $_FILES['certificat'], 
               $_POST['experience'], $_POST['mdp'])) {
         
         // Vérification des champs requis
         if (!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['tel']) && 
             !empty($_POST['email']) && !empty($_POST['idspecialiste']) && 
-            !empty($_POST['grade']) && !empty($_POST['experience']) && 
+            !empty($_POST['ville']) && !empty($_POST['experience']) && 
             !empty($_POST['mdp'])) {
             
             $nom = $_POST["nom"];
@@ -30,7 +30,7 @@ if (isset($_POST['submit'])) {
             $tel = $_POST["tel"];
             $email = $_POST["email"];
             $idspecialiste = $_POST["idspecialiste"];
-            $grade = $_POST["grade"];
+            $ville = $_POST["ville"];
             $experience = $_POST["experience"];
             $mdp = password_hash($_POST["mdp"], PASSWORD_DEFAULT);
             
@@ -78,8 +78,8 @@ if (isset($_POST['submit'])) {
                 } else {
                     // Insertion des données dans la base de données
                     try {
-                        $insert = $pdo->prepare("INSERT INTO docteur (nom, prenom, tel, email, tof, cni, idspecialiste, grade, diplome, certificat, experience, mdp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                        $insert->execute([$nom, $prenom, $tel, $email, $tofPath, $cniPath, $idspecialiste, $grade, $diplomePath, $certificatPath, $experience, $mdp]);
+                        $insert = $pdo->prepare("INSERT INTO docteur (nom, prenom, tel, email, tof, cni, idspecialiste, ville, diplome, certificat, experience, mdp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        $insert->execute([$nom, $prenom, $tel, $email, $tofPath, $cniPath, $idspecialiste, $ville, $diplomePath, $certificatPath, $experience, $mdp]);
                         $_SESSION['nom'] = $nom;
                         $_SESSION['tof'] = $tofPath;
                         header("Location: pages/accueil.php");
@@ -218,8 +218,8 @@ $specialistes = $stm1->fetchAll(PDO::FETCH_ASSOC);
                 <?php endforeach; ?>
             </select>
             
-            <label for="grade">Grade:</label>
-            <input type="text" id="grade" name="grade" required>
+            <label for="ville">Ville:</label>
+            <input type="text" id="ville" name="ville" required>
             
             <label for="diplome">Diplôme:</label>
             <input type="file" accept=".pdf,.doc,.docx" id="diplome" name="diplome" required>

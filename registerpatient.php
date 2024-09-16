@@ -1,11 +1,9 @@
 <?php
-
 session_start();
 $msgErreur = ""; 
 
 require_once('inc/connexion.php');
 
-// Traitement du formulaire
 if (isset($_POST['submit'])) {
     if (isset($_POST['nom'], $_POST['prenom'], $_POST['tel'], $_POST['email'], $_FILES['tof'], $_POST['mdp'])) {
         if (!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['tel']) && !empty($_POST['email']) && !empty($_POST['mdp'])) {
@@ -13,10 +11,9 @@ if (isset($_POST['submit'])) {
             $prenom = $_POST["prenom"];
             $tel = $_POST["tel"];
             $email = $_POST["email"];
-            $mdp = password_hash($_POST["mdp"], PASSWORD_DEFAULT); // Crypter le mot de passe
+            $mdp = password_hash($_POST["mdp"], PASSWORD_DEFAULT);
             
-
-            // Vérification du téléchargement de la photo
+            // Gestion du téléchargement de la photo de profil
             if ($_FILES['tof']['error'] == UPLOAD_ERR_OK) {
                 $tofPath = 'img/' . basename($_FILES['tof']['name']);
                 if (!move_uploaded_file($_FILES['tof']['tmp_name'], $tofPath)) {
@@ -34,23 +31,29 @@ if (isset($_POST['submit'])) {
                 $msgErreur = "Cette adresse e-mail est déjà utilisée.";
             } else {
                 try {
-                    // Insertion dans la base de données
+                    // Insertion du patient
                     $insert = $pdo->prepare("INSERT INTO patient (nom, prenom, tel, email, tof, mdp) VALUES (?, ?, ?, ?, ?, ?)");
-                    $execute = $insert->execute([$nom, $prenom, $tel, $email, $tofPath, $mdp]);//si je veux verifier le resultat de l'execution
-                    
+                    $insert->execute([$nom, $prenom, $tel, $email, $tofPath, $mdp]);
+
                     // Récupérer l'ID du patient nouvellement inséré
                     $idpatient = $pdo->lastInsertId();
+                    $_SESSION['email'] = $email;
+                    
+                    // Détails de la consultation initiale
+                    $description = "Consultation initiale"; 
+                    $duree = 30; 
+                    $idspecialiste = 1; 
 
-                    // Créer le dossier médical pour le patient
-                    $insertDossier = $pdo->prepare("INSERT INTO dossiermedical (idpatient,historique) VALUES (?,?)");
-                    $insertDossier->execute([$idpatient,"historique initiale"]);//si je veux pas verifier le resultat de l'execution
+                    // Insertion de la consultation
+                    $insertDossier = $pdo->prepare("INSERT INTO consultation (description, duree, idspecialiste, idpatient) VALUES (?, ?, ?, ?)");
+                    $insertDossier->execute([$description, $duree, $idspecialiste, $idpatient]);
 
                     $_SESSION['nom'] = $nom;
                     $_SESSION['tof'] = $tofPath;
                     header("Location: pages/symptome.php");
                     exit();
                 } catch (PDOException $e) {
-                    $msgErreur = "Erreur: " . $e->getMessage();
+                    $msgErreur = "Erreur: " . htmlspecialchars($e->getMessage());
                 }
             }
         } else {
@@ -59,11 +62,31 @@ if (isset($_POST['submit'])) {
     }
 }
 
-$stmt = $pdo->prepare("SELECT * FROM specialiste");
-$stmt->execute();
-$specialiste = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
+// Fonction pour générer le PDF du dossier médical
+function viewMedicalFilePDF($medical) {
+    require_once("inc/dompdf/autoload.inc.php");
+    $dompdf = new Dompdf\Dompdf();
 
+    // Créer le contenu HTML du PDF
+    $html = '<h1>Dossier Médical</h1>';
+    $html .= '<p>Nom  : ' . htmlspecialchars($medical['nom']) . '</p>';
+    $html .= '<p>Prenom : ' . htmlspecialchars($medical['prenom']) . '</p>';
+    $html .= '<p>Telephone : ' . htmlspecialchars($medical['tel']) . '</p>';
+    $html .= '<p>Email : ' . htmlspecialchars($medical['email']) . '</p>';
+
+    // Charger le contenu HTML dans Dompdf
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+
+    // Enregistrer le PDF sur le serveur
+    $pdfOutputPath = 'dossiers/dossier_medical_' . htmlspecialchars($medical['nom']) . '_' . htmlspecialchars($medical['prenom']) . '.pdf';
+    file_put_contents($pdfOutputPath, $dompdf->output()); 
+
+    
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -75,16 +98,9 @@ $specialiste = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="css/index.css">
     <script src="../js/all.min.js"></script>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #e9ecef;
-            margin: 0;
-            padding: 20px;
-        }
-
+        
         .site {
             max-width: 800px;
-            height: auto;
             margin: auto;
             margin-top: 5vh;
             background: white;
@@ -95,10 +111,11 @@ $specialiste = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         .container {
             font-family: Arial, sans-serif;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),url(img/30.jpg);
+            background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(img/30.jpg);
             background-size: cover;
             background-position: center;
-}
+        }
+
         h2 {
             color: #343a40;
         }
@@ -113,19 +130,13 @@ $specialiste = $stmt->fetchAll(PDO::FETCH_ASSOC);
         input[type="text"],
         input[type="email"],
         input[type="tel"],
-        input[type="number"],
         input[type="password"],
-        select {
+        input[type="file"] {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ced4da;
             border-radius: 5px;
-            transition: border-color 0.3s;
-        }
-
-        input[type="file"] {
-            margin-bottom: 20px;
         }
 
         button {
@@ -158,49 +169,25 @@ $specialiste = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php include("inc/header.php"); ?>
     </header>
     <div class="container">
-        
-<form class="site" action="" method="POST" enctype="multipart/form-data">
-                    <div class="form one form-step active">
-                        <h2>Entrer vos informations personnelles</h2>
-                        <div>
-                            
-                            <input type="text" name="nom" placeholder="Votre nom" required>
-                        </div> 
-                        <div>
-                            
-                            <input type="text" name="prenom" placeholder="Votre prénom" required>
-                        </div>
-                        <div>
-                            
-                            <input type="tel" name="tel" placeholder="Votre numéro de téléphone" required>
-                        </div>
-                        <div>
-                        
-                            <input type="email" name="email" placeholder="Votre email" required>
-                        </div>
-                        
-                        <div>
-                            
-                            <input type="password" name="mdp" placeholder="Votre mot de passe" required>
-                        </div>
-                        <div>
-                            <label>Votre photo de profil</label>
-                            <input type="file" id="imageUpload" name="tof" accept="image/*" required>
-                        
-                       
-                    </div>
-
-                    <div class="btn-group">
-                        
-                       <a href="pages/symptome.php"> <button type="submit" name="submit" class="btn-submit" >ENVOYER</button> </a>
-                    </div>
-                </form>
+        <form class="site" action="" method="POST" enctype="multipart/form-data">
+            <h2>Entrer vos informations personnelles</h2>
+            <?php if ($msgErreur): ?>
+                <div class="error-message"><?php echo $msgErreur; ?></div>
+            <?php endif; ?>
+            <input type="text" name="nom" placeholder="Votre nom" required>
+            <input type="text" name="prenom" placeholder="Votre prénom" required>
+            <input type="tel" name="tel" placeholder="Votre numéro de téléphone" required>
+            <input type="email" name="email" placeholder="Votre email" required>
+            <input type="password" name="mdp" placeholder="Votre mot de passe" required>
+            <label>Votre photo de profil</label>
+            <input type="file" id="imageUpload" name="tof" accept="image/*" required>
+            <button type="submit" name="submit" class="btn-submit">ENVOYER</button>
+        </form>
     </div>
     
-
     <footer>
-    <?php include("inc/footer.php"); ?>
-</footer>
-<script src="js/accueil.js"></script>
+        <?php include("inc/footer.php"); ?>
+    </footer>
+    <script src="js/accueil.js"></script>
 </body>
 </html>

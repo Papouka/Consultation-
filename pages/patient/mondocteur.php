@@ -16,9 +16,9 @@ $stmt = $pdo->prepare("SELECT DISTINCT docteur.*
                         FROM docteur, consultation,patient 
                         WHERE docteur.iddocteur = consultation.iddocteur 
                         AND consultation.idpatient= patient.idpatient 
-                        AND consultation.idpatient= :idpatient"
+                      "
     );
-    $stmt->bindParam(':idpatient', $idpatient);
+   ;
     $stmt->execute();
 
 // Vérifier si la requête a retourné des résultats
@@ -71,7 +71,7 @@ if ($stmt->rowCount() > 0) {
                             <p><strong>Spécialité :</strong> <?php echo htmlspecialchars($docteur['idspecialiste']); ?></p>
                             <p><strong>Téléphone :</strong> <?php echo htmlspecialchars($docteur['tel']); ?></p>
                             <p><strong>Email :</strong> <?php echo htmlspecialchars($docteur['email']); ?></p>
-                            <p><strong>Grade :</strong> <?php echo htmlspecialchars($docteur['grade']); ?></p>
+                            <p><strong>Ville :</strong> <?php echo htmlspecialchars($docteur['ville']); ?></p>
                             <p><strong>Diplôme :</strong> <?php echo htmlspecialchars($docteur['diplome']); ?></p>
                             <p><strong>Certificat :</strong> <?php echo htmlspecialchars($docteur['certificat']); ?></p>
                             <hr>

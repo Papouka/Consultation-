@@ -108,7 +108,7 @@ if (isset($_GET['idspecialiste'])) {
                         <form method="POST">
                             <h3>Mes informations</h3>
                             <p><label for="" class="lor">Diplôme: </label><?php echo htmlspecialchars($doc['diplome']); ?></p>
-                            <p><label for="" class="lor"> Grade: </label><?php echo htmlspecialchars($doc['grade']); ?></p>
+                            <p><label for="" class="lor"> Ville: </label><?php echo htmlspecialchars($doc['ville']); ?></p>
                             <p><label for="" class="lor"> Année d'expérience: </label><?php echo htmlspecialchars($doc['experience']); ?> ans</p>
                         </form>
                     </div>

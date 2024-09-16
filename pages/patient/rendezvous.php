@@ -1,6 +1,97 @@
+
+
 <?php
-require_once("../../actions/rdvAction.php");
+session_start();
+
+if (!isset($_SESSION['email'])) {
+    header("Location: login.php");
+    exit(); 
+}
+
+$email = $_SESSION['email'];
+$tof = $_SESSION['tof']; 
+$nom = $_SESSION['nom'];
+
+// Vérifiez si l'ID du patient est défini
+if (!isset($_SESSION['idpatient'])) {
+    die("ID du patient non défini dans la session.");
+}
+
+require_once("../../inc/connexion.php");
+
+$msgSuccess = '';
+$msgErreur = '';
+
+if (isset($_POST['submit'])) {
+    if (isset($_POST['iddocteur'], $_POST['idcreneau'], $_POST['motif'])) {
+        $iddocteur = $_POST["iddocteur"];
+        $idcreneau = $_POST["idcreneau"];
+        $motif = $_POST["motif"];
+        $idpatient = $_SESSION['idpatient']; // Récupération de l'idpatient
+
+        if (!empty($iddocteur) && !empty($idcreneau) && !empty($motif)) {
+            $checkCreneau = $pdo->prepare("SELECT * FROM creneaux WHERE idcreneau = :idcreneau");
+            $checkCreneau->bindParam(":idcreneau", $idcreneau);
+            $checkCreneau->execute();
+
+            if ($checkCreneau->rowCount() > 0) {
+                try {
+                    $insert = $pdo->prepare("INSERT INTO rendezvous (iddocteur, idcreneau, idpatient, motif) VALUES (?, ?, ?, ?)");
+                    $execute = $insert->execute([$iddocteur, $idcreneau, $idpatient, $motif]);
+                    
+                    if ($execute) {
+                        $msgSuccess = "Rendez-vous programmé avec succès.";
+                    } else {
+                        $msgErreur = "Échec de la programmation du rendez-vous.";
+                    }
+                    
+                } catch (PDOException $e) {
+                    $msgErreur = "Erreur: " . $e->getMessage();
+                }
+            } else {
+                $msgErreur = "Le créneau sélectionné n'existe pas.";
+            }
+        } else {
+            $msgErreur = "Tous les champs sont requis.";
+        }
+    } else {
+        $msgErreur = "Erreur dans les données soumises.";
+    }
+}
+
+// Récupération des informations du docteur
+$iddoc = $_GET['iddocteur'] ?? null;
+if ($iddoc) {
+    $sql1 = "SELECT nom FROM docteur WHERE iddocteur = :iddoc";
+    $stm1 = $pdo->prepare($sql1);
+    $stm1->bindParam(":iddoc", $iddoc);
+    $stm1->execute();
+    $docteur = $stm1->fetch(PDO::FETCH_ASSOC);
+    $docta = $docteur['nom'] ?? 'Docteur non trouvé';
+}
+
+
+
+    $idpat = $_SESSION['idpatient']; 
+
+    $sql2 = "SELECT nom FROM patient WHERE idpatient = :idpat";
+    $stm2 = $pdo->prepare($sql2);
+    $stm2->bindParam(":idpat", $idpat);
+    $stm2->execute();
+    $patient = $stm2->fetch(PDO::FETCH_ASSOC);
+    $nomPatient = $patient['nom'] ?? 'Patient non trouvé';
+
+
+
+// Récupération des créneaux
+$stmt = $pdo->prepare("SELECT idcreneau, date, heure_debut, heure_fin FROM creneaux WHERE iddocteur = :iddocteur");
+$stmt->execute([':iddocteur' => $iddoc]);
+$creneaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -99,11 +190,15 @@ require_once("../../actions/rdvAction.php");
                     
                     <input type="text" name="iddocteur" value="<?php echo htmlspecialchars($iddoc); ?>" hidden>
                 </div>
-                
                 <div class="form-group">
-                    <label for="">Patient:</label>
-                    <input type="text" name="idpatient" value="<?php echo htmlspecialchars($pat); ?>" readonly>
+                    
+                    <input type="text" name="iddocteur" value="<?php echo htmlspecialchars($idpat); ?>" >
                 </div>
+                <div class="form-group">
+    <label for="">Patient:</label>
+    <input type="text" name="patient" value="<?php echo htmlspecialchars($nomPatient); ?>" readonly>
+</div>
+
 
                 <div class="form-group">
                     <label for="">Motif:</label>

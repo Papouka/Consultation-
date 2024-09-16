@@ -9,7 +9,11 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 $tof = $_SESSION['tof']; 
 $nom = $_SESSION['nom'];
-$idpatient = $_SESSION['idpatient']; 
+
+// Vérifiez si l'ID du patient est défini
+if (!isset($_SESSION['idpatient'])) {
+    die("ID du patient non défini dans la session.");
+}
 
 require_once("../../inc/connexion.php");
 
@@ -21,6 +25,7 @@ if (isset($_POST['submit'])) {
         $iddocteur = $_POST["iddocteur"];
         $idcreneau = $_POST["idcreneau"];
         $motif = $_POST["motif"];
+        $idpatient = $_SESSION['idpatient']; // Récupération de l'idpatient
 
         if (!empty($iddocteur) && !empty($idcreneau) && !empty($motif)) {
             $checkCreneau = $pdo->prepare("SELECT * FROM creneaux WHERE idcreneau = :idcreneau");
@@ -60,19 +65,40 @@ if ($iddoc) {
     $stm1->bindParam(":iddoc", $iddoc);
     $stm1->execute();
     $docteur = $stm1->fetch(PDO::FETCH_ASSOC);
-    $docta = $docteur['nom'] ;
+    $docta = $docteur['nom'] ?? 'Docteur non trouvé';
 }
 
 // Récupération des informations du patient
-$sql2 = "SELECT nom FROM patient WHERE idpatient = :idpat";
-$stm2 = $pdo->prepare($sql2);
-$stm2->bindParam(":idpat", $idpatient);
-$stm2->execute();
-$patient = $stm2->fetch(PDO::FETCH_ASSOC);
-$pat = $patient['nom'] ;
+$idpatient = $_SESSION['idpatient']; // Utilisation de l'idpatient de la session
+$patient = null;
+
+if ($idpatient) {
+    $sql2 = "SELECT nom FROM patient WHERE idpatient = :idpat";
+    $stm2 = $pdo->prepare($sql2);
+    $stm2->bindParam(":idpat", $idpatient);
+    $stm2->execute();
+    $patient = $stm2->fetch(PDO::FETCH_ASSOC);
+    
+    if ($patient) {
+        $pat = $patient['nom'];
+    } else {
+        $msgErreur = "Patient non trouvé.";
+    }
+} else {
+    $msgErreur = "ID du patient manquant.";
+}
+
+// Utilisation de la variable $patient
+if (isset($patient)) {
+    echo "Nom du patient : " . $patient['nom'];
+} else {
+    echo "Aucune information sur le patient disponible.";
+}
 
 // Récupération des créneaux
 $stmt = $pdo->prepare("SELECT idcreneau, date, heure_debut, heure_fin FROM creneaux WHERE iddocteur = :iddocteur");
 $stmt->execute([':iddocteur' => $iddoc]);
 $creneaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 ?>

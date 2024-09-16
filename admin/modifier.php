@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Inclure le fichier de connexion
+ 
 try {
     $pdo = new PDO('mysql:host=localhost;dbname=hosto_bd', 'root', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -9,14 +9,13 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-// Vérifier si l'ID est passé en paramètre
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
 
-    // Préparer la requête pour récupérer la spécialité
+if (isset($_GET['id'])) {
+    $idspecialiste = $_GET['id'];
+
     try {
         $stmt = $pdo->prepare("SELECT * FROM specialiste WHERE id = ?");
-        $stmt->execute([$id]);
+        $stmt->execute([$idspecialiste]);
         $specialite = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$specialite) {
@@ -37,8 +36,8 @@ if (isset($_POST['submit'])) {
             $description = $_POST['description'];
 
             try {
-                $update = $pdo->prepare("UPDATE specialiste SET nom = ?, description = ? WHERE id = ?");
-                $execute = $update->execute([$nom, $description, $id]);
+                $update = $pdo->prepare("UPDATE specialiste SET nom = ?, description = ? WHERE idspecialiste = ?");
+                $execute = $update->execute([$nom, $description, $idspecialiste]);
 
                 if ($execute) {
                     header("Location: ../admin/ajoutspecialite.php"); // Rediriger après succès

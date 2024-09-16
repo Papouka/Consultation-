@@ -33,7 +33,7 @@ try {
     // Bloquer un créneau
     if (isset($_POST['bloquer'])) {
         $creneau_id = $_POST['idcreneau'];
-        $stmt = $pdo->prepare("UPDATE creneaux SET bloque = TRUE, disponible = FALSE WHERE id = :id");
+        $stmt = $pdo->prepare("UPDATE creneaux SET bloque = TRUE, disponible = FALSE WHERE idcreneau = :id");
         $stmt->execute([':id' => $creneau_id]);
     }
 

@@ -46,39 +46,34 @@ th {
     <nav>
         <?php include("../../inc/nav4.php"); ?>
     </nav>
-<main>
-
-<div class="container">
-    <h1>Mes Consultations</h1>
-    <?php if (count($consultations) > 0): ?>
-        <table>
-            <thead>
-                <tr>
-                    <th>Date et Heure</th>
-                    <th>Docteur</th>
-                    <th>Specialiste</th>
-                    
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($consultations as $consultation): ?>
-                    <tr>
-                    <td><?php echo htmlspecialchars($consultation['dateconsultation']); ?></td> <!-- Assurez-vous que 'date' est le bon nom -->
-                    <td>Dr. <?php echo htmlspecialchars($consultation['nom'] . ' ' . $consultation['prenom']); ?></td>
-                    <td> <?php echo htmlspecialchars( $consultation['idspecialiste']); ?></td>
-                    </tr>
-                    <input type="hidden" name="idpatient" value="<?php echo htmlspecialchars($idpatient); ?>">
-                    <input type="hidden" name="idpatient" value="<?php echo ($iddocteur); ?>">
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    <?php else: ?>
-        <p>Aucune consultation trouvée.</p>
-    <?php endif; ?>
-</div>
-</main>
-
-<script src="../../js/all.min.js"></script>
-<script src="../../js/script.js"></script>
+    <main>
+        <div class="container">
+            <h1>Mes Consultations</h1>
+            <?php if (count($consultations) > 0): ?>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date et Heure</th>
+                            <th>Docteur</th>
+                            <th>Spécialiste</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($consultations as $consultation): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($consultation['dateconsultation']); ?></td>
+                                <td>Dr. <?php echo htmlspecialchars($consultation['nom']) . ' ' . htmlspecialchars($consultation['prenom']); ?></td>
+                                <td><?php echo htmlspecialchars($consultation['nomspecialiste']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <p>Aucune consultation trouvée.</p>
+            <?php endif; ?>
+        </div>
+    </main>
+    <script src="../../js/all.min.js"></script>
+    <script src="../../js/script.js"></script>
 </body>
 </html>
