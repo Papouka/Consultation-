@@ -3,13 +3,13 @@ session_start();
 
 if (!isset($_SESSION['email'])) {
     header("Location: login.php");
-    exit(); 
+    exit();
 }
 
 $email = $_SESSION['email'];
 $tof = $_SESSION['tof']; 
 $nom = $_SESSION['nom'];
-$iddocteur = $_SESSION['iddocteur'];
+$iddocteur = $_SESSION['docteur'];
 
 ?>
 
@@ -22,7 +22,6 @@ $iddocteur = $_SESSION['iddocteur'];
     <link rel="stylesheet" href="../../css/dashboard.css">
     <link rel="stylesheet" href="../../icons/all.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    
     <?php include("../../inc/csslistepatient.php"); ?>
 </head>
 
@@ -43,54 +42,56 @@ $iddocteur = $_SESSION['iddocteur'];
                 <li><a href="" class="active">Dashboard</a></li>
             </ul>
             <div class="info-data">
-            <div class="table-container">
-    <table id="userTable" class="display">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Numéro de téléphone</th>
-                <th>Photo de Profil</th>
-                <th>Email</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            try {
-                $pdo = new PDO('mysql:host=localhost;dbname=hosto_bd', 'root', '');
-                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                <div class="table-container">
+                    <table id="userTable" class="display">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Numéro de téléphone</th>
+                                <th>Photo de Profil</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            try {
+                                $pdo = new PDO('mysql:host=localhost;dbname=hosto_bd', 'root', '');
+                                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        
-                $stmt = $pdo->prepare("SELECT DISTINCT patient.* 
-                        FROM patient 
-                        JOIN consultation ON patient.idpatient = consultation.idpatient 
-                        WHERE consultation.iddocteur = :iddocteur");
-                $stmt->bindParam(':iddocteur', $iddocteur);
-                $stmt->execute();
-                $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                // Requête pour obtenir les patients associés au médecin connecté
+                                $stmt = $pdo->prepare("
+                                    SELECT DISTINCT p.idpatient, p.nom, p.prenom, p.tel, p.tof, p.email
+                                    FROM patient p
+                                    JOIN consultation c ON p.idpatient = c.idpatient
+                                    WHERE c.iddocteur = ?
+                                ");
+                                
+                                $stmt->execute([$iddocteur]);
+                                $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                if ($patients) {
-                    foreach ($patients as $utilisateur) {
-                        echo "<tr>";
-                        echo "<td>" . htmlspecialchars($utilisateur["idpatient"]) . "</td>";
-                        echo "<td>" . htmlspecialchars($utilisateur["nom"]) . "</td>";
-                        echo "<td>" . htmlspecialchars($utilisateur["prenom"]) . "</td>";
-                        echo "<td>" . htmlspecialchars($utilisateur["tel"]) . "</td>";
-                        echo "<td><img src='" . htmlspecialchars($utilisateur["tof"]) . "' alt='" . htmlspecialchars($utilisateur["nom"]) . "' width='50'></td>";
-                        echo "<td>" . htmlspecialchars($utilisateur["email"]) . "</td>";
-                        echo "</tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='6'>Aucun patient trouvé pour ce docteur</td></tr>";
-                }
-            } catch (PDOException $e) {
-                die("Connection failed: " . $e->getMessage());
-            }
-            ?>
-        </tbody>
-    </table>
-</div>
+                                if ($patients) {
+                                    foreach ($patients as $patient) {
+                                        echo "<tr>";
+                                        echo "<td>" . htmlspecialchars($patient["idpatient"]) . "</td>";
+                                        echo "<td>" . htmlspecialchars($patient["nom"]) . "</td>";
+                                        echo "<td>" . htmlspecialchars($patient["prenom"]) . "</td>";
+                                        echo "<td>" . htmlspecialchars($patient["tel"]) . "</td>";
+                                        echo "<td><img src='" . htmlspecialchars($patient["tof"]) . "' alt='" . htmlspecialchars($patient["nom"]) . "' width='50'></td>";
+                                        echo "<td>" . htmlspecialchars($patient["email"]) . "</td>";
+                                        echo "</tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='6'>Aucun patient trouvé pour ce docteur</td></tr>";
+                                }
+                            } catch (PDOException $e) {
+                                die("Connection failed: " . $e->getMessage());
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="data">
                 

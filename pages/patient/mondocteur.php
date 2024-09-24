@@ -7,7 +7,7 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 $tof = $_SESSION['tof'];
 $nom = $_SESSION['nom'];
-$idpatient = $_SESSION['idpatient'];
+$idpatient = $_SESSION['patient'];
 // Connexion à la base de données
 require_once("../../inc/connexion.php");
 

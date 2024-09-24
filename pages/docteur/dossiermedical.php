@@ -7,9 +7,9 @@ require_once("../../inc/connexion.php");
 if (isset($_GET['idpatient'])) {
     $idpatient = $_GET['idpatient'];
     
-    // Vérifiez si l'ID du docteur est dans la session
-    if (isset($_SESSION['iddocteur'])) {
-        $iddocteur = $_SESSION['iddocteur'];
+   
+    if (isset($_SESSION['docteur'])) {
+        $iddocteur = $_SESSION['docteur'];
 
         // Récupération des informations du patient
         $patientQuery = $pdo->prepare("SELECT * FROM patient WHERE idpatient = ?");

@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+require_once("../inc/connexion.php");
 
 if (!isset($_SESSION['email'])) {
    header("Location: login.php");
@@ -10,8 +11,19 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 $tof = $_SESSION['tof']; 
 $nom = $_SESSION['nom'];
+$iddocteur = $_SESSION['docteur']; 
 
 
+$stmt1 = $pdo->prepare("SELECT * FROM rendezvous WHERE iddocteur = :iddocteur"); 
+$stmt1->bindParam(':iddocteur', $iddocteur, PDO::PARAM_INT);
+$stmt1->execute();
+$nbre = $stmt1->fetchColumn();
+
+
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM rendezvous WHERE is_read = 0 AND iddocteur = :iddocteur");
+$stmt->bindParam(':iddocteur', $iddocteur, PDO::PARAM_INT);
+$stmt->execute();
+$nbre = $stmt->fetchColumn();
 ?>
 
 
@@ -46,7 +58,10 @@ $nom = $_SESSION['nom'];
             </div>
             <div class="data">
                 <?php include("../inc/chart.php"); ?>
-                 <?php include("../pages/chat/chat.php"); ?> 
+               <!--
+            <?php include("../pages/chat/chat.php"); ?>
+                -->
+
             </div>   
         </main>
     </section>

@@ -5,12 +5,13 @@ $msgErreur = "";
 require_once('inc/connexion.php');
 
 if (isset($_POST['submit'])) {
-    if (isset($_POST['nom'], $_POST['prenom'], $_POST['tel'], $_POST['email'], $_FILES['tof'], $_POST['mdp'])) {
-        if (!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['tel']) && !empty($_POST['email']) && !empty($_POST['mdp'])) {
+    if (isset($_POST['nom'], $_POST['prenom'], $_POST['tel'], $_POST['email'],$_POST['dob'], $_FILES['tof'], $_POST['mdp'])) {
+        if (!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['tel']) && !empty($_POST['email']) && !empty($_POST['dob']) && !empty($_POST['mdp'])) {
             $nom = $_POST["nom"];
             $prenom = $_POST["prenom"];
             $tel = $_POST["tel"];
             $email = $_POST["email"];
+            $dob = $_POST["dob"];
             $mdp = password_hash($_POST["mdp"], PASSWORD_DEFAULT);
             
             // Gestion du téléchargement de la photo de profil
@@ -32,8 +33,8 @@ if (isset($_POST['submit'])) {
             } else {
                 try {
                     // Insertion du patient
-                    $insert = $pdo->prepare("INSERT INTO patient (nom, prenom, tel, email, tof, mdp) VALUES (?, ?, ?, ?, ?, ?)");
-                    $insert->execute([$nom, $prenom, $tel, $email, $tofPath, $mdp]);
+                    $insert = $pdo->prepare("INSERT INTO patient (nom, prenom, tel, email,dob, tof, mdp) VALUES (?,?, ?, ?, ?, ?, ?)");
+                    $insert->execute([$nom, $prenom, $tel, $email,$dob, $tofPath, $mdp]);
 
                     // Récupérer l'ID du patient nouvellement inséré
                     $idpatient = $pdo->lastInsertId();
@@ -73,7 +74,7 @@ function viewMedicalFilePDF($medical) {
     $html .= '<p>Prenom : ' . htmlspecialchars($medical['prenom']) . '</p>';
     $html .= '<p>Telephone : ' . htmlspecialchars($medical['tel']) . '</p>';
     $html .= '<p>Email : ' . htmlspecialchars($medical['email']) . '</p>';
-
+    $html .= '<p>Date de naissance : ' . htmlspecialchars($medical['dob']) . '</p>';
     // Charger le contenu HTML dans Dompdf
     $dompdf->loadHtml($html);
     $dompdf->setPaper('A4', 'portrait');
@@ -102,7 +103,7 @@ function viewMedicalFilePDF($medical) {
         .site {
             max-width: 800px;
             margin: auto;
-            margin-top: 5vh;
+            margin-top: 7vh;
             background: white;
             padding: 30px;
             border-radius: 10px;
@@ -130,6 +131,7 @@ function viewMedicalFilePDF($medical) {
         input[type="text"],
         input[type="email"],
         input[type="tel"],
+        input[type="date"],
         input[type="password"],
         input[type="file"] {
             width: 100%;
@@ -178,6 +180,7 @@ function viewMedicalFilePDF($medical) {
             <input type="text" name="prenom" placeholder="Votre prénom" required>
             <input type="tel" name="tel" placeholder="Votre numéro de téléphone" required>
             <input type="email" name="email" placeholder="Votre email" required>
+            <input type="date" name="dob" placeholder="Votre date de naissance" required>
             <input type="password" name="mdp" placeholder="Votre mot de passe" required>
             <label>Votre photo de profil</label>
             <input type="file" id="imageUpload" name="tof" accept="image/*" required>

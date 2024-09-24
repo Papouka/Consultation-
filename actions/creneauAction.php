@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['email']) || !isset($_SESSION['iddocteur'])) {
+if (!isset($_SESSION['email']) || !isset($_SESSION['docteur'])) {
     header("Location: login.php");
     exit();
 }
@@ -13,7 +13,7 @@ try {
     $pdo = new PDO('mysql:host=localhost;dbname=hosto_bd', 'root', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    $iddocteur = $_SESSION['iddocteur'];
+    $iddocteur = $_SESSION['docteur'];
 
     // Ajouter un créneau
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter'])) {

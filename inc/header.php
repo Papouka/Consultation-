@@ -13,7 +13,7 @@
     
         <li class="dropdown">
         <a href="javascript:void(0);" onclick="toggleDropdown(event)">
-            <i class="fa fa-plus-circle" aria-hidden="true"></i>
+            
         </a>
         
     </li>
@@ -24,17 +24,19 @@
 
         <div class="main">
             <span class="menu-toggle" id="menuToggle">☰</span>
-            <a href="" class="user">  </a>
+       
            
             <?php
             
-
+          
 if (!isset($_SESSION['email'])) {
     echo '<a href="login.php"><i class="fa-solid fa-user-nurse"></i> espace médecin</a>';
 }
 
 if (isset($_SESSION['nom'])) {
-    echo "" . htmlspecialchars($_SESSION['nom']) . "!";
+    echo'<u><a href="pages/accueil.php" class="user"><i class="fa fa-plus-circle" aria-hidden="true"></i> <small>  Ma page </small> </a></u> ' . htmlspecialchars($_SESSION['nom']) . "!" ;
+    
 } 
 ?>
+
       </div>

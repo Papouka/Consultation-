@@ -49,7 +49,7 @@ th {
     <main>
         <div class="container">
             <h1>Mes Consultations</h1>
-            <?php if (count($consultations) > 0): ?>
+            <?php if (isset($consultation) && count($consultation) > 0): ?>
                 <table>
                     <thead>
                         <tr>
@@ -59,11 +59,11 @@ th {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($consultations as $consultation): ?>
+                        <?php foreach ($consultation as $c): ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($consultation['dateconsultation']); ?></td>
-                                <td>Dr. <?php echo htmlspecialchars($consultation['nom']) . ' ' . htmlspecialchars($consultation['prenom']); ?></td>
-                                <td><?php echo htmlspecialchars($consultation['nomspecialiste']); ?></td>
+                                <td><?php echo htmlspecialchars($c['dateconsultation']); ?></td>
+                                <td>Dr. <?php echo htmlspecialchars($c['nom']) . ' ' . htmlspecialchars($c['prenom']); ?></td>
+                                <td><?php echo htmlspecialchars($c['nomspecialiste']); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

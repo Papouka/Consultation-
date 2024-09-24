@@ -17,7 +17,7 @@ require_once("../../actions/ordonnanceAction.php");
           padding: 20px;
           border: 1px solid #ccc;
           border-radius: 5px;
-         background-color: #fff;
+          background-color: #fff;
       }
       h1 {
           text-align: center;
@@ -59,13 +59,18 @@ require_once("../../actions/ordonnanceAction.php");
         <h1>Générateur d'Ordonnance</h1>
         <form method="POST" class="form">
             <div class="form-group">
-                <label for="patientName">Nom du Patient</label>
-                <input type="text" name="patient" id="patientName" required>
+                <label for="patient">Nom du Patient</label>
+                <select name="patient" id="patient" required>
+                    <option value="">Sélectionnez un patient</option>
+                    <?php foreach ($patients as $patient): ?>
+                        <option value="<?php echo $patient['idpatient']; ?>"><?php echo htmlspecialchars($patient['nom']); ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
             <div class="form-group">
                 <label for="patientDOB">Date de Naissance</label>
-                <input type="date" name="dob" id="patientDOB" required>
-            </div>
+                <input type="date" name="dob" id="patientDOB" readonly>
+            </div> 
             <div class="form-group">
                 <label for="medicament">Médicament</label>
                 <input type="text" name="medicament" id="medicament" required>
@@ -79,8 +84,8 @@ require_once("../../actions/ordonnanceAction.php");
                 <input type="text" name="posologie" id="posologie" required>
             </div>
             <div class="form-group">
-                <label for="doctorName">Nom du Médecin</label>
-                <input type="text" name="docteur" id="doctorName" required>
+                <label>Nom du Médecin</label>
+                <input type="text" value="<?php echo htmlspecialchars($doctor['nom']); ?>" readonly>
             </div>
             <button type="submit" name="submit">Générer l'Ordonnance</button>
         </form>
@@ -105,5 +110,18 @@ require_once("../../actions/ordonnanceAction.php");
 
 <script src="../../js/all.min.js"></script>
 <script src="../../js/script.js"></script>
+<script>
+document.getElementById('patient').addEventListener('change', function() {
+    var dobField = document.getElementById('patientDOB');
+    var selectedPatientId = this.value;
+
+    <?php foreach ($patients as $patient): ?>
+        if (selectedPatientId == "<?php echo $patient['idpatient']; ?>") {
+            dobField.value = "<?php echo $patient['dob']; ?>";
+        }
+    <?php endforeach; ?>
+});
+</script>
+
 </body>
 </html>

@@ -1,5 +1,3 @@
-
-
 <?php
 session_start();
 
@@ -11,13 +9,16 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 $tof = $_SESSION['tof']; 
 $nom = $_SESSION['nom'];
+require_once("../../inc/connexion.php");
 
 // Vérifiez si l'ID du patient est défini
-if (!isset($_SESSION['idpatient'])) {
+if (!isset($_SESSION['patient'])) {
     die("ID du patient non défini dans la session.");
 }
 
-require_once("../../inc/connexion.php");
+require_once("../../inc/vendor/autoload.php");
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 $msgSuccess = '';
 $msgErreur = '';
@@ -27,20 +28,58 @@ if (isset($_POST['submit'])) {
         $iddocteur = $_POST["iddocteur"];
         $idcreneau = $_POST["idcreneau"];
         $motif = $_POST["motif"];
-        $idpatient = $_SESSION['idpatient']; // Récupération de l'idpatient
+        $idpatient = $_SESSION['patient']; // Récupération de l'idpatient
 
         if (!empty($iddocteur) && !empty($idcreneau) && !empty($motif)) {
-            $checkCreneau = $pdo->prepare("SELECT * FROM creneaux WHERE idcreneau = :idcreneau");
-            $checkCreneau->bindParam(":idcreneau", $idcreneau);
-            $checkCreneau->execute();
+            $creneau = $pdo->prepare("SELECT * FROM creneaux WHERE idcreneau = :idcreneau");
+            $creneau->bindParam(":idcreneau", $idcreneau);
+            $creneau->execute();
 
-            if ($checkCreneau->rowCount() > 0) {
+            if ($creneau->rowCount() > 0) {
                 try {
                     $insert = $pdo->prepare("INSERT INTO rendezvous (iddocteur, idcreneau, idpatient, motif) VALUES (?, ?, ?, ?)");
                     $execute = $insert->execute([$iddocteur, $idcreneau, $idpatient, $motif]);
                     
                     if ($execute) {
-                        $msgSuccess = "Rendez-vous programmé avec succès.";
+                        // Récupération des informations du docteur pour l'email
+                        $sql1 = "SELECT email, nom FROM docteur WHERE iddocteur = :iddoc";
+                        $stm1 = $pdo->prepare($sql1);
+                        $stm1->bindParam(":iddoc", $iddocteur);
+                        $stm1->execute();
+                        $docteur = $stm1->fetch(PDO::FETCH_ASSOC);
+
+                        // Configuration de PHPMailer
+                        $mail = new PHPMailer(true);
+                        try {
+                            // Paramètres du serveur
+                            $mail->isSMTP();
+                            $mail->Host = 'smtp.gmail.com';
+                            $mail->SMTPAuth = true;
+                            $mail->Username = 'papoukalory@gmail.com';
+                            $mail->Password = 'orjqyjacvgvpowxp'; 
+                            $mail->SMTPSecure = 'tls';
+                            $mail->Port = 587;
+
+                            // Destinataires
+                            $mail->setFrom('papoukalory@gmail.com', 'Lory'); // Remplacez par l'email de l'expéditeur
+                            $mail->addAddress($docteur['email'], $docteur['nom']);
+
+                            // Contenu de l'email
+                            $mail->isHTML(true);
+                            $mail->Subject = 'Nouvelle demande de consultation';
+                            $link = "http://localhost/easydoctor/pages/docteur/priserendezvous.php" ;
+                            $mail->Body = "Bonjour Dr. " . htmlspecialchars($docteur['nom']) . ",<br><br>" .
+                                          "Vous avez reçu une nouvelle demande de rendez-vous.<br>" .
+                                          "Patient: " . htmlspecialchars($nomPatient) . "<br>" .
+                                          "Motif: " . htmlspecialchars($motif) . "<br>" .
+                                          "Date et Heure: " . htmlspecialchars($creneau->fetch()['date']) . ' de ' . htmlspecialchars($creneau->fetch()['heure_debut']) . ' à ' . htmlspecialchars($creneau->fetch()['heure_fin']) . "<br><br>" .
+                                          "Pour accepter ou refuser cette demande, veuillez cliquer sur le lien suivant: <a href='" . $link . "'>Accepter ou Refuser le Rendez-vous</a>";
+
+                            $mail->send();
+                            $msgSuccess = "Rendez-vous programmé avec succès. Un email a été envoyé au docteur.";
+                        } catch (Exception $e) {
+                            $msgErreur = "Rendez-vous programmé, mais échec de l'envoi de l'email au docteur. Erreur: {$mail->ErrorInfo}";
+                        }
                     } else {
                         $msgErreur = "Échec de la programmation du rendez-vous.";
                     }
@@ -70,28 +109,26 @@ if ($iddoc) {
     $docta = $docteur['nom'] ?? 'Docteur non trouvé';
 }
 
+// Récupération des informations du patient
+$idpat = $_SESSION['patient']; 
+$sql2 = "SELECT nom FROM patient WHERE idpatient = :idpat";
+$stm2 = $pdo->prepare($sql2);
+$stm2->bindParam(":idpat", $idpat);
+$stm2->execute();
+$patient = $stm2->fetch(PDO::FETCH_ASSOC);
 
-
-    $idpat = $_SESSION['idpatient']; 
-
-    $sql2 = "SELECT nom FROM patient WHERE idpatient = :idpat";
-    $stm2 = $pdo->prepare($sql2);
-    $stm2->bindParam(":idpat", $idpat);
-    $stm2->execute();
-    $patient = $stm2->fetch(PDO::FETCH_ASSOC);
-    $nomPatient = $patient['nom'] ?? 'Patient non trouvé';
-
-
+if ($patient) {
+    $nomPatient = $patient['nom']; // Récupération du nom du patient
+} else {
+    $nomPatient = 'Patient non trouvé'; // Valeur par défaut si le patient n'est pas trouvé
+}
 
 // Récupération des créneaux
 $stmt = $pdo->prepare("SELECT idcreneau, date, heure_debut, heure_fin FROM creneaux WHERE iddocteur = :iddocteur");
-$stmt->execute([':iddocteur' => $iddoc]);
+$stmt->bindParam(':iddocteur', $iddoc);
+$stmt->execute();
 $creneaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -147,13 +184,13 @@ $creneaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
             cursor: pointer;
             width: 25%;
         }
-        .radio-button {
-        width: 10px; 
-        height: 10px; 
-        transform: scale(1.5); 
-        margin-right: 10px; 
-    }
 
+        .radio-button {
+            width: 10px; 
+            height: 10px; 
+            transform: scale(1.5); 
+            margin-right: 10px; 
+        }
 
         .success-message, .error-message {
             margin-top: 20px;
@@ -186,34 +223,27 @@ $creneaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <form action="#" method="POST" class="form">
                 <h2>Premier rendez-vous avec le Dr. <?php echo htmlspecialchars($docta); ?></h2>
 
-                <div class="form-group">
-                    
-                    <input type="text" name="iddocteur" value="<?php echo htmlspecialchars($iddoc); ?>" hidden>
-                </div>
-                <div class="form-group">
-                    
-                    <input type="text" name="iddocteur" value="<?php echo htmlspecialchars($idpat); ?>" >
-                </div>
-                <div class="form-group">
-    <label for="">Patient:</label>
-    <input type="text" name="patient" value="<?php echo htmlspecialchars($nomPatient); ?>" readonly>
-</div>
+                <input type="hidden" name="iddocteur" value="<?php echo htmlspecialchars($iddoc); ?>">
+                <input type="text" name="idpatient" value="<?php echo $_SESSION['patient']; ?>" readonly>
 
+                <div class="form-group">
+                    <label for="">Patient:</label>
+                    <input type="text" name="patient" value="<?php echo htmlspecialchars($nomPatient); ?>" readonly>
+                </div>
 
                 <div class="form-group">
                     <label for="">Motif:</label>
                     <textarea name="motif" required></textarea>
                 </div>
                 
-                <div >
-    <label for="heure">Heure de Rendez-vous:</label>
-    <?php foreach ($creneaux as $creneau): ?>
-        <input type="radio" class="radio-button" name="idcreneau" value="<?php echo htmlspecialchars($creneau['idcreneau']); ?>" required>
-        <?php echo htmlspecialchars($creneau['date'] . ' de ' . $creneau['heure_debut'] . ' à ' . $creneau['heure_fin']); ?><br>
-    <?php endforeach; ?>
-</div>
+                <div>
+                    <label for="heure">Heure de Rendez-vous:</label>
+                    <?php foreach ($creneaux as $creneau): ?>
+                        <input type="radio" class="radio-button" name="idcreneau" value="<?php echo htmlspecialchars($creneau['idcreneau']); ?>" required>
+                        <?php echo htmlspecialchars($creneau['date'] . ' de ' . $creneau['heure_debut'] . ' à ' . $creneau['heure_fin']); ?><br>
+                    <?php endforeach; ?>
+                </div>
 
-                
                 <button type="submit" name="submit">Programmer le Rendez-vous</button>
             </form>
 

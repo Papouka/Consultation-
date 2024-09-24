@@ -1,7 +1,7 @@
 <?php
-// docteur.php - Configuration de la connexion à la base de données
+
 session_start();
-$msgErreur = ""; // Initialisation de la variable
+$msgErreur = ""; 
 
 require_once('inc/connexion.php');
 
@@ -13,7 +13,7 @@ if (isset($_POST['submit'])) {
             $prenom = $_POST["prenom"];
             $tel = $_POST["tel"];
             $email = $_POST["email"];
-            $mdp = password_hash($_POST["mdp"], PASSWORD_DEFAULT); // Crypter le mot de passe
+            $mdp = password_hash($_POST["mdp"], PASSWORD_DEFAULT); 
             
 
             // Vérification du téléchargement de la photo

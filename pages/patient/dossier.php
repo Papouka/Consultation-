@@ -30,10 +30,58 @@ $prenomPatient = $patient['prenom'];
 $telephonePatient = $patient['tel'];
 $emailPatient = $patient['email'];
 
-// Récupérer les dossiers médicaux à partir de la table consultation
-$stmt = $pdo->prepare("SELECT diagnostic, traitement, typeexamen FROM consultation WHERE idpatient = :idpatient");
+// Récupérer les dossiers médicaux et les informations du docteur
+$stmt = $pdo->prepare("
+    SELECT c.diagnostic, c.traitement, c.typeexamen, d.nom AS nom_docteur, d.prenom AS prenom_docteur, d.idspecialiste, d.email,d.tel ,r.resultat FROM consultation c JOIN docteur d ON c.iddocteur = d.iddocteur
+     JOIN specialiste s ON d.idspecialiste = s.idspecialiste LEFT JOIN resultat r ON c.idconsultation = r.idconsultation;
+    WHERE c.idpatient = :idpatient
+");
 $stmt->execute(['idpatient' => $idpatient]);
 $dossiers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Vérifier si la demande de téléchargement PDF est faite
+if (isset($_GET['download'])) {
+    require_once("../../inc/dompdf/autoload.inc.php");
+    // Assurez-vous que le chemin est correct
+                       $dompdf = new Dompdf\Dompdf();
+    // Créer le contenu HTML
+    $html = '<h1>Dossier Médical</h1>';
+    $html .= '<h3>Informations Personnelles</h3>';
+    $html .= '<p><strong>Nom :</strong> ' . htmlspecialchars($nomPatient) . '</p>';
+    $html .= '<p><strong>Prénom :</strong> ' . htmlspecialchars($prenomPatient) . '</p>';
+    $html .= '<p><strong>Téléphone :</strong> ' . htmlspecialchars($telephonePatient) . '</p>'; 
+    $html .= '<p><strong>Email :</strong> ' . htmlspecialchars($emailPatient) . '</p>';
+    $html .= '<h3>Historique des Consultations</h3>';
+
+    if (count($dossiers) > 0) {
+        foreach ($dossiers as $dossier) {
+            $html .= '<div>';
+            $html .= '<p><strong>Type d\'examen :</strong> ' . htmlspecialchars($dossier['typeexamen']) . '</p>';
+            $html .= '<p><strong>Diagnostic :</strong> ' . htmlspecialchars($dossier['diagnostic']) . '</p>';
+            $html .= '<p><strong>Traitement :</strong> ' . htmlspecialchars($dossier['traitement']) . '</p>';
+            $html .= '<p><strong>Docteur :</strong> ' . htmlspecialchars($dossier['prenom_docteur'] . ' ' . $dossier['nom_docteur']) . '</p>';
+            $html .= '<p><strong>Specialité :</strong> ' . htmlspecialchars($dossier['idspecialiste']) . '</p>';
+            $html .= '<p><strong>Email :</strong> ' . htmlspecialchars($dossier['email']) . '</p>';
+            $html .= '<p><strong>Téléphone:</strong> ' . htmlspecialchars($dossier['tel']) . '</p>';
+            $html .= '</div><hr>';
+        }
+    } else {
+        $html .= '<p>Aucun dossier médical ou résultat trouvé.</p>';
+    }
+
+    // Charger le contenu HTML dans Dompdf
+    $dompdf->loadHtml($html);
+
+    // (Optionnel) Configurer la taille et l'orientation du papier
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Rendre le HTML en PDF
+    $dompdf->render();
+
+    // Envoyer le PDF au navigateur
+    $dompdf->stream('dossier_medical.pdf', ['Attachment' => true]);
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -69,6 +117,15 @@ $dossiers = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .dossiermedical h3 {
             margin-top: 0;
         }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -86,15 +143,24 @@ $dossiers = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php if (count($dossiers) > 0): ?>
             <?php foreach ($dossiers as $dossier): ?>
                 <div class="dossiermedical">
-                <p><strong>Type d'examen :</strong> <?php echo htmlspecialchars($dossier['typeexamen']); ?></p>
+                    <p><strong>Type d'examen :</strong> <?php echo htmlspecialchars($dossier['typeexamen']); ?></p>
                     <p><strong>Diagnostic :</strong> <?php echo htmlspecialchars($dossier['diagnostic']); ?></p>
                     <p><strong>Traitement :</strong> <?php echo htmlspecialchars($dossier['traitement']); ?></p>
-                   
+                    <p><strong>Docteur :</strong> <?php echo htmlspecialchars($dossier['prenom_docteur'] . ' ' . $dossier['nom_docteur']); ?></p>
+                    <p><strong>Specialité :</strong> <?php echo htmlspecialchars($dossier['idspecialiste']); ?></p>
+                    <p><strong>Email:</strong> <?php echo htmlspecialchars($dossier['email']); ?></p>
+                    <p><strong>Téléphone :</strong> <?php echo htmlspecialchars($dossier['tel']); ?></p>
+                      
+                    <?php if (!empty($dossier['resultat'])): ?>
+                        <p><strong>Résultats d'examen :</strong> <a href="telecharger.php?fichier=<?php echo urlencode($dossier['chemin_fichier']); ?>">Télécharger</a></p>
+                    <?php endif; ?>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
             <p>Aucun dossier médical ou résultat trouvé.</p>
         <?php endif; ?>
+        
+        <a href="?download=true" class="btn">Télécharger mon dossier médical</a>
     </main>
 </body>
 </html>

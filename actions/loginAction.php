@@ -9,8 +9,9 @@ require_once("inc/connexion.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
-    $mdp = $_POST['mdp'];
+    $mdp = $_POST['mdp']; 
     $role = $_POST['role']; 
+    $mot=  password_hash($_POST["mdp"], PASSWORD_DEFAULT); 
     
     if ($role == 'patient') {
         $sql = "SELECT * FROM patient WHERE email=?";
@@ -27,19 +28,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($stm->rowCount() > 0) {
         $row = $stm->fetch(PDO::FETCH_ASSOC);
-        // Vérification du mot de passe
         
+        
+        if (password_verify($mdp, $row['mdp'])) { 
+           
             $_SESSION['email'] = $email;
             $_SESSION['nom'] = $row['nom'];
             $_SESSION['tof'] = $row['tof'];
             $_SESSION['role'] = $role;
-            $_SESSION['idpatient'] = $row['idpatient']; // Récupération de l'ID du patient ou du docteur
-            $_SESSION['iddocteur'] = $row['iddocteur'];
+            $_SESSION['patient'] = $row['idpatient'] ?? null; 
+            $_SESSION['docteur'] = $row['iddocteur'] ?? null;
             header("Location: pages/accueil.php");
             exit();
-        
+        } else {
+            $error = "Mot de passe incorrect";
+        }
     } else {
-    
         $error = "Adresse mail ou mot de passe incorrecte";
     }
 }

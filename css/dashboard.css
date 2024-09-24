@@ -7,6 +7,8 @@ body {
 a {
     text-decoration: none;
 }
+
+
 #sidebar {
     position: fixed;
     max-width: 260px;
@@ -175,7 +177,6 @@ a {
     width: calc(100% - 60px);
     left: 60px;
 }
-
 
 
 

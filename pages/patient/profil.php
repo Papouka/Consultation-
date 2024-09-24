@@ -150,117 +150,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
             </form>
         </div>
-        <?php
-        
-$role = $_SESSION['role'] ?? "administrateur";
-?>
-     <?php if ($role == "docteur") { ?>
-    <video id="localVideo" autoplay muted></video>
-    <video id="remoteVideo" autoplay></video>
-    <button id="startCall"> <i class="fa fa-video-camera icon" aria-hidden="true"></i> Démarrer l'appel </button>
-    <button id="endCall" > <i class="fa fa-phone-slash icon" aria-hidden="true"></i> Terminer l'appel </button>
-<?php } else if ($role == "patient") { ?>
-    <video id="localVideo" autoplay muted></video>
-    <video id="remoteVideo" autoplay></video>
-    <button id="answerCall">Répondre à l'appel</button>
-    <button id="endCall" > <i class="fa fa-phone-slash icon" aria-hidden="true"></i> Terminer l'appel </button>
-<?php } else if ($role == "administrateur") { ?>
-    <h2>Administrateur</h2>
-    <p>Vous pouvez gérer les utilisateurs ici.</p>
-<?php } ?>
-</div>
-</div>
 
-<script>
-    const localVideo = document.getElementById('localVideo');
-    const remoteVideo = document.getElementById('remoteVideo');
-    let localStream;
-    let peerConnection;
-    const socket = new WebSocket('ws://localhost:8080');
 
-    socket.onopen = () => {
-        console.log("Connecté au serveur WebSocket");
-    };
 
-    socket.onmessage = async (event) => {
-        const message = JSON.parse(event.data);
-        console.log("Message reçu:", message);
-        if (message.type === 'offer') {
-            await answerCall(message);
-        } else if (message.type === 'answer') {
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(message));
-        }
-    };
-
-    // Fonction pour le médecin
-    document.getElementById('startCall')?.addEventListener('click', async () => {
-        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        localVideo.srcObject = localStream;
-
-        peerConnection = new RTCPeerConnection();
-        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-        peerConnection.ontrack = event => {
-            remoteVideo.srcObject = event.streams[0];
-        };
-
-        const offer = await peerConnection.createOffer();
-        await peerConnection.setLocalDescription(offer);
-        console.log("Offre envoyée:", offer);
-        socket.send(JSON.stringify({ type: 'offer', sdp: offer.sdp }));
-
-        // Afficher le bouton Terminer l'appel
-        document.getElementById('startCall').style.display = 'none';
-        document.getElementById('endCall').style.display = 'block';
-    });
-
-    // Fonction pour le patient
-    async function answerCall(offer) {
-        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        localVideo.srcObject = localStream;
-
-        peerConnection = new RTCPeerConnection();
-        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-        peerConnection.ontrack = event => {
-            remoteVideo.srcObject = event.streams[0];
-        };
-
-        await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-        const answer = await peerConnection.createAnswer();
-        await peerConnection.setLocalDescription(answer);
-        console.log("Réponse envoyée:", answer);
-        socket.send(JSON.stringify({ type: 'answer', sdp: answer.sdp }));
-
-        // Afficher le bouton Terminer l'appel
-        document.getElementById('endCall').style.display = 'block';
-    }
-
-    // Gestion de la terminaison de l'appel
-    document.getElementById('endCall').onclick = () => {
-        // Terminer l'appel
-        if (peerConnection) {
-            peerConnection.close();
-            peerConnection = null;
-        }
-        if (localStream) {
-            localStream.getTracks().forEach(track => track.stop());
-        }
-
-        // Réinitialiser les vidéos
-        localVideo.srcObject = null;
-        remoteVideo.srcObject = null;
-
-        // Réinitialiser les boutons
-        document.getElementById('startCall').style.display = 'block';
-        document.getElementById('endCall').style.display = 'none';
-    };
-</script>
 
 
         
     </main>
 
     <script src="../../js/all.min.js"></script>
+    <script src="../../js/serveur.js"></script>
 </body>
 </html>

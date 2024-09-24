@@ -100,6 +100,7 @@ if (isset($_GET['idspecialiste'])) {
                     <h2>DR. <?php echo htmlspecialchars($doc['nom']); ?></h2>
                     <p><label for=""> Prénom: </label><?php echo htmlspecialchars($doc['prenom']); ?></p>
                     <p><label for=""> Email: </label><?php echo htmlspecialchars($doc['email']); ?></p>
+                    <p><label for=""> Coût  de la consultation : </label><?php echo htmlspecialchars($doc['prix']); ?> FCFA</p>
                     <p><label for=""> Numéro de téléphone: </label><?php echo htmlspecialchars($doc['tel']); ?></p>
                 </div>
                 <div id="myModal<?php echo $index; ?>" class="modal">

@@ -8,26 +8,38 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 $tof = $_SESSION['tof'];
 $nom = $_SESSION['nom'];
+$idDocteur = $_SESSION['docteur']; // Assurez-vous que l'ID du docteur est stocké dans la session
 
 require_once("../../inc/connexion.php");
+
+// Récupérer la liste des patients
+$stmtPatients = $pdo->prepare("SELECT idpatient, nom, dob FROM patient"); // Assurez-vous d'avoir une table patients
+$stmtPatients->execute();
+$patients = $stmtPatients->fetchAll(PDO::FETCH_ASSOC);
+
+// Récupérer le nom du médecin connecté
+$stmtDoctor = $pdo->prepare("SELECT nom FROM docteur WHERE iddocteur = :id"); // Assurez-vous d'avoir une table docteurs
+$stmtDoctor->bindParam(':id', $idDocteur, PDO::PARAM_INT);
+$stmtDoctor->execute();
+$doctor = $stmtDoctor->fetch(PDO::FETCH_ASSOC);
 
 // Traitement du formulaire
 $msgSuccess = '';
 $msgErreur = '';
 
 if (isset($_POST['submit'])) {
-    if (isset($_POST['patient'], $_POST['dob'], $_POST['medicament'], $_POST['dosage'], $_POST['posologie'], $_POST['docteur'])) {
-        if (!empty($_POST['patient']) && !empty($_POST['dob']) && !empty($_POST['medicament']) && !empty($_POST['dosage']) && !empty($_POST['posologie']) && !empty($_POST['docteur'])) {
+    if (isset($_POST['patient'], $_POST['dob'], $_POST['medicament'], $_POST['dosage'], $_POST['posologie'])) {
+        if (!empty($_POST['patient']) && !empty($_POST['dob']) && !empty($_POST['medicament']) && !empty($_POST['dosage']) && !empty($_POST['posologie'])) {
             $patient = $_POST["patient"];
             $dob = $_POST["dob"];
             $medicament = $_POST["medicament"];
             $dosage = $_POST["dosage"];
             $posologie = $_POST["posologie"];
-            $docteur = $_POST["docteur"];
+            $docteur = $doctor['nom']; // Utiliser le nom du médecin connecté
 
             try {
-                // Insertion dans la base de données
-                $insert = $pdo->prepare("INSERT INTO ordonnance (patient, dob, medicament, dosage, posologie, docteur) VALUES (?, ?, ?, ?, ?, ?)");
+                // Insertion dans la base de données avec statut et is_read
+                $insert = $pdo->prepare("INSERT INTO ordonnance (patient, dob, medicament, dosage, posologie, docteur, statut, `read`) VALUES (?, ?, ?, ?, ?, ?, 'nouvelle', FALSE)");
                 $execute = $insert->execute([$patient, $dob, $medicament, $dosage, $posologie, $docteur]);
 
                 if ($execute) {
@@ -44,10 +56,9 @@ if (isset($_POST['submit'])) {
 
                     // Générer le PDF
                     require_once("../../inc/dompdf/autoload.inc.php");
- // Assurez-vous que le chemin est correct
                     $dompdf = new Dompdf\Dompdf();
                     $dompdf->loadHtml(viewOrdonnance($ordonnanceDetails));
-                    $dompdf->setPaper('A4', 'portrait'); // Optionnel : définir le format de papier
+                    $dompdf->setPaper('A4', 'portrait'); // Définir le format de papier
                     $dompdf->render();
                     $dompdf->stream("ordonnance.pdf", ["Attachment" => false]); // Affiche le PDF dans le navigateur
 

@@ -37,6 +37,7 @@ require_once("../../actions/creneauAction.php");
 </form>
 
 <h2>Créneaux Existants</h2>
+<input type="hidden" name="idpatient" value="<?php echo $_SESSION['docteur']; ?>" >
 <ul>
     <?php if (!empty($creneaux)): ?>
         <?php foreach ($creneaux as $creneau): ?>
@@ -45,6 +46,7 @@ require_once("../../actions/creneauAction.php");
                 <?php if (!$creneau['bloque']): ?>
                     <form method="POST" action="" style="display:inline;">
                         <input type="hidden" name="idcreneau" value="<?php echo $creneau['idcreneau']; ?>">
+                   
                         <button type="submit" name="bloquer">Bloquer</button>
                     </form>
                 <?php else: ?>
