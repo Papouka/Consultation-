@@ -6,28 +6,28 @@ $role = $_SESSION['role'] ?? "administrateur";
 <ul class="side-menu">
     <li><a href="index.php" class="active"><i class="fa fa-dashboard icon" aria-hidden="true"></i> <label for="">Dashboard</label></a></li>
     <li class="divider" data-text="main">Main</li>
-    <li>
-        <a href=""><i class="fa fa-inbox icon" aria-hidden="true"></i> Consultations<i class="fa fa-chevron-right icon-right" aria-hidden="true"></i></a>
-        <ul class="side-dropdown">
-            <li><a href="">Alert</a></li>
-            <li><a href="">Badges</a></li>
-            <li><a href="">Breadcrumbs</a></li>
-            <li><a href="">Button</a></li>
-        </ul>
-    </li>
-    <li><a href=""><i class="fas fa-paperclip icon"></i> Ordonnance</a></li>
+    <!-- <li> -->
+        <!-- <a href=""><i class="fa fa-inbox icon" aria-hidden="true"></i> Consultations<i class="fa fa-chevron-right icon-right" aria-hidden="true"></i></a> -->
+        <!-- <ul class="side-dropdown"> -->
+            <!-- <li><a href="">Alert</a></li> -->
+            <!-- <li><a href="">Badges</a></li> -->
+            <!-- <li><a href="">Breadcrumbs</a></li> -->
+            <!-- <li><a href="">Button</a></li> -->
+        <!-- </ul> -->
+    <!-- </li> -->
+    <!-- <li><a href=""><i class="fas fa-paperclip icon"></i> Ordonnance</a></li> -->
     <li><a href=""><i class="fas fa-user-astronaut icon"></i> Profil</a></li>
     <li><a href="../admin/ajoutspecialite.php"><i class="fa fa-address-book icon" aria-hidden="true"></i> Ajouter une Spécialité</a></li>
-    <li><a href=""><i class="fa fa-table icon" aria-hidden="true"></i> Prise de rendez-vous</a></li>
+    <!-- <li><a href=""><i class="fa fa-table icon" aria-hidden="true"></i> Prise de rendez-vous</a></li> -->
 <?php
 
 if ($role == "docteur") {
 ?>
     
-    <li>
-            <a href="mespatients.php"><i class="fas fa-notes-medical icon"></i> Mes patients <i class="fa fa-chevron-right icon-right" aria-hidden="true"></i></a>
+    <!-- <li> -->
+            <!-- <a href="mespatients.php"><i class="fas fa-notes-medical icon"></i> Mes patients <i class="fa fa-chevron-right icon-right" aria-hidden="true"></i></a> -->
             
-          </li>
+          <!-- </li> -->
 
 <?php } else if ($role == "patient") {?>
  <li>

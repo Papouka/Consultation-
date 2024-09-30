@@ -46,7 +46,7 @@ $iddocteur = $_SESSION['docteur'];
                     <table id="userTable" class="display">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                
                                 <th>Nom</th>
                                 <th>Prénom</th>
                                 <th>Numéro de téléphone</th>
@@ -74,11 +74,11 @@ $iddocteur = $_SESSION['docteur'];
                                 if ($patients) {
                                     foreach ($patients as $patient) {
                                         echo "<tr>";
-                                        echo "<td>" . htmlspecialchars($patient["idpatient"]) . "</td>";
+                                       
                                         echo "<td>" . htmlspecialchars($patient["nom"]) . "</td>";
                                         echo "<td>" . htmlspecialchars($patient["prenom"]) . "</td>";
                                         echo "<td>" . htmlspecialchars($patient["tel"]) . "</td>";
-                                        echo "<td><img src='" . htmlspecialchars($patient["tof"]) . "' alt='" . htmlspecialchars($patient["nom"]) . "' width='50'></td>";
+                                        echo "<td><img src='../../" . htmlspecialchars($patient["tof"]) . "' alt='" . htmlspecialchars($patient["nom"]) . "' width='50'></td>";
                                         echo "<td>" . htmlspecialchars($patient["email"]) . "</td>";
                                         echo "</tr>";
                                     }

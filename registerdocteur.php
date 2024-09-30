@@ -14,8 +14,7 @@ try {
 
 // Traitement du formulaire
 if (isset($_POST['submit'])) {
-    if (isset($_POST['nom'], $_POST['prenom'], $_POST['tel'], $_POST['email'], 
-              $_FILES['tof'], $_FILES['cni'], $_POST['idspecialiste'], 
+    if (isset($_POST['nom'], $_POST['prenom'], $_POST['tel'], $_POST['email'], $_FILES['cni'], $_POST['idspecialiste'], 
               $_POST['ville'], $_FILES['diplome'], $_FILES['certificat'], 
               $_POST['experience'], $_POST['prix'], $_POST['mdp'])) {
         
@@ -118,6 +117,7 @@ $specialistes = $stm1->fetchAll(PDO::FETCH_ASSOC);
             background-color: #e9ecef;
             margin: 0;
             padding: 20px;
+            
         }
 
         .container {
@@ -188,6 +188,7 @@ $specialistes = $stm1->fetchAll(PDO::FETCH_ASSOC);
     <header>
         <?php include("inc/header.php"); ?>
     </header>
+    
     <div class="container">
         <form id="multiStepForm" method="POST" enctype="multipart/form-data">
             <h2>Informations Personnelles</h2>
@@ -206,7 +207,7 @@ $specialistes = $stm1->fetchAll(PDO::FETCH_ASSOC);
             <label for="cni">CNI:</label>
             <input type="file" id="cni" name="cni" required>
             
-            <label for="tof">Photo de profil:</label>
+            <label for="tof">Photo de vous en blouse blanche:</label>
             <input type="file" id="tof" name="tof" required>
             
             <label for="idspecialiste">Spécialité:</label>

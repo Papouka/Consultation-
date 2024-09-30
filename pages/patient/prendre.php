@@ -16,9 +16,15 @@ if (!isset($_SESSION['patient'])) {
     die("Erreur: ID du patient non défini dans la session.");
 }
 
-$idpatient = $_SESSION['patient'];
+require_once("../../inc/vendor/autoload.php");
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
+$idpatient = $_SESSION['patient'];
 $medecins = [];
+$msgSuccess = '';
+$msgErreur = '';
+
 try {
     $stmt = $pdo->prepare("SELECT DISTINCT d.* FROM docteur d 
                             JOIN rendezvous r ON d.iddocteur = r.iddocteur");
@@ -28,46 +34,71 @@ try {
     $msgErreur = "Erreur lors de la récupération des médecins: " . $e->getMessage();
 }
 
-$msgSuccess = '';
-$msgErreur = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    $iddocteur = $_POST["iddocteur"] ?? null;
+    $idcreneau = $_POST["idcreneau"] ?? null;
+    $motif = $_POST["motif"] ?? null;
 
-if (isset($_POST['submit'])) {
-    if (isset($_POST['iddocteur'], $_POST['idcreneau'], $_POST['motif'])) {
-        $iddocteur = $_POST["iddocteur"];
-        $idcreneau = $_POST["idcreneau"];
-        $motif = $_POST["motif"];
-        $idpatient = $_SESSION['patient'];
+    if (!empty($iddocteur) && !empty($idcreneau) && !empty($motif)) {
+        $checkCreneau = $pdo->prepare("SELECT * FROM creneaux WHERE idcreneau = :idcreneau");
+        $checkCreneau->bindParam(":idcreneau", $idcreneau);
+        $checkCreneau->execute();
 
-        if (!empty($iddocteur) && !empty($idcreneau) && !empty($motif)) {
-            $checkCreneau = $pdo->prepare("SELECT * FROM creneaux WHERE idcreneau = :idcreneau");
-            $checkCreneau->bindParam(":idcreneau", $idcreneau);
-            $checkCreneau->execute();
+        if ($checkCreneau->rowCount() > 0) {
+            try {
+                $insert = $pdo->prepare("INSERT INTO rendezvous (iddocteur, idcreneau, idpatient, motif) VALUES (?, ?, ?, ?)");
+                $execute = $insert->execute([$iddocteur, $idcreneau, $idpatient, $motif]);
 
-            if ($checkCreneau->rowCount() > 0) {
-                try {
-                    $insert = $pdo->prepare("INSERT INTO rendezvous (iddocteur, idcreneau, idpatient, motif) VALUES (?, ?, ?, ?)");
-                    $execute = $insert->execute([$iddocteur, $idcreneau, $idpatient, $motif]);
+                if ($execute) {
+                    // Récupération des informations du docteur pour l'email
+                    $sql1 = "SELECT email, nom FROM docteur WHERE iddocteur = :iddoc";
+                    $stm1 = $pdo->prepare($sql1);
+                    $stm1->bindParam(":iddoc", $iddocteur);
+                    $stm1->execute();
+                    $docteur = $stm1->fetch(PDO::FETCH_ASSOC);
 
-                    if ($execute) {
-                        $msgSuccess = "Rendez-vous programmé avec succès.";
-                    } else {
-                        $msgErreur = "Échec de la programmation du rendez-vous.";
+                    // Configuration de PHPMailer
+                    $mail = new PHPMailer(true);
+                    try {
+                        $mail->isSMTP();
+                        $mail->Host = 'smtp.gmail.com';
+                        $mail->SMTPAuth = true;
+                        $mail->Username = 'papoukalory@gmail.com';
+                        $mail->Password = 'orjqyjacvgvpowxp'; 
+                        $mail->SMTPSecure = 'tls';
+                        $mail->Port = 587;
+
+                        $mail->setFrom('papoukalory@gmail.com', 'Lory');
+                        $mail->addAddress($docteur['email'], $docteur['nom']);
+
+                        // Contenu de l'email
+                        $mail->isHTML(true);
+                        $mail->Subject = 'Nouvelle demande de consultation';
+                        $link = "http://localhost/easydoctor/pages/docteur/priserendezvous.php";
+                        $mail->Body = "Bonjour Dr. " . htmlspecialchars($docteur['nom']) . ",<br><br>" .
+                                      "Vous avez reçu une nouvelle demande de rendez-vous.<br>" .
+                                      "Patient: " . htmlspecialchars($nom) . "<br>" .
+                                      "Motif: " . htmlspecialchars($motif) . "<br>" .
+                                      "Pour accepter ou refuser cette demande, veuillez cliquer sur le lien suivant: <a href='" . $link . "'>Accepter ou Refuser le Rendez-vous</a>";
+
+                        $mail->send();
+                        $msgSuccess = "Rendez-vous programmé avec succès. Un email a été envoyé au docteur.";
+                    } catch (Exception $e) {
+                        $msgErreur = "Rendez-vous programmé, mais échec de l'envoi de l'email au docteur. Erreur: {$mail->ErrorInfo}";
                     }
-
-                } catch (PDOException $e) {
-                    $msgErreur = "Erreur: " . $e->getMessage();
+                } else {
+                    $msgErreur = "Échec de la programmation du rendez-vous.";
                 }
-            } else {
-                $msgErreur = "Le créneau sélectionné n'existe pas.";
+            } catch (PDOException $e) {
+                $msgErreur = "Erreur: " . $e->getMessage();
             }
         } else {
-            $msgErreur = "Tous les champs sont requis.";
+            $msgErreur = "Le créneau sélectionné n'existe pas.";
         }
     } else {
-        $msgErreur = "Erreur dans les données soumises.";
+        $msgErreur = "Tous les champs sont requis.";
     }
 }
-
 
 $idpat = $_SESSION['patient']; 
 $sql2 = "SELECT nom FROM patient WHERE idpatient = :idpat";
@@ -79,17 +110,13 @@ $nomPatient = $patient['nom'] ?? 'Patient non trouvé';
 
 $creneaux = ''; 
 
-
 if (isset($_GET['iddocteur'])) {
     $iddocteur = $_GET['iddocteur'];
 
     try {
-       
         $stmt = $pdo->prepare("SELECT * FROM creneaux WHERE iddocteur = :iddocteur");
         $stmt->bindParam(':iddocteur', $iddocteur);
         $stmt->execute();
-
-       
         $creneaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($creneaux as $creneau) {
@@ -137,7 +164,6 @@ if (isset($_GET['iddocteur'])) {
             background-color: green;
             color: white;
         }
-        /* Styles pour la modal */
         .modal {
             display: none; 
             position: fixed; 
@@ -147,7 +173,6 @@ if (isset($_GET['iddocteur'])) {
             width: 100%; 
             height: 100%; 
             overflow: auto; 
-            background-color: rgb(0,0,0); 
             background-color: rgba(0,0,0,0.4); 
         }
         .modal-content {
@@ -168,6 +193,56 @@ if (isset($_GET['iddocteur'])) {
             color: black;
             text-decoration: none;
             cursor: pointer;
+        }
+        .form {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .button {
+            background: green;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 34%;
+        }
+        .success-message, .error-message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            text-underline-position: top;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
         }
     </style>
 </head>
@@ -211,12 +286,12 @@ if (isset($_GET['iddocteur'])) {
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2 id="modal-title">Premier rendez-vous avec le Dr. </h2> 
+            <h2 id="modal-title">rendez-vous avec le Dr. </h2> 
 
             <div id="modal-body">
                 <form action="#" method="POST" class="form">
                     <input type="hidden" name="iddocteur" id="iddocteur" value="">
-                    <input type="text" name="idpatient" value="<?php echo $_SESSION['patient']; ?>" readonly>
+                    <input type="hidden" name="idpatient" value="<?php echo $_SESSION['patient']; ?>" readonly>
 
                     <div class="form-group">
                         <label for="">Patient:</label>
@@ -235,7 +310,7 @@ if (isset($_GET['iddocteur'])) {
                         </div>
                     </div>
 
-                    <button type="submit" name="submit">Programmer le Rendez-vous</button>
+                    <button class="button" type="submit" name="submit">Envoyer la demande de Rendez-vous</button>
                 </form>
             </div>
         </div>
@@ -274,13 +349,11 @@ if (isset($_GET['iddocteur'])) {
             xhr.open('GET', '?iddocteur=' + doctorId, true); // Appel à la même page
             xhr.onload = function() {
                 if (this.status === 200) {
-                    var response = this.responseText;
-                    document.getElementById('creneaux-container').innerHTML = response; // Mettre à jour le contenu des créneaux
+                    document.getElementById('creneaux-container').innerHTML = this.responseText; // Mettre à jour le contenu
                 }
             };
             xhr.send();
         }
     </script>
-
 </body>
 </html>

@@ -190,7 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <nav>
             <?php include("../../inc/nav2.php"); ?>
         </nav>
-        <h1>Enregistrer les Résultats d'Examen</h1>
+        <h1>Envoyer les Résultats d'Examen</h1>
         <?php if ($message): ?>
             <div class="message <?php echo isset($message) && strpos($message, 'Erreur') !== false ? 'error' : 'success'; ?>">
                 <?php echo htmlspecialchars($message); ?>

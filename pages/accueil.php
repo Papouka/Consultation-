@@ -12,7 +12,7 @@ $email = $_SESSION['email'];
 $tof = $_SESSION['tof']; 
 $nom = $_SESSION['nom'];
 $iddocteur = $_SESSION['docteur']; 
-
+$idpatient = $_SESSION['patient']; 
 
 $stmt1 = $pdo->prepare("SELECT * FROM rendezvous WHERE iddocteur = :iddocteur"); 
 $stmt1->bindParam(':iddocteur', $iddocteur, PDO::PARAM_INT);
@@ -24,6 +24,18 @@ $stmt = $pdo->prepare("SELECT COUNT(*) FROM rendezvous WHERE is_read = 0 AND idd
 $stmt->bindParam(':iddocteur', $iddocteur, PDO::PARAM_INT);
 $stmt->execute();
 $nbre = $stmt->fetchColumn();
+
+
+$stm = $pdo->prepare("SELECT * FROM video WHERE idpatient = :idpatient"); 
+$stm->bindParam(':idpatient', $idpatient, PDO::PARAM_INT);
+$stm->execute();
+$number = $stm->fetchColumn();
+
+$stm1 = $pdo->prepare("SELECT COUNT(*) FROM video WHERE is_read = 0 AND idpatient = :idpatient");
+$stm1->bindParam(':idpatient', $idpatient, PDO::PARAM_INT);
+$stm1->execute();
+$number = $stm1->fetchColumn();
+
 ?>
 
 

@@ -32,8 +32,8 @@ require_once("../inc/connexion.php");
     </nav>
     <main>
     <?php
-            if (isset($_POST['save'])) {
-                $lien = $_POST['lien']; 
+            if (isset($_GET['lien'])) {
+                $lien = $_GET['lien']; 
                 echo ' <iframe src="'.$lien.'" style="position: absolute;  width: 95%; height: 30pc;" allowfullscreen></iframe>';
             }
         ?>

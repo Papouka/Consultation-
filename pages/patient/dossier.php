@@ -33,7 +33,7 @@ $emailPatient = $patient['email'];
 // Récupérer les dossiers médicaux et les informations du docteur
 $stmt = $pdo->prepare("
     SELECT c.diagnostic, c.traitement, c.typeexamen, d.nom AS nom_docteur, d.prenom AS prenom_docteur, d.idspecialiste, d.email,d.tel ,r.resultat FROM consultation c JOIN docteur d ON c.iddocteur = d.iddocteur
-     JOIN specialiste s ON d.idspecialiste = s.idspecialiste LEFT JOIN resultat r ON c.idconsultation = r.idconsultation;
+     JOIN specialiste s ON d.idspecialiste = s.idspecialiste LEFT JOIN resultat r ON c.idconsultation = r.idconsultation
     WHERE c.idpatient = :idpatient
 ");
 $stmt->execute(['idpatient' => $idpatient]);

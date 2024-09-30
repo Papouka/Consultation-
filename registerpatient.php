@@ -5,7 +5,7 @@ $msgErreur = "";
 require_once('inc/connexion.php');
 
 if (isset($_POST['submit'])) {
-    if (isset($_POST['nom'], $_POST['prenom'], $_POST['tel'], $_POST['email'],$_POST['dob'], $_FILES['tof'], $_POST['mdp'])) {
+    if (isset($_POST['nom'], $_POST['prenom'], $_POST['tel'], $_POST['email'],$_POST['dob'], $_POST['mdp'])) {
         if (!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['tel']) && !empty($_POST['email']) && !empty($_POST['dob']) && !empty($_POST['mdp'])) {
             $nom = $_POST["nom"];
             $prenom = $_POST["prenom"];
@@ -21,7 +21,11 @@ if (isset($_POST['submit'])) {
                     $msgErreur = "Erreur lors du téléchargement de la photo de profil.";
                 }
             } else {
-                $msgErreur = "Erreur lors du téléchargement de la photo de profil.";
+                
+                    $tof = '5.png';
+                    $tofPath = 'img/' . $tof;
+                    move_uploaded_file($tof, $tofPath);
+                
             }
 
             // Vérification de l'email
@@ -115,6 +119,8 @@ function viewMedicalFilePDF($medical) {
             background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(img/30.jpg);
             background-size: cover;
             background-position: center;
+            margin-top: 2vh;
+            height: 100vh;
         }
 
         h2 {
@@ -183,7 +189,7 @@ function viewMedicalFilePDF($medical) {
             <input type="date" name="dob" placeholder="Votre date de naissance" required>
             <input type="password" name="mdp" placeholder="Votre mot de passe" required>
             <label>Votre photo de profil</label>
-            <input type="file" id="imageUpload" name="tof" accept="image/*" required>
+            <input type="file" id="imageUpload" name="tof" accept="image/*" >
             <button type="submit" name="submit" class="btn-submit">ENVOYER</button>
         </form>
     </div>

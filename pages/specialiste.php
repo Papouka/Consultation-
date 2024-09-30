@@ -33,7 +33,7 @@ if (isset($_GET['idspecialiste'])) {
             $query .= " AND experience >= :experience";
         }
         if (!empty($patients)) {
-            $query .= " AND nombre_patients >= :patients"; // Assurez-vous que la colonne nombre_patients existe dans votre base de données
+            $query .= " AND nombre_patients >= :patients"; 
         }
 
         // Préparer la requête
@@ -111,7 +111,7 @@ if (isset($_GET['idspecialiste'])) {
                             <p><label for="" class="lor">Diplôme: </label><?php echo htmlspecialchars($doc['diplome']); ?></p>
                             <p><label for="" class="lor"> Ville: </label><?php echo htmlspecialchars($doc['ville']); ?></p>
                             <p><label for="" class="lor"> Année d'expérience: </label><?php echo htmlspecialchars($doc['experience']); ?> ans</p>
-                        </form>
+                        </form> 
                     </div>
                 </div>
                 <div class="buttons">

@@ -1,11 +1,11 @@
 <?php
 $role = $_SESSION['role'] ?? "administrateur";
 ?>
- <ul>
- <li>
-    <a href="../index.php"><span class="span">Easy</span>doctor</a>
-    </li> <br><br>
- </ul>
+ 
+
+    
+  <a href="../index.php" class="brand"><i class="fas fa-smile icon"></i> LORY</a>
+
 
 <ul class="side-menu">
 
@@ -15,23 +15,7 @@ $role = $_SESSION['role'] ?? "administrateur";
    
     <li><a href="../pages/patient/profil.php"><i class="fas fa-user-astronaut icon"></i> Profil</a></li>
     <li><a href=""> <i class="fa-solid fa-message icon"></i> Mes conversations</a></li>
-    <style>
-        
-.span {
-    background-color: hsl(158, 97%, 29%);
-    color: aliceblue;
-    padding: 0px 5px;
-    border-radius: 5px;
-    font-weight: 600;
-    margin-right: 5px;
-}
-li{
-  list-style-type: none;
-}
-a{
-    color: black;
-}
-    </style>
+    
 <?php
 
 if ($role == "docteur") {

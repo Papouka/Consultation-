@@ -34,8 +34,9 @@ if (isset($_POST['submit'])) {
             $creneau = $pdo->prepare("SELECT * FROM creneaux WHERE idcreneau = :idcreneau");
             $creneau->bindParam(":idcreneau", $idcreneau);
             $creneau->execute();
+            $creneau2 = $creneau->fetch(PDO::FETCH_ASSOC);
 
-            if ($creneau->rowCount() > 0) {
+            if ($creneau2) {
                 try {
                     $insert = $pdo->prepare("INSERT INTO rendezvous (iddocteur, idcreneau, idpatient, motif) VALUES (?, ?, ?, ?)");
                     $execute = $insert->execute([$iddocteur, $idcreneau, $idpatient, $motif]);
@@ -70,9 +71,9 @@ if (isset($_POST['submit'])) {
                             $link = "http://localhost/easydoctor/pages/docteur/priserendezvous.php" ;
                             $mail->Body = "Bonjour Dr. " . htmlspecialchars($docteur['nom']) . ",<br><br>" .
                                           "Vous avez reçu une nouvelle demande de rendez-vous.<br>" .
-                                          "Patient: " . htmlspecialchars($nomPatient) . "<br>" .
+                                          "Patient: " . htmlspecialchars($nom) . "<br>" .
                                           "Motif: " . htmlspecialchars($motif) . "<br>" .
-                                          "Date et Heure: " . htmlspecialchars($creneau->fetch()['date']) . ' de ' . htmlspecialchars($creneau->fetch()['heure_debut']) . ' à ' . htmlspecialchars($creneau->fetch()['heure_fin']) . "<br><br>" .
+                                          "Date et Heure: " . htmlspecialchars($creneau2['date']) . ' de ' . htmlspecialchars($creneau2['heure_debut']) . ' à ' . htmlspecialchars($creneau2['heure_fin']) . "<br><br>" .
                                           "Pour accepter ou refuser cette demande, veuillez cliquer sur le lien suivant: <a href='" . $link . "'>Accepter ou Refuser le Rendez-vous</a>";
 
                             $mail->send();
@@ -175,14 +176,14 @@ $creneaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
             border-radius: 5px;
         }
 
-        button {
+        .button {
             background: green;
             color: white;
             border: none;
             padding: 10px;
             border-radius: 5px;
             cursor: pointer;
-            width: 25%;
+            width: 28%;
         }
 
         .radio-button {
@@ -224,7 +225,7 @@ $creneaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <h2>Premier rendez-vous avec le Dr. <?php echo htmlspecialchars($docta); ?></h2>
 
                 <input type="hidden" name="iddocteur" value="<?php echo htmlspecialchars($iddoc); ?>">
-                <input type="text" name="idpatient" value="<?php echo $_SESSION['patient']; ?>" readonly>
+                <input type="hidden" name="idpatient" value="<?php echo $_SESSION['patient']; ?>" readonly>
 
                 <div class="form-group">
                     <label for="">Patient:</label>
@@ -244,7 +245,7 @@ $creneaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <?php endforeach; ?>
                 </div>
 
-                <button type="submit" name="submit">Programmer le Rendez-vous</button>
+                <button type="submit" class="button" name="submit">Envoyer la demande de Rendez-vous</button>
             </form>
 
             <?php if (!empty($msgSuccess)): ?>
