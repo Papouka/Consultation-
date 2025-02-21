@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Inclure le fichier de connexion
 try {
     $pdo = new PDO('mysql:host=localhost;dbname=hosto_bd', 'root', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -10,13 +9,13 @@ try {
 }
 
 // Vérifier si l'ID est passé en paramètre
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+if (isset($_GET['idspecialiste'])) {
+    $idspecialiste = $_GET['idspecialiste'];
 
-    // Préparer la requête pour supprimer la spécialité
     try {
-        $stmt = $pdo->prepare("DELETE FROM specialiste WHERE id = ?");
-        $stmt->execute([$id]);
+        // Assurez-vous que le nom de la colonne est correct
+        $stmt = $pdo->prepare("DELETE FROM specialiste WHERE id = ?"); // Changez ici si nécessaire
+        $stmt->execute([$idspecialiste]);
 
         // Rediriger après succès
         header("Location: ../admin/ajoutspecialite.php");

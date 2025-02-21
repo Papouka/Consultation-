@@ -7,29 +7,9 @@ if (!isset($_SESSION['email'])) {
 }
 
 $email = $_SESSION['email'];
-$tof = $_SESSION['tof']; 
+$tof = $_SESSION['tof'] ?? 'img/default-profile.png'; 
 $nom = $_SESSION['nom'];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-   
-    $nom = $_POST['nom'];
-    $email = $_POST['email'];
-
-    if (isset($_FILES['tof']) && $_FILES['tof']['error'] == UPLOAD_ERR_OK) {
-        $uploads_dir = 'img/'; 
-        $tmp_name = $_FILES['tof']['tmp_name'];
-        $name = basename($_FILES['tof']['name']);
-        $path = $uploads_dir . $name;
-
-       
-        if (move_uploaded_file($tmp_name, $path)) {
-            
-            $_SESSION['tof'] = $path;
-        } else {
-            echo "Erreur lors du téléchargement de l'image.";
-        }
-    }
- }
 
 ?>
 
@@ -42,75 +22,77 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     <link rel="stylesheet" href="../../css/dashboard.css">
     <link rel="stylesheet" href="../../icons/all.min.css">
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 90px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-picture {
+            position: relative;
+            margin-right: 20px;
+        }
+
+        .profile-picture img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 2px solid #4CAF50;
+        }
+
+        .info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        h3{
+            text-align: center;
+        }
+        .profile-card img {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            border: 4px solid #580770FF;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .profile-card img:hover {
+            transform: scale(1.1);
+        }
+
+        .camera-icon {
+            position: absolute;
+            top: 110px; 
+            left: calc(50% + 53px); 
+            transform: translateX(-50%);
+            font-size: 24px;
+            color: #0A0C0BFF;
+            background-color: #580770FF;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        input[type="file"] {
+            display: none;
+        }
+    </style>
 </head>
-<style>
-    
-.container {
-    max-width: 600px;
-    margin: 20px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 90px;
-}
-
-.profile-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-
-.profile-picture {
-    position: relative;
-    margin-right: 20px;
-}
-
-.profile-picture img {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    border: 2px solid #4CAF50;
-}
-
-input[type="file"] {
-    display: none;
-}
-
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-input[type="text"],
-input[type="email"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-
-
-</style>
 <body>
 
 <section id="sidebar">
@@ -124,73 +106,61 @@ input[type="email"] {
         <div class="container">
             <div class="profile-header">
                 <div class="profile-picture">
-                    <img src="<?php echo htmlspecialchars($tof); ?>" alt="Photo de Profil" id="profileImg">
-                    <input type="file" id="uploadBtn" accept="image/*" onchange="previewImage(event)">
+                    <img src="../../<?php echo htmlspecialchars($tof); ?>" alt="Photo de profil" id="profileImage">
+                    <label for="fileInput">
+        <i class="fas fa-camera camera-icon"></i>
+    </label>
+
+    <input type="file" id="fileInput" accept="image/*" onchange="changePhoto(event)">
                 </div>
-                <button type="button" onclick="document.getElementById('uploadBtn').click()">Modifier la Photo</button>
             </div>
 
-            <form action="#" method="POST">
-                <div>
-                    <label for="nom">Nom :</label>
-                    <input type="text" id="nom" name="nom" placeholder="Votre nom" value="<?php echo htmlspecialchars($nom); ?>" required>
-                </div>
+            <div class="info">
+                <h3>Mes informations :</h3>
+                <p><strong>Nom :</strong> <?php echo htmlspecialchars($nom); ?></p>
+                <p><strong>Email :</strong> <?php echo htmlspecialchars($email); ?></p>
                 
-                <div>
-                    <label for="email">Email :</label>
-                    <input type="email" id="email" name="email" placeholder="Votre email" value="<?php echo htmlspecialchars($email); ?>" required>
-                </div>
-                
-                <div>
-                   <a href="pages/patient/profil.php"> <button type="submit">Sauvegarder les Modifications</button></a>
-                </div>
-            </form>
-           
+            </div>
         </div>
-        
-        
-<video id="localVideo" autoplay muted></video>
-<video id="remoteVideo" autoplay></video>
-<button id="startCall"> <i class="fa fa-video-camera icon" aria-hidden="true"></i> </button>
-
-            <script>
-                
-const localVideo = document.getElementById('localVideo');
-const remoteVideo = document.getElementById('remoteVideo');
-let localStream;
-let peerConnection;
-
-const startCallButton = document.getElementById('startCall');
-startCallButton.onclick = startCall;
-
-async function startCall() {
-    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    localVideo.srcObject = localStream;
-
-    // Configuration de la connexion
-    peerConnection = new RTCPeerConnection();
-    localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-    peerConnection.ontrack = event => {
-        remoteVideo.srcObject = event.streams[0];
-    };
-
-    // Ajoutez ici le code pour échanger les offres et les réponses
-}
-
-
-            </script>
-
-
-        <script>
-            function previewImage(event) {
-                const img = document.getElementById('profileImg');
-                img.src = URL.createObjectURL(event.target.files[0]);
-            }
-        </script>
     </main>
 
     <script src="../../js/all.min.js"></script>
-    <script src="../../js/script.js"></script>
+    <script src="../../js/serveur.js"></script>
+    <script>
+    // Fonction pour changer la photo de profil en temps réel
+    function changePhoto(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Remplacer l'image de profil par la nouvelle
+                document.getElementById('profileImage').src = e.target.result;
+
+                // Envoi de l'image au serveur
+                uploadImage(file);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function uploadImage(file) {
+        const formData = new FormData();
+        formData.append('tof', file);
+
+        fetch('user.php', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.text()) // Changer ici pour récupérer le texte
+        .then(data => {
+            // Afficher le message de succès dans la div
+            document.getElementById('message').innerText = data; // Affiche le message
+        })
+        .catch((error) => {
+            console.error('Erreur lors de l\'enregistrement de l\'image :', error);
+            document.getElementById('message').innerText = "Erreur lors de l'upload.";
+        });
+    }
+</script>
 </body>
 </html>

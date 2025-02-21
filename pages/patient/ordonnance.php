@@ -1,72 +1,6 @@
 <?php
-session_start();
-
-
-if (!isset($_SESSION['email'])) {
-   header("Location: login.php");
-    exit(); 
-}
-
-$email = $_SESSION['email'];
-$tof = $_SESSION['tof']; 
-$nom = $_SESSION['nom'];
-
-
-try {
-    $pdo = new PDO('mysql:host=localhost;dbname=hosto_bd', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
-
-// Traitement du formulaire
-if (isset($_POST['submit'])) {
-    if (isset($_POST['nom'], $_POST['prenom'], $_POST['tel'], $_POST['email'], $_FILES['tof'], $_POST['mdp'])) {
-        if (!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['tel']) && !empty($_POST['email']) && !empty($_POST['mdp'])) {
-            $nom = $_POST["nom"];
-            $prenom = $_POST["prenom"];
-            $tel = $_POST["tel"];
-            $email = $_POST["email"];
-            $mdp = password_hash($_POST["mdp"], PASSWORD_DEFAULT); // Crypter le mot de passe
-            
-
-            // Vérification du téléchargement de la photo
-            if ($_FILES['tof']['error'] == UPLOAD_ERR_OK) {
-                $tofPath = 'img/' . basename($_FILES['tof']['name']);
-                if (!move_uploaded_file($_FILES['tof']['tmp_name'], $tofPath)) {
-                    $msgErreur = "Erreur lors du téléchargement de la photo de profil.";
-                }
-            } else {
-                $msgErreur = "Erreur lors du téléchargement de la photo de profil.";
-            }
-
-            // Vérification de l'email
-            $sql = "SELECT * FROM patient WHERE email=?";
-            $stm = $pdo->prepare($sql);
-            $stm->execute([$email]);
-            if ($stm->rowCount() > 0) {
-                $msgErreur = "Cette adresse e-mail est déjà utilisée.";
-            } else {
-                try {
-                    // Insertion dans la base de données
-                    $insert = $pdo->prepare("INSERT INTO patient (nom, prenom, tel, email, tof, mdp) VALUES (?, ?, ?, ?, ?, ?)");
-                    $execute = $insert->execute([$nom, $prenom, $tel, $email, $tofPath, $mdp]);
-                    $_SESSION['nom'] = $nom;
-                    $_SESSION['tof'] = $tofPath;
-                    header("Location: pages/accueil.php");
-                    exit();
-                } catch (PDOException $e) {
-                    $msgErreur = "Erreur: " . $e->getMessage();
-                }
-            }
-        } else {
-            $msgErreur = "Tous les champs sont requis.";
-        }
-    }
-}
-
+require_once("../../actions/ordonnanceAction.php");
 ?>
-
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -74,35 +8,16 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Docteur</title>
-    
     <link rel="stylesheet" href="../../css/dashboard.css">
     <link rel="stylesheet" href="../../icons/all.min.css">
-</head>
-<body>
-
-
-<section id="sidebar">
-        <?php include("../../inc/sidebar4.php"); ?>
-    </section>
-    <section id="content">
-        <nav>
-            <?php include("../../inc/nav4.php"); ?>
-        </nav>
-<main>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Générateur d'Ordonnance</title>
-  <style>
-      form {
+    <style>
+      .form {
           font-family: Arial, sans-serif;
           margin: 20px;
           padding: 20px;
           border: 1px solid #ccc;
           border-radius: 5px;
-          background-color: #f9f9f9;
+          background-color: #fff;
       }
       h1 {
           text-align: center;
@@ -133,67 +48,80 @@ if (isset($_POST['submit'])) {
   </style>
 </head>
 <body>
-  <h1>Générateur d'Ordonnance</h1>
-  <form id="ordonnanceForm">
-      <div class="form-group">
-          <label for="patientName">Nom du Patient</label>
-          <input type="text" name="patient" id="patientName" required>
-      </div>
-      <div class="form-group">
-          <label for="patientDOB">Date de Naissance</label>
-          <input type="date" name="dob" id="patientDOB" required>
-      </div>
-      <div class="form-group">
-          <label for="medicament">Médicament</label>
-          <input type="text" name="medicament" id="medicament" required>
-      </div>
-      <div class="form-group">
-          <label for="dosage">Dosage</label>
-          <input type="text"  name="dosage" id="dosage" required>
-      </div>
-      <div class="form-group">
-          <label for="posologie">Posologie</label>
-          <input type="text" name="posologie" id="posologie" required>
-      </div>
-      <div class="form-group">
-          <label for="doctorName">Nom du Médecin</label>
-          <input type="text" name="docteur" id="doctorName" required>
-      </div>
-      <button type="button" onclick="generateOrdonnance()">Générer l'Ordonnance</button>
-  </form>
-  <div id="ordonnanceOutput" style="margin-top: 20px; display: none;">
-      <h2>Ordonnance Générée</h2>
-      <div id="ordonnanceContent"></div>
-  </div>
-  <script>
-      function generateOrdonnance() {
-          const patientName = document.getElementById('patientName').value;
-          const patientDOB = document.getElementById('patientDOB').value;
-          const medicament = document.getElementById('medicament').value;
-          const dosage = document.getElementById('dosage').value;
-          const posologie = document.getElementById('posologie').value;
-          const doctorName = document.getElementById('doctorName').value;
+<section id="sidebar">
+    <?php include("../../inc/sidebar4.php"); ?>
+</section>
+<section id="content">
+    <nav>
+        <?php include("../../inc/nav4.php"); ?>
+    </nav>
+    <main>
+        <h1>Générateur d'Ordonnance</h1>
+        <form method="POST" class="form">
+            <div class="form-group">
+                <label for="patient">Nom du Patient</label>
+                <select name="patient" id="patient" required>
+                    <option value="">Sélectionnez un patient</option>
+                    <?php foreach ($patients as $patient): ?>
+                        <option value="<?php echo $patient['idpatient']; ?>"><?php echo htmlspecialchars($patient['nom']); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="patientDOB">Date de Naissance</label>
+                <input type="date" name="dob" id="patientDOB" readonly>
+            </div> 
+            <div class="form-group">
+                <label for="medicament">Médicament</label>
+                <input type="text" name="medicament" id="medicament" required>
+            </div>
+            <div class="form-group">
+                <label for="dosage">Dosage</label>
+                <input type="text" name="dosage" id="dosage" required>
+            </div>
+            <div class="form-group">
+                <label for="posologie">Posologie</label>
+                <input type="text" name="posologie" id="posologie" required>
+            </div>
+            <div class="form-group">
+                <label>Nom du Médecin</label>
+                <input type="text" value="<?php echo htmlspecialchars($doctor['nom']); ?>" readonly>
+            </div>
+            <button type="submit" name="submit">Générer l'Ordonnance</button>
+        </form>
 
-          const ordonnanceContent = `
-              <p><strong>Nom du Patient :</strong> ${patientName}</p>
-              <p><strong>Date de Naissance :</strong> ${patientDOB}</p>
-              <p><strong>Médicament :</strong> ${medicament}</p>
-              <p><strong>Dosage :</strong> ${dosage}</p>
-              <p><strong>Posologie :</strong> ${posologie}</p>
-              <p><strong>Nom du Médecin :</strong> ${doctorName}</p>
-              <p><strong>Date de l'ordonnance :</strong> ${new Date().toLocaleDateString()}</p>
-          `;
-
-          document.getElementById('ordonnanceContent').innerHTML = ordonnanceContent;
-          document.getElementById('ordonnanceOutput').style.display = 'block';
-      }
-  </script>
-</body>
-</html>
-   
-</main>
+        <!-- Affichage des messages de succès ou d'erreur -->
+        <?php if (!empty($msgSuccess)): ?>
+            <div style="margin-top: 20px; color: green;">
+                <h2>Ordonnance Générée</h2>
+                <p><strong>Nom du Patient :</strong> <?php echo $ordonnanceDetails['patient']; ?></p>
+                <p><strong>Date de Naissance :</strong> <?php echo $ordonnanceDetails['dob']; ?></p>
+                <p><strong>Médicament :</strong> <?php echo $ordonnanceDetails['medicament']; ?></p>
+                <p><strong>Dosage :</strong> <?php echo $ordonnanceDetails['dosage']; ?></p>
+                <p><strong>Posologie :</strong> <?php echo $ordonnanceDetails['posologie']; ?></p>
+                <p><strong>Nom du Médecin :</strong> <?php echo $ordonnanceDetails['docteur']; ?></p>
+                <p><strong>Date de l'ordonnance :</strong> <?php echo $ordonnanceDetails['date']; ?></p>
+            </div>
+        <?php elseif (!empty($msgErreur)): ?>
+            <p style="color: red;"><?php echo $msgErreur; ?></p>
+        <?php endif; ?>
+    </main>
+</section>
 
 <script src="../../js/all.min.js"></script>
 <script src="../../js/script.js"></script>
+<script>
+document.getElementById('patient').addEventListener('change', function() {
+    var dobField = document.getElementById('patientDOB');
+    var selectedPatientId = this.value;
+
+    <?php foreach ($patients as $patient): ?>
+        if (selectedPatientId == "<?php echo $patient['idpatient']; ?>") {
+            dobField.value = "<?php echo $patient['dob']; ?>";
+        }
+    <?php endforeach; ?>
+});
+</script>
+
 </body>
 </html>

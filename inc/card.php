@@ -8,15 +8,15 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     
-    $stmt = $pdo->query("SELECT COUNT(*) as total_patients FROM patient");
+    $stmt = $pdo->query("SELECT COUNT(*) FROM patient");
     $totalPatients = $stmt->fetchColumn();
 
     
-    $stmt = $pdo->query("SELECT COUNT(*) as total_consultations FROM consultation");
+    $stmt = $pdo->query("SELECT COUNT(*)  FROM consultation");
     $totalConsultations = $stmt->fetchColumn();
 
     
-    $stmt = $pdo->query("SELECT COUNT(*) as total_doctors FROM docteur");
+    $stmt = $pdo->query("SELECT COUNT(*) FROM docteur");
     $totalDoctors = $stmt->fetchColumn();
 
 
